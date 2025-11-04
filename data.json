@@ -1,25 +1,30 @@
 [
   {
     "id": 1,
-    "name": "YouTube 示例 - @rusiru87time",
+    "name": "YouTube RSS Feed",
     "type": "youtube",
-    "url": "https://rsshub.app/youtube/channel/rusiru87time",
-    "tags": "示例, YouTube"
+    "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCX6OQ3DkcsbYNE6H8uQQuVA",
+    "tags": "RSS, YouTube"
   },
   {
     "id": 2,
-    "name": "Bilibili 示例 - UID 3632310553413638",
+    "name": "Bilibili RSS Feed",
     "type": "bilibili",
-    "url": "https://rsshub.app/bilibili/user/video/3632310553413638",
-    "tags": "示例, B站"
+    "url": "https://rsshub.app/bilibili/user/video/1263732318",
+    "tags": "RSS, B站"
   },
   {
     "id": 3,
-    "name": "手动合集示例",
+    "name": "YouTube 单个视频",
     "type": "collection",
-    "url": "https://www.bilibili.com/video/BV1jZ4y1g7Gk/",
-    "thumbnail": "https://i0.hdslb.com/bfs/archive/c616f2de6f3f01b17a02e604ef7d04f479d4b684.png@672w_378h_1c_!web-search-common-feed.avif",
-    "tags": "合集, 学习"
+    "url": "https://www.youtube.com/watch?v=w4-tObZnhSg",
+    "tags": "单个视频, YouTube"
+  },
+  {
+    "id": 4,
+    "name": "Bilibili 单个视频",
+    "type": "collection",
+    "url": "https://www.bilibili.com/video/BV1dY1kBfEqy/",
+    "tags": "单个视频, B站"
   }
 ]
-
