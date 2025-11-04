@@ -8,14 +8,14 @@ const defaultData = [
         id: 1, 
         name: "YouTube 示例 - @rusiru87time", 
         type: "youtube", 
-        url: "https://www.youtube.com/@rusiru87time", 
+        url: "https://rsshub.app/youtube/channel/rusiru87time", 
         tags: "示例, YouTube"
     },
     {
         id: 2, 
         name: "Bilibili 示例 - UID 3632310553413638", 
         type: "bilibili", 
-        url: "https://space.bilibili.com/3632310553413638", 
+        url: "https://rsshub.app/bilibili/user/video/3632310553413638", 
         tags: "示例, B站"
     },
     {
@@ -32,9 +32,76 @@ const defaultData = [
 function loadData() {
     const dataString = localStorage.getItem(STORAGE_KEY);
     if (dataString && dataString.length > 2) { // 检查是否为空数组
-        return JSON.parse(dataString);
+        try {
+            return JSON.parse(dataString);
+        } catch (e) {
+            console.error("解析数据失败:", e);
+            return defaultData;
+        }
     }
     return defaultData; // 返回默认数据
+}
+
+// 获取下一个可用的ID
+function getNextId() {
+    const data = loadData();
+    if (data.length === 0) return 1;
+    const maxId = Math.max(...data.map(item => item.id || 0));
+    return maxId + 1;
+}
+
+// URL转换函数：将YouTube/Bilibili主页链接转换为RSS feed
+function convertUrlToRss(originalUrl, type) {
+    if (!originalUrl || originalUrl.trim() === '') return originalUrl;
+    
+    const url = originalUrl.trim();
+    
+    // 如果已经是RSS feed格式，直接返回
+    if (url.includes('feeds/videos.xml') || url.includes('rsshub.app')) {
+        return url;
+    }
+    
+    if (type === 'youtube') {
+        // YouTube频道主页链接转换
+        // 格式1: https://www.youtube.com/@username (最常用)
+        const atMatch = url.match(/youtube\.com\/@([^\/\?&#]+)/);
+        if (atMatch) {
+            const username = atMatch[1];
+            // 使用RSSHub转换为RSS feed (RSSHub支持@username格式)
+            return `https://rsshub.app/youtube/channel/${username}`;
+        }
+        
+        // 格式2: https://www.youtube.com/channel/CHANNEL_ID
+        const channelMatch = url.match(/youtube\.com\/channel\/([^\/\?&#]+)/);
+        if (channelMatch) {
+            const channelId = channelMatch[1];
+            return `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
+        }
+        
+        // 格式3: https://www.youtube.com/c/username 或 /user/username
+        const userMatch = url.match(/youtube\.com\/(?:c|user)\/([^\/\?&#]+)/);
+        if (userMatch) {
+            const username = userMatch[1];
+            return `https://rsshub.app/youtube/channel/${username}`;
+        }
+    } else if (type === 'bilibili') {
+        // Bilibili用户主页链接转换
+        // 格式1: https://space.bilibili.com/UID
+        const spaceMatch = url.match(/space\.bilibili\.com\/(\d+)/);
+        if (spaceMatch) {
+            const uid = spaceMatch[1];
+            return `https://rsshub.app/bilibili/user/video/${uid}`;
+        }
+        
+        // 格式2: https://www.bilibili.com/video/BV号 (单个视频，保持原链接)
+        const videoMatch = url.match(/bilibili\.com\/video\/(BV\w+)/);
+        if (videoMatch) {
+            return url;
+        }
+    }
+    
+    // 无法转换，返回原链接
+    return url;
 }
 
 // 1. 初始化 "Notion" 表格
@@ -74,6 +141,28 @@ const table = new Tabulator("#admin-table", {
         }
     ],
     // 2. 数据变化时自动保存到 LocalStorage
+    cellEdited: function(cell) {
+        // 如果编辑的是URL或类型，自动转换URL
+        const field = cell.getField();
+        if (field === 'url' || field === 'type') {
+            const row = cell.getRow();
+            const rowData = row.getData();
+            if (field === 'type' && rowData.url) {
+                // 类型改变时，重新转换URL
+                const convertedUrl = convertUrlToRss(rowData.url, rowData.type);
+                if (convertedUrl !== rowData.url) {
+                    row.update({ url: convertedUrl });
+                }
+            } else if (field === 'url' && rowData.type) {
+                // URL改变时，根据类型转换
+                const convertedUrl = convertUrlToRss(rowData.url, rowData.type);
+                if (convertedUrl !== rowData.url) {
+                    row.update({ url: convertedUrl });
+                }
+            }
+        }
+        saveData(table.getData());
+    },
     dataChanged: function(data) {
         saveData(data);
     },
@@ -93,12 +182,15 @@ function saveData(data) {
 
 // 4. "添加新行" 按钮
 document.getElementById("add-row-btn").addEventListener("click", function() {
-    table.addRow({
-        id: Math.floor(Math.random() * 10000), // 随机ID
+    const newRow = {
+        id: getNextId(), // 使用递增ID
         name: "新链接", 
         type: "youtube", 
+        url: "",
         tags: "新"
-    }, true); // 添加到表格顶部
+    };
+    table.addRow(newRow, true); // 添加到表格顶部
+    saveData(table.getData()); // 立即保存
 });
 
 // 5. "备份数据" 按钮
