@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>数据管理中心 (Notion-Style)</title>
+    <link href="https://unpkg.com/tabulator-tables@5.6.1/dist/css/tabulator_modern.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 管理后台的特定样式 */
+        #admin-table {
+            width: 100%;
+            height: 600px; /* 给表格一个固定高度 */
+            background-color: #2c2c2c;
+            border: 1px solid #555;
+        }
+        .tabulator .tabulator-header { background-color: #333; }
+        .tabulator .tabulator-row { background-color: #2c2c2c; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>⚙️ 数据管理中心</h1>
+        <p>在此处添加、编辑、分类您的 Superlinks。数据会自动保存到您的浏览器。</p>
+        <nav>
+            <a href="index.html" target="_blank">🏠 返回门户</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="admin-controls">
+            <button id="add-row-btn" class="refresh-btn">✚ 添加新链接</button>
+            <button id="download-json-btn" class="refresh-btn">💾 备份数据 (JSON)</button>
+        </div>
+        
+        <div id="admin-table"></div>
+    </main>
+
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.6.1/dist/js/tabulator.min.js"></script>
+    <script src="admin_script.js"></script>
+</body>
+</html>

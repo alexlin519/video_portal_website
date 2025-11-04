@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>我的灵感门户</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>我的灵感门户</h1>
+        <p>您专属的内容推荐引擎</p>
+        <nav>
+            <a href="admin.html" target="_blank">⚙️ 管理数据</a>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>🌟 每日速览 (完全随机)</h2>
+            <button class="refresh-btn" onclick="renderSection('global-random-pool', 'all', 5, true)">
+                刷新速览
+            </button>
+            <div id="global-random-pool" class="video-grid"></div>
+        </section>
+
+        <section>
+            <h2>📺 YouTube</h2>
+            <button class="refresh-btn" onclick="renderSection('youtube-section', 'youtube', 4, true)">
+                刷新 YouTube
+            </button>
+            <div id="youtube-section" class="video-grid"></div>
+        </section>
+
+        <section>
+            <h2>🔷 Bilibili</h2>
+            <button class="refresh-btn" onclick="renderSection('bilibili-section', 'bilibili', 4, true)">
+                刷新 Bilibili
+            </button>
+            <div id="bilibili-section" class="video-grid"></div>
+        </section>
+
+        <section>
+            <h2>📸 Instagram</h2>
+            <button class="refresh-btn" onclick="renderSection('instagram-section', 'instagram', 4, true)">
+                刷新 Instagram
+            </button>
+            <div id="instagram-section" class="video-grid"></div>
+        </section>
+
+        <section>
+            <h2>📚 我的合集 (手动)</h2>
+            <button class="refresh-btn" onclick="renderSection('collection-section', 'collection', 4, true)">
+                刷新合集
+            </button>
+            <div id="collection-section" class="video-grid"></div>
+        </section>
+
+    </main>
+
+    <script src="main.js"></script>
+    <script>
+        // 页面加载时，自动初始化所有区块
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSection('global-random-pool', 'all', 5); 
+            renderSection('youtube-section', 'youtube', 4);
+            renderSection('bilibili-section', 'bilibili', 4);
+            renderSection('instagram-section', 'instagram', 4);
+            renderSection('collection-section', 'collection', 4);
+        });
+    </script>
+</body>
+</html>
