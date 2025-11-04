@@ -1,12 +1,31 @@
 // main.js
 
 const RSS_TO_JSON_API = "https://api.rss2json.com/v1/api.json?rss_url=";
-const STORAGE_KEY = 'mySuperlinksData';
+const DATA_FILE = 'data.json'; // 静态数据文件
 
-// 从 LocalStorage 加载数据
-function getMyFollowList() {
-    const dataString = localStorage.getItem(STORAGE_KEY);
-    return dataString ? JSON.parse(dataString) : [];
+// 从 JSON 文件加载数据
+let cachedData = null; // 缓存数据，避免重复加载
+
+async function getMyFollowList() {
+    // 如果已有缓存，直接返回
+    if (cachedData !== null) {
+        return cachedData;
+    }
+    
+    try {
+        const response = await fetch(DATA_FILE);
+        if (!response.ok) {
+            console.error('加载数据文件失败:', response.statusText);
+            return [];
+        }
+        const data = await response.json();
+        cachedData = data;
+        console.log('✅ 成功加载数据，共', data.length, '条记录');
+        return data;
+    } catch (error) {
+        console.error('❌ 加载数据文件时出错:', error);
+        return [];
+    }
 }
 
 /**
@@ -85,9 +104,9 @@ async function renderSection(containerId, type, count, isRefresh = false) {
     const grid = document.getElementById(containerId);
     grid.innerHTML = `<h3 class="loading-msg">加载中...</h3>`;
 
-    const myFollowList = getMyFollowList();
+    const myFollowList = await getMyFollowList(); // 等待数据加载完成
     if (myFollowList.length === 0) {
-        grid.innerHTML = `<h3 class="loading-msg">您的管理后台还没有数据，请先 <a href="admin.html">添加</a>。</h3>`;
+        grid.innerHTML = `<h3 class="loading-msg">数据文件为空或加载失败，请检查 data.json 文件。</h3>`;
         return;
     }
 

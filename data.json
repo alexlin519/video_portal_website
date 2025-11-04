@@ -1,0 +1,25 @@
+[
+  {
+    "id": 1,
+    "name": "YouTube 示例 - @rusiru87time",
+    "type": "youtube",
+    "url": "https://rsshub.app/youtube/channel/rusiru87time",
+    "tags": "示例, YouTube"
+  },
+  {
+    "id": 2,
+    "name": "Bilibili 示例 - UID 3632310553413638",
+    "type": "bilibili",
+    "url": "https://rsshub.app/bilibili/user/video/3632310553413638",
+    "tags": "示例, B站"
+  },
+  {
+    "id": 3,
+    "name": "手动合集示例",
+    "type": "collection",
+    "url": "https://www.bilibili.com/video/BV1jZ4y1g7Gk/",
+    "thumbnail": "https://i0.hdslb.com/bfs/archive/c616f2de6f3f01b17a02e604ef7d04f479d4b684.png@672w_378h_1c_!web-search-common-feed.avif",
+    "tags": "合集, 学习"
+  }
+]
+
