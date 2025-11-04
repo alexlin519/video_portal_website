@@ -6,17 +6,17 @@ const STORAGE_KEY = 'mySuperlinksData';
 const defaultData = [
     {
         id: 1, 
-        name: "YouTube 官方频道", 
+        name: "YouTube 示例 - @rusiru87time", 
         type: "youtube", 
-        url: "https://www.youtube.com/feeds/videos.xml?channel_id=UCBR8-60-B28hp2GkUhE8RYQ", 
-        tags: "官方, 科技"
+        url: "https://www.youtube.com/@rusiru87time", 
+        tags: "示例, YouTube"
     },
     {
         id: 2, 
-        name: "RSSHub 官方", 
+        name: "Bilibili 示例 - UID 3632310553413638", 
         type: "bilibili", 
-        url: "https://rsshub.app/bilibili/user/video/208226022", 
-        tags: "B站, 开源"
+        url: "https://space.bilibili.com/3632310553413638", 
+        tags: "示例, B站"
     },
     {
         id: 3, 
