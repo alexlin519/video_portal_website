@@ -6,13 +6,13 @@ const DATA_FILE = 'data.json';
 // CONFIGURATION - Easy to edit variables
 // ============================================
 // Maximum number of items to show for categories (first level)
-const MAX_ITEMS_CATEGORY = 1;
+const MAX_ITEMS_CATEGORY = 2;
 
 // Maximum number of items to show for classes/subcategories (second level)
-const MAX_ITEMS_CLASS =1;
+const MAX_ITEMS_CLASS =2;
 
 // Maximum number of items for Daily Random category
-const MAX_ITEMS_DAILY_RANDOM = 1;
+const MAX_ITEMS_DAILY_RANDOM = 2;
 // ============================================
 
 // State management
@@ -272,6 +272,16 @@ async function selectCategory(categoryId) {
     currentSubcategoryId = null;
     showAllSubcategory = false; // Reset subcategory show all
     
+    // Get checkbox state BEFORE selecting items
+    const checkbox = document.getElementById('show-all-checkbox');
+    if (checkbox) {
+        showAllCategory = checkbox.checked;
+        console.log(`[Category] Checkbox state read: ${showAllCategory}`);
+    } else {
+        showAllCategory = false; // Default to false if checkbox doesn't exist
+        console.log(`[Category] Checkbox not found, defaulting to false`);
+    }
+    
     const data = await getData();
     if (!data || !data.categories) return;
 
@@ -294,10 +304,22 @@ async function selectCategory(categoryId) {
         items = shuffleArray(items);
         
         // Apply maxItems limit if not showing all
-        if (!showAllCategory && items.length > 0) {
-            const maxItems = category.maxItems || MAX_ITEMS_CATEGORY;
+        // Always use the constant, ignore category.maxItems from data.json
+        const maxItems = MAX_ITEMS_CATEGORY;
+        
+        if (showAllCategory) {
+            console.log(`[Category] Showing all ${items.length} items (showAllCategory is true)`);
+        } else if (items.length > 0) {
+            console.log(`[Category] showAllCategory: ${showAllCategory}, items.length: ${items.length}, maxItems: ${maxItems}`);
+            // ALWAYS limit to maxItems when showAll is false, even if items.length <= maxItems
+            // This ensures we show exactly maxItems (e.g., 1) when limit is set
             if (items.length > maxItems) {
                 items = items.slice(0, maxItems);
+                console.log(`[Category] Limited to ${maxItems} items, now showing ${items.length}`);
+            } else {
+                // Still show only maxItems even if we have fewer
+                items = items.slice(0, maxItems);
+                console.log(`[Category] Showing ${items.length} items (limit is ${maxItems}, had ${items.length} available)`);
             }
         }
     }
@@ -317,6 +339,16 @@ async function selectSubcategory(categoryId, subcategoryId) {
     currentCategoryId = categoryId;
     currentSubcategoryId = subcategoryId;
     showAllCategory = false; // Reset category show all
+    
+    // Get checkbox state BEFORE selecting items
+    const checkbox = document.getElementById('show-all-checkbox');
+    if (checkbox) {
+        showAllSubcategory = checkbox.checked;
+        console.log(`[Subcategory] Checkbox state read: ${showAllSubcategory}`);
+    } else {
+        showAllSubcategory = false; // Default to false if checkbox doesn't exist
+        console.log(`[Subcategory] Checkbox not found, defaulting to false`);
+    }
     
     const data = await getData();
     if (!data || !data.categories) return;
@@ -339,10 +371,22 @@ async function selectSubcategory(categoryId, subcategoryId) {
     items = shuffleArray(items);
     
     // Apply maxItems limit if not showing all
-    if (!showAllSubcategory && items.length > 0) {
-        const maxItems = subcategory.maxItems || MAX_ITEMS_CLASS;
+    // Always use the constant, ignore subcategory.maxItems from data.json
+    const maxItems = MAX_ITEMS_CLASS;
+    
+    if (showAllSubcategory) {
+        console.log(`[Subcategory] Showing all ${items.length} items (showAllSubcategory is true)`);
+    } else if (items.length > 0) {
+        console.log(`[Subcategory] showAllSubcategory: ${showAllSubcategory}, items.length: ${items.length}, maxItems: ${maxItems}`);
+        // ALWAYS limit to maxItems when showAll is false, even if items.length <= maxItems
+        // This ensures we show exactly maxItems (e.g., 1) when limit is set
         if (items.length > maxItems) {
             items = items.slice(0, maxItems);
+            console.log(`[Subcategory] Limited to ${maxItems} items, now showing ${items.length}`);
+        } else {
+            // Still show only maxItems even if we have fewer
+            items = items.slice(0, maxItems);
+            console.log(`[Subcategory] Showing ${items.length} items (limit is ${maxItems}, had ${items.length} available)`);
         }
     }
 
@@ -568,11 +612,13 @@ function updateShowAllButton() {
             if (category && !category.isRandom) {
                 showAllCheckbox.style.display = 'inline-block';
                 showAllLabel.style.display = 'inline-block';
+                // Sync checkbox with current state (don't change it, just update display)
                 if (currentSubcategoryId) {
                     showAllCheckbox.checked = showAllSubcategory;
                 } else {
                     showAllCheckbox.checked = showAllCategory;
                 }
+                console.log(`[updateShowAllButton] Checkbox synced: ${showAllCheckbox.checked} (subcategory: ${currentSubcategoryId ? showAllSubcategory : 'N/A'}, category: ${currentSubcategoryId ? 'N/A' : showAllCategory})`);
             } else {
                 showAllCheckbox.style.display = 'none';
                 showAllLabel.style.display = 'none';
@@ -606,12 +652,13 @@ function refreshCurrentCategory() {
     showAllCategory = false;
     showAllSubcategory = false;
     
-    // Update checkbox state
+    // Update checkbox state FIRST
     const checkbox = document.getElementById('show-all-checkbox');
     if (checkbox) {
         checkbox.checked = false;
     }
     
+    // Then refresh the view
     if (currentSubcategoryId) {
         selectSubcategory(currentCategoryId, currentSubcategoryId);
     } else if (currentCategoryId) {
