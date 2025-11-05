@@ -26,6 +26,7 @@ let showAllSubcategory = false; // Show all items for current subcategory
 
 // Favorites management (using localStorage)
 const FAVORITES_KEY = 'video_portal_favorites';
+const PINS_KEY = 'video_portal_pins';
 
 function getFavorites() {
     try {
@@ -61,6 +62,43 @@ function toggleFavorite(itemId) {
 
 function isFavorite(itemId) {
     return getFavorites().includes(itemId);
+}
+
+// Pins management (using localStorage)
+function getPins() {
+    try {
+        const pins = localStorage.getItem(PINS_KEY);
+        return pins ? JSON.parse(pins) : [];
+    } catch (e) {
+        console.error('Error loading pins:', e);
+        return [];
+    }
+}
+
+function savePins(pins) {
+    try {
+        localStorage.setItem(PINS_KEY, JSON.stringify(pins));
+    } catch (e) {
+        console.error('Error saving pins:', e);
+    }
+}
+
+function togglePin(itemId) {
+    const pins = getPins();
+    const index = pins.indexOf(itemId);
+    if (index > -1) {
+        pins.splice(index, 1);
+        savePins(pins);
+        return false; // Unpinned
+    } else {
+        pins.push(itemId);
+        savePins(pins);
+        return true; // Pinned
+    }
+}
+
+function isItemPinned(itemId) {
+    return getPins().includes(itemId);
 }
 
 // Load data from JSON file
@@ -297,37 +335,13 @@ async function selectCategory(categoryId) {
     const data = await getData();
     if (!data || !data.categories) return;
 
-    const category = data.categories.find(cat => cat.id === categoryId);
-    if (!category) return;
-
-    let items = [];
-    
-    // Handle Daily Random category
-    if (category.isRandom) {
-        const allItems = collectAllItems(data);
-        // Always use the constant, ignore category.maxItems from data.json
-        const maxItems = MAX_ITEMS_DAILY_RANDOM;
-        
-        // Always randomize order
-        const shuffled = shuffleArray(allItems);
-        
-        // Apply maxItems limit if not showing all
-        if (showAllCategory) {
-            items = shuffled;
-            console.log(`[Daily Random] Showing all ${items.length} items (showAllCategory is true)`);
-        } else if (allItems.length > 0) {
-            items = shuffled.slice(0, Math.min(maxItems, shuffled.length));
-            console.log(`[Daily Random] Showing ${items.length} items (maxItems: ${maxItems}, total available: ${allItems.length})`);
-        } else {
-            items = [];
-        }
-    } else if (categoryId === 'favorites') {
-        // Handle Favorites category
+    // Handle favorites category (not in data.json)
+    if (categoryId === 'favorites') {
         const favorites = getFavorites();
         const allItems = collectAllItems(data);
         
         // Filter items that are in favorites
-        items = allItems.filter(item => favorites.includes(item.id));
+        let items = allItems.filter(item => favorites.includes(item.id));
         
         // Always randomize order
         items = shuffleArray(items);
@@ -346,12 +360,81 @@ async function selectCategory(categoryId) {
                 console.log(`[Favorites] Showing ${items.length} items (limit is ${maxItems}, had ${items.length} available)`);
             }
         }
+        
+        // Render items
+        renderContent(items, '收藏', '⭐');
+        
+        // Update UI
+        renderSidebar();
+        updateContentHeader('收藏', '⭐');
+        document.getElementById('refresh-btn').style.display = 'inline-block';
+        updateShowAllButton();
+        return;
+    }
+
+    const category = data.categories.find(cat => cat.id === categoryId);
+    if (!category) return;
+
+    let items = [];
+    
+    // Handle Daily Random category
+    if (category.isRandom) {
+        const allItems = collectAllItems(data);
+        // Always use the constant, ignore category.maxItems from data.json
+        const maxItems = MAX_ITEMS_DAILY_RANDOM;
+        
+        // Separate pinned and unpinned items (from localStorage only for Daily Random)
+        const pins = getPins();
+        const pinned = [];
+        const unpinned = [];
+        
+        allItems.forEach(item => {
+            // Check localStorage pinned
+            const isPinnedFromStorage = pins.includes(item.id);
+            
+            if (isPinnedFromStorage) {
+                pinned.push({...item, pinned: true}); // Mark as pinned
+            } else {
+                unpinned.push(item);
+            }
+        });
+        
+        // Randomize unpinned items
+        const shuffledUnpinned = shuffleArray(unpinned);
+        
+        // Apply maxItems limit to unpinned items if not showing all
+        let limitedUnpinned = [];
+        
+        if (showAllCategory) {
+            limitedUnpinned = shuffledUnpinned;
+            console.log(`[Daily Random] Showing all items (${pinned.length} pinned, ${shuffledUnpinned.length} unpinned)`);
+        } else if (unpinned.length > 0) {
+            limitedUnpinned = shuffledUnpinned.slice(0, Math.min(maxItems, shuffledUnpinned.length));
+            console.log(`[Daily Random] Showing ${pinned.length} pinned + ${limitedUnpinned.length} unpinned items (maxItems: ${maxItems}, total available: ${allItems.length})`);
+        }
+        
+        // Combine: pinned items first, then unpinned
+        items = [...pinned, ...limitedUnpinned];
     } else {
         // Regular category - get direct items
         items = category.items || [];
         
-        // Separate pinned and unpinned items
-        const { pinned, unpinned } = getItemsWithPinning(items);
+        // Separate pinned and unpinned items (from both data.json and localStorage)
+        const pins = getPins();
+        const pinned = [];
+        const unpinned = [];
+        
+        items.forEach(item => {
+            // Check both data.json pinned and localStorage pinned
+            const isPinnedFromData = item.pinned === true;
+            const isPinnedFromStorage = pins.includes(item.id);
+            
+            if (isPinnedFromData || isPinnedFromStorage) {
+                pinned.push({...item, pinned: true}); // Mark as pinned
+            } else {
+                unpinned.push(item);
+            }
+        });
         
         // Randomize unpinned items
         const shuffledUnpinned = shuffleArray(unpinned);
@@ -420,8 +503,22 @@ async function selectSubcategory(categoryId, subcategoryId) {
     // Get items
     let items = subcategory.items || [];
     
-    // Separate pinned and unpinned items
-    const { pinned, unpinned } = getItemsWithPinning(items);
+    // Separate pinned and unpinned items (from both data.json and localStorage)
+    const pins = getPins();
+    const pinned = [];
+    const unpinned = [];
+    
+    items.forEach(item => {
+        // Check both data.json pinned and localStorage pinned
+        const isPinnedFromData = item.pinned === true;
+        const isPinnedFromStorage = pins.includes(item.id);
+        
+        if (isPinnedFromData || isPinnedFromStorage) {
+            pinned.push({...item, pinned: true}); // Mark as pinned
+        } else {
+            unpinned.push(item);
+        }
+    });
     
     // Randomize unpinned items
     const shuffledUnpinned = shuffleArray(unpinned);
@@ -475,7 +572,10 @@ function renderContent(items, title, icon) {
         const buttonText = item.text || item.name || '未命名';
         const videoUrl = item.url || '#';
         const itemId = item.id;
-        const isPinned = item.pinned === true;
+        // Check both data.json pinned and localStorage pinned
+        const isPinnedFromData = item.pinned === true;
+        const isPinnedFromStorage = isItemPinned(itemId);
+        const isPinned = isPinnedFromData || isPinnedFromStorage;
         const isFav = isFavorite(itemId);
         
         html += `
@@ -484,7 +584,10 @@ function renderContent(items, title, icon) {
                     ${isPinned ? '<span class="pin-icon" title="Pinned">📌</span>' : ''}
                     <span class="button-text">${escapeHtml(buttonText)}</span>
                 </a>
-                <button class="favorite-btn ${isFav ? 'active' : ''}" onclick="toggleFavoriteItem(${itemId}); event.stopPropagation();" title="${isFav ? 'Remove from favorites' : 'Add to favorites'}">
+                <button class="pin-btn ${isPinned ? 'active' : ''}" onclick="togglePinItem(${itemId}, event);" title="${isPinned ? 'Unpin' : 'Pin'}">
+                    ${isPinned ? '📌' : '📎'}
+                </button>
+                <button class="favorite-btn ${isFav ? 'active' : ''}" onclick="toggleFavoriteItem(${itemId}, event);" title="${isFav ? 'Remove from favorites' : 'Add to favorites'}">
                     ${isFav ? '⭐' : '☆'}
                 </button>
             </div>
@@ -496,22 +599,48 @@ function renderContent(items, title, icon) {
 }
 
 // Toggle favorite item
-function toggleFavoriteItem(itemId) {
+function toggleFavoriteItem(itemId, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    
     const wasAdded = toggleFavorite(itemId);
     
     // Update sidebar to reflect new favorite count
     renderSidebar();
     
-    // If we're on favorites page, refresh it
-    if (currentCategoryId === 'favorites') {
-        selectCategory('favorites');
-    } else {
-        // Otherwise, just refresh current view to update star icons
-        if (currentSubcategoryId) {
-            selectSubcategory(currentCategoryId, currentSubcategoryId);
-        } else if (currentCategoryId) {
-            selectCategory(currentCategoryId);
+    // Only refresh if removing from favorites (to update the favorites page)
+    // When adding, don't refresh to avoid randomizing the page
+    if (!wasAdded) {
+        // Was removed - refresh if on favorites page
+        if (currentCategoryId === 'favorites') {
+            selectCategory('favorites');
+            return;
         }
+    }
+    
+    // Just update the star icon without refreshing (to avoid randomizing)
+    const favoriteBtn = event ? event.target.closest('.favorite-btn') : null;
+    if (favoriteBtn) {
+        favoriteBtn.textContent = wasAdded ? '⭐' : '☆';
+        favoriteBtn.classList.toggle('active', wasAdded);
+        favoriteBtn.title = wasAdded ? 'Remove from favorites' : 'Add to favorites';
+    }
+}
+
+// Toggle pin item
+function togglePinItem(itemId, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    
+    const wasPinned = togglePin(itemId);
+    
+    // Refresh current view to update pin status and reorder items
+    if (currentSubcategoryId) {
+        selectSubcategory(currentCategoryId, currentSubcategoryId);
+    } else if (currentCategoryId) {
+        selectCategory(currentCategoryId);
     }
 }
 
