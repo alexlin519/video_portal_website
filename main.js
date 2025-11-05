@@ -12,20 +12,26 @@ const MAX_ITEMS_CATEGORY = 4;
 const MAX_ITEMS_CLASS =3;
 
 // Maximum number of items for Daily Random category
-const MAX_ITEMS_DAILY_RANDOM = 5;
+const MAX_ITEMS_DAILY_RANDOM =10;
 
 // Maximum number of items for Favorites category
 const MAX_ITEMS_FAVORITES = 4;
+
+// Maximum number of items for Subclasses (third level)
+const MAX_ITEMS_SUBCLASS = 3;
 // ============================================
 
 // State management
 let cachedData = null;
 let currentCategoryId = null;
 let currentSubcategoryId = null;
+let currentSubclassId = null;
 let expandedCategories = new Set();
 let expandedSubcategories = new Set();
+let expandedSubclasses = new Set();
 let showAllCategory = false; // Show all items for current category
 let showAllSubcategory = false; // Show all items for current subcategory
+let showAllSubclass = false; // Show all items for current subclass
 
 // Favorites management (using localStorage)
 const FAVORITES_KEY = 'video_portal_favorites';
@@ -164,7 +170,27 @@ function countItems(category, data) {
 
 // Count items in a subcategory
 function countSubcategoryItems(subcategory) {
-    return subcategory.items ? subcategory.items.length : 0;
+    let count = 0;
+    // Count items directly in subcategory
+    if (subcategory.items) {
+        count += subcategory.items.length;
+    }
+    // Count items in subclasses
+    if (subcategory.subclasses) {
+        subcategory.subclasses.forEach(subclass => {
+            if (subclass.items) {
+                count += subclass.items.length;
+            }
+        });
+    }
+    return count;
+}
+
+function countSubclassItems(subclass) {
+    if (subclass.items) {
+        return subclass.items.length;
+    }
+    return 0;
 }
 
 // Render sidebar with categories
@@ -229,15 +255,44 @@ async function renderSidebar() {
             
             category.subcategories.forEach(subcategory => {
                 const subCount = countSubcategoryItems(subcategory);
-                const isSubActive = currentSubcategoryId === subcategory.id;
+                const hasSubclasses = subcategory.subclasses && subcategory.subclasses.length > 0;
+                const subcategoryKey = `${category.id}-${subcategory.id}`;
+                const isSubExpanded = expandedSubcategories.has(subcategoryKey);
+                const isSubActive = currentSubcategoryId === subcategory.id && !currentSubclassId;
                 
                 html += `
                     <div class="subcategory" data-subcategory-id="${subcategory.id}">
                         <div class="subcategory-header ${isSubActive ? 'active' : ''}" 
                              onclick="selectSubcategory('${category.id}', '${subcategory.id}')">
-                            <span class="subcategory-name">${escapeHtml(subcategory.name)}</span>
+                            <div class="subcategory-header-content">
+                                ${hasSubclasses ? `
+                                    <span class="subcategory-toggle ${isSubExpanded ? 'expanded' : ''}" 
+                                          onclick="event.stopPropagation(); toggleSubcategory('${category.id}', '${subcategory.id}')">
+                                        ▶
+                                    </span>
+                                ` : ''}
+                                <span class="subcategory-name">${escapeHtml(subcategory.name)}</span>
+                            </div>
                             <span class="subcategory-count">${subCount}</span>
                         </div>
+                        
+                        ${hasSubclasses ? `
+                            <div class="subclasses ${isSubExpanded ? 'expanded' : 'collapsed'}">
+                                ${subcategory.subclasses.map(subclass => {
+                                    const subclassCount = countSubclassItems(subclass);
+                                    const isSubclassActive = currentSubclassId === subclass.id;
+                                    return `
+                                        <div class="subclass" data-subclass-id="${subclass.id}">
+                                            <div class="subclass-header ${isSubclassActive ? 'active' : ''}" 
+                                                 onclick="selectSubclass('${category.id}', '${subcategory.id}', '${subclass.id}')">
+                                                <span class="subclass-name">${escapeHtml(subclass.name)}</span>
+                                                <span class="subclass-count">${subclassCount}</span>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        ` : ''}
                     </div>
                 `;
             });
@@ -261,6 +316,17 @@ function toggleCategory(categoryId) {
     renderSidebar();
 }
 
+// Toggle subcategory expansion
+function toggleSubcategory(categoryId, subcategoryId) {
+    const key = `${categoryId}-${subcategoryId}`;
+    if (expandedSubcategories.has(key)) {
+        expandedSubcategories.delete(key);
+    } else {
+        expandedSubcategories.add(key);
+    }
+    renderSidebar();
+}
+
 // Collect all items from all categories (for Daily Random)
 function collectAllItems(data) {
     const allItems = [];
@@ -279,9 +345,21 @@ function collectAllItems(data) {
         // Add items from subcategories
         if (category.subcategories) {
             category.subcategories.forEach(sub => {
+                // Add items directly in subcategory
                 if (sub.items) {
                     sub.items.forEach(item => {
                         allItems.push({...item, source: `${category.name} - ${sub.name}`});
+                    });
+                }
+                
+                // Add items from subclasses
+                if (sub.subclasses) {
+                    sub.subclasses.forEach(subclass => {
+                        if (subclass.items) {
+                            subclass.items.forEach(item => {
+                                allItems.push({...item, source: `${category.name} - ${sub.name} - ${subclass.name}`});
+                            });
+                        }
                     });
                 }
             });
@@ -323,7 +401,9 @@ function shuffleArray(array) {
 async function selectCategory(categoryId) {
     currentCategoryId = categoryId;
     currentSubcategoryId = null;
+    currentSubclassId = null; // Reset subclass selection
     showAllSubcategory = false; // Reset subcategory show all
+    showAllSubclass = false; // Reset subclass show all
     
     // Get checkbox state BEFORE selecting items
     const checkbox = document.getElementById('show-all-checkbox');
@@ -477,7 +557,9 @@ async function selectCategory(categoryId) {
 async function selectSubcategory(categoryId, subcategoryId) {
     currentCategoryId = categoryId;
     currentSubcategoryId = subcategoryId;
+    currentSubclassId = null; // Reset subclass selection
     showAllCategory = false; // Reset category show all
+    showAllSubclass = false; // Reset subclass show all
     
     // Get checkbox state BEFORE selecting items
     const checkbox = document.getElementById('show-all-checkbox');
@@ -503,10 +585,20 @@ async function selectSubcategory(categoryId, subcategoryId) {
         expandedCategories.add(categoryId);
     }
 
-    // Get items
+    // Get items from subcategory directly
     let items = subcategory.items || [];
     
+    // Also collect items from all subclasses within this subcategory
+    if (subcategory.subclasses) {
+        subcategory.subclasses.forEach(subclass => {
+            if (subclass.items) {
+                items = items.concat(subclass.items);
+            }
+        });
+    }
+    
     // Separate pinned and unpinned items (from both data.json and localStorage)
+    // This handles pinned items from both subcategory items and subclass items
     const pins = getPins();
     const pinned = [];
     const unpinned = [];
@@ -552,6 +644,98 @@ async function selectSubcategory(categoryId, subcategoryId) {
     // Update UI
     renderSidebar();
     updateContentHeader(subcategory.name, category.icon);
+    document.getElementById('refresh-btn').style.display = 'inline-block';
+    updateShowAllButton();
+}
+
+// Select a subclass
+async function selectSubclass(categoryId, subcategoryId, subclassId) {
+    currentCategoryId = categoryId;
+    currentSubcategoryId = subcategoryId;
+    currentSubclassId = subclassId;
+    showAllCategory = false; // Reset category show all
+    showAllSubcategory = false; // Reset subcategory show all
+    
+    // Get checkbox state BEFORE selecting items
+    const checkbox = document.getElementById('show-all-checkbox');
+    if (checkbox) {
+        showAllSubclass = checkbox.checked;
+        console.log(`[Subclass] Checkbox state read: ${showAllSubclass}`);
+    } else {
+        showAllSubclass = false; // Default to false if checkbox doesn't exist
+        console.log(`[Subclass] Checkbox not found, defaulting to false`);
+    }
+    
+    const data = await getData();
+    if (!data || !data.categories) return;
+
+    const category = data.categories.find(cat => cat.id === categoryId);
+    if (!category || !category.subcategories) return;
+
+    const subcategory = category.subcategories.find(sub => sub.id === subcategoryId);
+    if (!subcategory || !subcategory.subclasses) return;
+
+    const subclass = subcategory.subclasses.find(sub => sub.id === subclassId);
+    if (!subclass) return;
+
+    // Expand parent category and subcategory if collapsed
+    if (!expandedCategories.has(categoryId)) {
+        expandedCategories.add(categoryId);
+    }
+    const subcategoryKey = `${categoryId}-${subcategoryId}`;
+    if (!expandedSubcategories.has(subcategoryKey)) {
+        expandedSubcategories.add(subcategoryKey);
+    }
+
+    // Get items
+    let items = subclass.items || [];
+    
+    // Separate pinned and unpinned items (from both data.json and localStorage)
+    const pins = getPins();
+    const pinned = [];
+    const unpinned = [];
+    
+    items.forEach(item => {
+        // Check both data.json pinned and localStorage pinned
+        const isPinnedFromData = item.pinned === true;
+        const isPinnedFromStorage = pins.includes(item.id);
+        
+        if (isPinnedFromData || isPinnedFromStorage) {
+            pinned.push({...item, pinned: true}); // Mark as pinned
+        } else {
+            unpinned.push(item);
+        }
+    });
+    
+    // Randomize unpinned items
+    const shuffledUnpinned = shuffleArray(unpinned);
+    
+    // Apply maxItems limit to unpinned items if not showing all
+    const maxItems = MAX_ITEMS_SUBCLASS;
+    let limitedUnpinned = [];
+    
+    if (showAllSubclass) {
+        limitedUnpinned = shuffledUnpinned;
+        console.log(`[Subclass] Showing all ${items.length} items (${pinned.length} pinned, ${shuffledUnpinned.length} unpinned)`);
+    } else if (unpinned.length > 0) {
+        if (unpinned.length > maxItems) {
+            limitedUnpinned = shuffledUnpinned.slice(0, maxItems);
+            console.log(`[Subclass] Limited unpinned to ${maxItems} items, now showing ${pinned.length} pinned + ${limitedUnpinned.length} unpinned`);
+    } else {
+            limitedUnpinned = shuffledUnpinned.slice(0, maxItems);
+            console.log(`[Subclass] Showing ${pinned.length} pinned + ${limitedUnpinned.length} unpinned items`);
+        }
+    }
+    
+    // Combine: pinned items first, then unpinned
+    items = [...pinned, ...limitedUnpinned];
+
+    // Render items
+    renderContent(items, subclass.name, category.icon);
+
+    // Update UI
+    renderSidebar();
+    updateContentHeader(subclass.name, category.icon);
     document.getElementById('refresh-btn').style.display = 'inline-block';
     updateShowAllButton();
 }
@@ -622,7 +806,7 @@ function toggleFavoriteItem(itemId, event) {
         // Was removed - refresh if on favorites page
         if (currentCategoryId === 'favorites') {
             selectCategory('favorites');
-            return;
+        return;
         }
     }
     
@@ -671,13 +855,15 @@ function updateShowAllButton() {
                 showAllCheckbox.style.display = 'inline-block';
                 showAllLabel.style.display = 'inline-block';
                 // Sync checkbox with current state (don't change it, just update display)
-                if (currentSubcategoryId) {
+                if (currentSubclassId) {
+                    showAllCheckbox.checked = showAllSubclass;
+                } else if (currentSubcategoryId) {
                     showAllCheckbox.checked = showAllSubcategory;
                 } else {
                     showAllCheckbox.checked = showAllCategory;
                 }
-                console.log(`[updateShowAllButton] Checkbox synced: ${showAllCheckbox.checked} (subcategory: ${currentSubcategoryId ? showAllSubcategory : 'N/A'}, category: ${currentSubcategoryId ? 'N/A' : showAllCategory})`);
-            } else {
+                console.log(`[updateShowAllButton] Checkbox synced: ${showAllCheckbox.checked} (subclass: ${currentSubclassId ? showAllSubclass : 'N/A'}, subcategory: ${currentSubcategoryId ? showAllSubcategory : 'N/A'}, category: ${currentSubcategoryId ? 'N/A' : showAllCategory})`);
+                        } else {
                 showAllCheckbox.style.display = 'none';
                 showAllLabel.style.display = 'none';
             }
@@ -685,21 +871,19 @@ function updateShowAllButton() {
     }
 }
 
-// Toggle show all for current category/subcategory
+// Toggle show all for current category/subcategory/subclass
 function toggleShowAll() {
     const checkbox = document.getElementById('show-all-checkbox');
     if (!checkbox) return;
     
-    if (currentSubcategoryId) {
+    if (currentSubclassId) {
+        showAllSubclass = checkbox.checked;
+        selectSubclass(currentCategoryId, currentSubcategoryId, currentSubclassId);
+    } else if (currentSubcategoryId) {
         showAllSubcategory = checkbox.checked;
-    } else {
-        showAllCategory = checkbox.checked;
-    }
-    
-    // Refresh current view
-    if (currentSubcategoryId) {
         selectSubcategory(currentCategoryId, currentSubcategoryId);
     } else if (currentCategoryId) {
+        showAllCategory = checkbox.checked;
         selectCategory(currentCategoryId);
     }
 }
@@ -710,7 +894,9 @@ function refreshCurrentCategory() {
     // The checkbox state should be preserved
     
     // Refresh the view (this will re-randomize items while keeping showAll state)
-    if (currentSubcategoryId) {
+    if (currentSubclassId) {
+        selectSubclass(currentCategoryId, currentSubcategoryId, currentSubclassId);
+    } else if (currentSubcategoryId) {
         selectSubcategory(currentCategoryId, currentSubcategoryId);
     } else if (currentCategoryId) {
         selectCategory(currentCategoryId);

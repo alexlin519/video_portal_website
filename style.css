@@ -183,6 +183,83 @@ body {
     padding-left: 8px;
 }
 
+.subcategory-header-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.subcategory-toggle {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    transition: transform 0.2s ease;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+}
+
+.subcategory-toggle.expanded {
+    transform: rotate(90deg);
+}
+
+/* Subclass Styles */
+.subclasses {
+    margin-left: 28px;
+    margin-top: 4px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.2s ease;
+}
+
+.subclasses.collapsed {
+    max-height: 0;
+    opacity: 0;
+}
+
+.subclasses.expanded {
+    max-height: 1000px;
+    opacity: 1;
+}
+
+.subclass {
+    padding: 4px 0;
+}
+
+.subclass-header {
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--text-color);
+}
+
+.subclass-header:hover {
+    background-color: var(--hover-color);
+}
+
+.subclass-header.active {
+    background-color: var(--selected-color);
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+.subclass-name {
+    font-size: 0.9rem;
+}
+
+.subclass-count {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-left: auto;
+    padding-left: 8px;
+}
+
 
 /* Main Content Styles */
 .main-content {

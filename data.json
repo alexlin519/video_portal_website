@@ -17,10 +17,88 @@
         {
           "id": "youtube-class1",
           "name": "class 1",
+          "subclasses": [
+            {
+              "id": "youtube-class1-subclass1",
+              "name": "subclass 1",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 100,
+                  "name": "YouTube Subclass 1 视频 1",
+                  "url": "https://www.youtube.com/watch?v=subclass1-1",
+                  "text": "Subclass 1 视频 1"
+                },
+                {
+                  "id": 101,
+                  "name": "YouTube Subclass 1 视频 2",
+                  "url": "https://www.youtube.com/watch?v=subclass1-2",
+                  "text": "Subclass 1 视频 2"
+                },
+                {
+                  "id": 102,
+                  "name": "YouTube Subclass 1 视频 3",
+                  "url": "https://www.youtube.com/watch?v=subclass1-3",
+                  "text": "Subclass 1 视频 3"
+                }
+              ]
+            },
+            {
+              "id": "youtube-class1-subclass2",
+              "name": "subclass 2",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 103,
+                  "name": "YouTube Subclass 2 视频 1",
+                  "url": "https://www.youtube.com/watch?v=subclass2-1",
+                  "text": "Subclass 2 视频 1"
+                },
+                {
+                  "id": 104,
+                  "name": "YouTube Subclass 2 视频 2",
+                  "url": "https://www.youtube.com/watch?v=subclass2-2",
+                  "text": "Subclass 2 视频 2"
+                }
+              ]
+            },
+            {
+              "id": "youtube-class1-subclass3",
+              "name": "subclass 3",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 105,
+                  "name": "YouTube Subclass 3 视频 1",
+                  "url": "https://www.youtube.com/watch?v=subclass3-1",
+                  "text": "Subclass 3 视频 1"
+                },
+                {
+                  "id": 106,
+                  "name": "YouTube Subclass 3 视频 2",
+                  "url": "https://www.youtube.com/watch?v=subclass3-2",
+                  "text": "Subclass 3 视频 2"
+                },
+                {
+                  "id": 107,
+                  "name": "YouTube Subclass 3 视频 3",
+                  "url": "https://www.youtube.com/watch?v=subclass3-3",
+                  "text": "Subclass 3 视频 3"
+                },
+                {
+                  "id": 108,
+                  "name": "YouTube Subclass 3 视频 4",
+                  "url": "https://www.youtube.com/watch?v=subclass3-4",
+                  "text": "Subclass 3 视频 4"
+                }
+              ]
+            }
+          ],
+
           "maxItems": 50,
           "items": [
-            {
-              "id": 1,
+  {
+    "id": 1,
               "name": "数学很棒的可视化",
               "url": "https://space.bilibili.com/88461692/lists/1528929?type=series",
               "text": "数学很棒数学很棒的可视的可视化"
@@ -43,6 +121,40 @@
           "id": "youtube-class2",
           "name": "class 2",
           "maxItems": 50,
+          "subclasses": [
+            {
+              "id": "youtube-class2-subclass1",
+              "name": "subclass A",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 109,
+                  "name": "YouTube Class 2 Subclass A 视频 1",
+                  "url": "https://www.youtube.com/watch?v=class2-subA-1",
+                  "text": "Class 2 Subclass A 视频 1"
+                },
+                {
+                  "id": 110,
+                  "name": "YouTube Class 2 Subclass A 视频 2",
+                  "url": "https://www.youtube.com/watch?v=class2-subA-2",
+                  "text": "Class 2 Subclass A 视频 2"
+                }
+              ]
+            },
+            {
+              "id": "youtube-class2-subclass2",
+              "name": "subclass B",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 111,
+                  "name": "YouTube Class 2 Subclass B 视频 1",
+                  "url": "https://www.youtube.com/watch?v=class2-subB-1",
+                  "text": "Class 2 Subclass B 视频 1"
+                }
+              ]
+            }
+          ],
           "items": [
             {
               "id": 7,
@@ -60,16 +172,16 @@
         }
       ],
       "items": [
-        {
-          "id": 2,
+  {
+    "id": 2,
           "name": "好玩",
           "url": "https://www.youtube.com/@BrickTechnology",
           "text": "好玩"
-        },
-        {
-          "id": 3,
-          "name": "YouTube 单个视频",
-          "url": "https://www.youtube.com/watch?v=w4-tObZnhSg",
+  },
+  {
+    "id": 3,
+    "name": "YouTube 单个视频",
+    "url": "https://www.youtube.com/watch?v=w4-tObZnhSg",
           "text": "YouTube 单个视频"
         },
         {
@@ -108,6 +220,52 @@
           "id": "bilibili-class1",
           "name": "class 1",
           "maxItems": 50,
+          "subclasses": [
+            {
+              "id": "bilibili-class1-subclass1",
+              "name": "subclass 1",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 112,
+                  "name": "Bilibili Subclass 1 视频 1",
+                  "url": "https://www.bilibili.com/video/BV1subclass1-1",
+                  "text": "Bilibili Subclass 1 视频 1"
+                },
+                {
+                  "id": 113,
+                  "name": "Bilibili Subclass 1 视频 2",
+                  "url": "https://www.bilibili.com/video/BV1subclass1-2",
+                  "text": "Bilibili Subclass 1 视频 2"
+                },
+                {
+                  "id": 114,
+                  "name": "Bilibili Subclass 1 视频 3",
+                  "url": "https://www.bilibili.com/video/BV1subclass1-3",
+                  "text": "Bilibili Subclass 1 视频 3"
+                }
+              ]
+            },
+            {
+              "id": "bilibili-class1-subclass2",
+              "name": "subclass 2",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 115,
+                  "name": "Bilibili Subclass 2 视频 1",
+                  "url": "https://www.bilibili.com/video/BV1subclass2-1",
+                  "text": "Bilibili Subclass 2 视频 1"
+                },
+                {
+                  "id": 116,
+                  "name": "Bilibili Subclass 2 视频 2",
+                  "url": "https://www.bilibili.com/video/BV1subclass2-2",
+                  "text": "Bilibili Subclass 2 视频 2"
+                }
+              ]
+            }
+          ],
           "items": [
             {
               "id": 1,
@@ -133,11 +291,44 @@
           "id": "bilibili-class2",
           "name": "class 2",
           "maxItems": 50,
-          "items": [
+          "subclasses": [
             {
-              "id": 4,
-              "name": "Bilibili 单个视频",
-              "url": "https://www.bilibili.com/video/BV1dY1kBfEqy/",
+              "id": "bilibili-class2-subclass1",
+              "name": "subclass 1",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 117,
+                  "name": "Bilibili Class 2 Subclass 1 视频 1",
+                  "url": "https://www.bilibili.com/video/BV1class2-sub1-1",
+                  "text": "Bilibili Class 2 Subclass 1 视频 1"
+                },
+                {
+                  "id": 118,
+                  "name": "Bilibili Class 2 Subclass 1 视频 2",
+                  "url": "https://www.bilibili.com/video/BV1class2-sub1-2",
+                  "text": "Bilibili Class 2 Subclass 1 视频 2"
+                },
+                {
+                  "id": 119,
+                  "name": "Bilibili Class 2 Subclass 1 视频 3",
+                  "url": "https://www.bilibili.com/video/BV1class2-sub1-3",
+                  "text": "Bilibili Class 2 Subclass 1 视频 3"
+                },
+                {
+                  "id": 120,
+                  "name": "Bilibili Class 2 Subclass 1 视频 4",
+                  "url": "https://www.bilibili.com/video/BV1class2-sub1-4",
+                  "text": "Bilibili Class 2 Subclass 1 视频 4"
+                }
+              ]
+            }
+          ],
+          "items": [
+  {
+    "id": 4,
+    "name": "Bilibili 单个视频",
+    "url": "https://www.bilibili.com/video/BV1dY1kBfEqy/",
               "text": "Bilibili 单个视频"
             },
             {
