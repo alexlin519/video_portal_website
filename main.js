@@ -36,6 +36,8 @@ let showAllSubclass = false; // Show all items for current subclass
 // Favorites management (using localStorage)
 const FAVORITES_KEY = 'video_portal_favorites';
 const PINS_KEY = 'video_portal_pins';
+const CATEGORY_ORDER_KEY = 'video_portal_category_order';
+const SUBCATEGORY_ORDER_KEY_PREFIX = 'video_portal_subcategory_order_';
 
 function getFavorites() {
     try {
@@ -199,6 +201,23 @@ async function renderSidebar() {
     const sidebarNav = document.getElementById('sidebar-nav');
     let html = '';
 
+    // Get saved category order from localStorage
+    const savedCategoryOrder = JSON.parse(localStorage.getItem(CATEGORY_ORDER_KEY) || '[]');
+    
+    // Sort categories based on saved order
+    const sortedCategories = [...data.categories].sort((a, b) => {
+        const indexA = savedCategoryOrder.indexOf(a.id);
+        const indexB = savedCategoryOrder.indexOf(b.id);
+        // If both are in saved order, use their order
+        if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+        // If only A is in saved order, A comes first
+        if (indexA !== -1) return -1;
+        // If only B is in saved order, B comes first
+        if (indexB !== -1) return 1;
+        // If neither is in saved order, keep original order
+        return 0;
+    });
+
     // Add Favorites category first (if it doesn't exist in data)
     const hasFavorites = data.categories.some(cat => cat.id === 'favorites');
     if (!hasFavorites) {
@@ -206,10 +225,11 @@ async function renderSidebar() {
         const isFavoritesActive = currentCategoryId === 'favorites' && !currentSubcategoryId;
         
         html += `
-            <div class="category" data-category-id="favorites">
+            <div class="category" data-category-id="favorites" draggable="true" ondragstart="handleCategoryDragStart(event)" ondragover="handleCategoryDragOver(event)" ondrop="handleCategoryDrop(event)" ondragend="handleCategoryDragEnd(event)">
                 <div class="category-header ${isFavoritesActive ? 'active' : ''}" 
                      onclick="selectCategory('favorites')">
                     <div class="category-header-content">
+                        <span class="drag-handle">⋮⋮</span>
                         <span class="category-icon">⭐</span>
                         <span class="category-name">收藏</span>
                     </div>
@@ -219,7 +239,7 @@ async function renderSidebar() {
         `;
     }
 
-    data.categories.forEach(category => {
+    sortedCategories.forEach(category => {
         const itemCount = countItems(category, data);
         const hasSubcategories = category.subcategories && category.subcategories.length > 0;
         const isExpanded = expandedCategories.has(category.id);
@@ -227,10 +247,11 @@ async function renderSidebar() {
 
         // Category header
         html += `
-            <div class="category" data-category-id="${category.id}">
+            <div class="category" data-category-id="${category.id}" draggable="true" ondragstart="handleCategoryDragStart(event)" ondragover="handleCategoryDragOver(event)" ondrop="handleCategoryDrop(event)" ondragend="handleCategoryDragEnd(event)">
                 <div class="category-header ${isActive ? 'active' : ''}" 
                      onclick="selectCategory('${category.id}')">
                     <div class="category-header-content">
+                        <span class="drag-handle">⋮⋮</span>
                         ${hasSubcategories ? `
                             <span class="category-toggle ${isExpanded ? 'expanded' : ''}" 
                                   onclick="event.stopPropagation(); toggleCategory('${category.id}')">
@@ -248,7 +269,20 @@ async function renderSidebar() {
             const subcategoriesClass = isExpanded ? 'expanded' : 'collapsed';
             html += `<div class="subcategories ${subcategoriesClass}">`;
             
-            category.subcategories.forEach(subcategory => {
+            // Get saved subcategory order for this category
+            const savedSubcategoryOrder = JSON.parse(localStorage.getItem(`${SUBCATEGORY_ORDER_KEY_PREFIX}${category.id}`) || '[]');
+            
+            // Sort subcategories based on saved order
+            const sortedSubcategories = [...category.subcategories].sort((a, b) => {
+                const indexA = savedSubcategoryOrder.indexOf(a.id);
+                const indexB = savedSubcategoryOrder.indexOf(b.id);
+                if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+                if (indexA !== -1) return -1;
+                if (indexB !== -1) return 1;
+                return 0;
+            });
+            
+            sortedSubcategories.forEach(subcategory => {
                 const subCount = countSubcategoryItems(subcategory);
                 const hasSubclasses = subcategory.subclasses && subcategory.subclasses.length > 0;
                 const subcategoryKey = `${category.id}-${subcategory.id}`;
@@ -256,10 +290,11 @@ async function renderSidebar() {
                 const isSubActive = currentSubcategoryId === subcategory.id && !currentSubclassId;
                 
                 html += `
-                    <div class="subcategory" data-subcategory-id="${subcategory.id}">
+                    <div class="subcategory" data-subcategory-id="${subcategory.id}" data-parent-category="${category.id}" draggable="true" ondragstart="handleSubcategoryDragStart(event)" ondragover="handleSubcategoryDragOver(event)" ondrop="handleSubcategoryDrop(event)" ondragend="handleSubcategoryDragEnd(event)">
                         <div class="subcategory-header ${isSubActive ? 'active' : ''}" 
                              onclick="selectSubcategory('${category.id}', '${subcategory.id}')">
                             <div class="subcategory-header-content">
+                                <span class="drag-handle">⋮⋮</span>
                                 ${hasSubclasses ? `
                                     <span class="subcategory-toggle ${isSubExpanded ? 'expanded' : ''}" 
                                           onclick="event.stopPropagation(); toggleSubcategory('${category.id}', '${subcategory.id}')">
@@ -320,6 +355,142 @@ function toggleSubcategory(categoryId, subcategoryId) {
         expandedSubcategories.add(key);
     }
     renderSidebar();
+}
+
+// Drag and Drop handlers for Categories
+let draggedCategoryElement = null;
+
+function handleCategoryDragStart(event) {
+    draggedCategoryElement = event.currentTarget;
+    event.currentTarget.classList.add('dragging');
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/html', event.currentTarget.outerHTML);
+}
+
+function handleCategoryDragOver(event) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    
+    const categoryElement = event.currentTarget.closest('.category');
+    if (!categoryElement || categoryElement === draggedCategoryElement) return;
+    
+    const rect = categoryElement.getBoundingClientRect();
+    const next = (event.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+    
+    categoryElement.classList.remove('drag-over-top', 'drag-over-bottom');
+    categoryElement.classList.add(next ? 'drag-over-bottom' : 'drag-over-top');
+}
+
+function handleCategoryDrop(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const categoryElement = event.currentTarget.closest('.category');
+    if (!categoryElement || categoryElement === draggedCategoryElement) return;
+    
+    const rect = categoryElement.getBoundingClientRect();
+    const next = (event.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+    
+    if (next) {
+        categoryElement.parentNode.insertBefore(draggedCategoryElement, categoryElement.nextSibling);
+    } else {
+        categoryElement.parentNode.insertBefore(draggedCategoryElement, categoryElement);
+    }
+    
+    // Save new order
+    saveCategoryOrder();
+}
+
+function handleCategoryDragEnd(event) {
+    event.currentTarget.classList.remove('dragging');
+    
+    // Remove all drag-over classes
+    document.querySelectorAll('.category').forEach(el => {
+        el.classList.remove('drag-over-top', 'drag-over-bottom');
+    });
+    
+    draggedCategoryElement = null;
+}
+
+function saveCategoryOrder() {
+    const categories = Array.from(document.querySelectorAll('.category[data-category-id]'));
+    const order = categories.map(cat => cat.getAttribute('data-category-id'));
+    localStorage.setItem(CATEGORY_ORDER_KEY, JSON.stringify(order));
+}
+
+// Drag and Drop handlers for Subcategories
+let draggedSubcategoryElement = null;
+let draggedSubcategoryParentCategory = null;
+
+function handleSubcategoryDragStart(event) {
+    draggedSubcategoryElement = event.currentTarget;
+    draggedSubcategoryParentCategory = event.currentTarget.getAttribute('data-parent-category');
+    event.currentTarget.classList.add('dragging');
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/html', event.currentTarget.outerHTML);
+}
+
+function handleSubcategoryDragOver(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.dataTransfer.dropEffect = 'move';
+    
+    const subcategoryElement = event.currentTarget.closest('.subcategory');
+    if (!subcategoryElement || subcategoryElement === draggedSubcategoryElement) return;
+    
+    // Only allow dropping within the same category
+    const parentCategory = subcategoryElement.getAttribute('data-parent-category');
+    if (parentCategory !== draggedSubcategoryParentCategory) return;
+    
+    const rect = subcategoryElement.getBoundingClientRect();
+    const next = (event.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+    
+    subcategoryElement.classList.remove('drag-over-top', 'drag-over-bottom');
+    subcategoryElement.classList.add(next ? 'drag-over-bottom' : 'drag-over-top');
+}
+
+function handleSubcategoryDrop(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const subcategoryElement = event.currentTarget.closest('.subcategory');
+    if (!subcategoryElement || subcategoryElement === draggedSubcategoryElement) return;
+    
+    // Only allow dropping within the same category
+    const parentCategory = subcategoryElement.getAttribute('data-parent-category');
+    if (parentCategory !== draggedSubcategoryParentCategory) return;
+    
+    const rect = subcategoryElement.getBoundingClientRect();
+    const next = (event.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+    
+    if (next) {
+        subcategoryElement.parentNode.insertBefore(draggedSubcategoryElement, subcategoryElement.nextSibling);
+    } else {
+        subcategoryElement.parentNode.insertBefore(draggedSubcategoryElement, subcategoryElement);
+    }
+    
+    // Save new order
+    saveSubcategoryOrder(parentCategory);
+}
+
+function handleSubcategoryDragEnd(event) {
+    event.currentTarget.classList.remove('dragging');
+    
+    // Remove all drag-over classes from subcategories in the same category
+    if (draggedSubcategoryParentCategory) {
+        document.querySelectorAll(`.subcategory[data-parent-category="${draggedSubcategoryParentCategory}"]`).forEach(el => {
+            el.classList.remove('drag-over-top', 'drag-over-bottom');
+        });
+    }
+    
+    draggedSubcategoryElement = null;
+    draggedSubcategoryParentCategory = null;
+}
+
+function saveSubcategoryOrder(categoryId) {
+    const subcategories = Array.from(document.querySelectorAll(`.subcategory[data-parent-category="${categoryId}"]`));
+    const order = subcategories.map(sub => sub.getAttribute('data-subcategory-id'));
+    localStorage.setItem(`${SUBCATEGORY_ORDER_KEY_PREFIX}${categoryId}`, JSON.stringify(order));
 }
 
 // Collect all items from all categories (for Daily Random)

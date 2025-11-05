@@ -86,6 +86,51 @@ body {
     background-color: var(--hover-color);
 }
 
+.category.dragging {
+    opacity: 0.5;
+}
+
+.category.drag-over-top::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--accent-color);
+    z-index: 10;
+}
+
+.category.drag-over-bottom::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--accent-color);
+    z-index: 10;
+}
+
+.drag-handle {
+    cursor: grab;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-right: 4px;
+    user-select: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.category:hover .drag-handle,
+.subcategory:hover .drag-handle {
+    opacity: 1;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
 .category-header.active {
     background-color: var(--selected-color);
     color: var(--accent-color);
@@ -160,6 +205,33 @@ body {
     cursor: pointer;
     transition: all 0.2s ease;
     user-select: none;
+    position: relative;
+}
+
+.subcategory.dragging {
+    opacity: 0.5;
+}
+
+.subcategory.drag-over-top::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--accent-color);
+    z-index: 10;
+}
+
+.subcategory.drag-over-bottom::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--accent-color);
+    z-index: 10;
 }
 
 .subcategory-header:hover {
@@ -188,6 +260,10 @@ body {
     align-items: center;
     gap: 8px;
     flex: 1;
+}
+
+.subcategory-header-content .drag-handle {
+    margin-right: 4px;
 }
 
 .subcategory-toggle {
