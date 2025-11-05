@@ -6,13 +6,16 @@ const DATA_FILE = 'data.json';
 // CONFIGURATION - Easy to edit variables
 // ============================================
 // Maximum number of items to show for categories (first level)
-const MAX_ITEMS_CATEGORY = 2;
+const MAX_ITEMS_CATEGORY = 4;
 
 // Maximum number of items to show for classes/subcategories (second level)
-const MAX_ITEMS_CLASS =2;
+const MAX_ITEMS_CLASS =3;
 
 // Maximum number of items for Daily Random category
-const MAX_ITEMS_DAILY_RANDOM = 2;
+const MAX_ITEMS_DAILY_RANDOM = 5;
+
+// Maximum number of items for Favorites category
+const MAX_ITEMS_FAVORITES = 4;
 // ============================================
 
 // State management
@@ -347,7 +350,7 @@ async function selectCategory(categoryId) {
         items = shuffleArray(items);
         
         // Apply maxItems limit if not showing all
-        const maxItems = MAX_ITEMS_CATEGORY;
+        const maxItems = MAX_ITEMS_FAVORITES;
         
         if (showAllCategory) {
             console.log(`[Favorites] Showing all ${items.length} items (showAllCategory is true)`);
@@ -578,7 +581,7 @@ function renderContent(items, title, icon) {
         const isPinned = isPinnedFromData || isPinnedFromStorage;
         const isFav = isFavorite(itemId);
         
-        // Check if we're in favorites category (hide pin button in favorites)
+        // Check if we're in favorites category (hide pin button and pin styling in favorites)
         const isFavoritesCategory = currentCategoryId === 'favorites';
         
         html += `
@@ -588,7 +591,7 @@ function renderContent(items, title, icon) {
                         ${isPinned ? '📌' : '📎'}
                     </button>
                 ` : ''}
-                <a href="${escapeHtml(videoUrl)}" target="_blank" class="video-button ${isPinned ? 'pinned' : ''}" title="${escapeHtml(buttonText)}">
+                <a href="${escapeHtml(videoUrl)}" target="_blank" class="video-button ${isPinned && !isFavoritesCategory ? 'pinned' : ''}" title="${escapeHtml(buttonText)}">
                     <span class="button-text">${escapeHtml(buttonText)}</span>
                 </a>
                 <button class="favorite-btn ${isFav ? 'active' : ''}" onclick="toggleFavoriteItem(${itemId}, event);" title="${isFav ? 'Remove from favorites' : 'Add to favorites'}">
