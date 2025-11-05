@@ -140,7 +140,8 @@ function escapeHtml(text) {
 }
 
 
-// Count items in a category (including subcategories)
+// Count items in a category
+// Returns the total number of buttons that will be shown when clicking the category
 function countItems(category, data) {
     // For Daily Random, count all items from all categories
     if (category.isRandom && data) {
@@ -154,18 +155,12 @@ function countItems(category, data) {
         return allItems.filter(item => favorites.includes(item.id)).length;
     }
     
-    let count = 0;
+    // For regular categories, only count items directly in the category
+    // (when you click a category, it only shows items directly in the category, not subcategories)
     if (category.items) {
-        count += category.items.length;
+        return category.items.length;
     }
-    if (category.subcategories) {
-        category.subcategories.forEach(sub => {
-            if (sub.items) {
-                count += sub.items.length;
-            }
-        });
-    }
-    return count;
+    return 0;
 }
 
 // Count items in a subcategory

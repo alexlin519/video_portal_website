@@ -9,388 +9,360 @@
       "items": []
     },
     {
-      "id": "youtube",
-      "name": "YouTube",
-      "icon": "📺",
+      "id": "hehe",
+      "name": "hehe",
+      "icon": "📁",
       "maxItems": 50,
+      "items": [],
       "subcategories": [
         {
-          "id": "youtube-class1",
-          "name": "class 1",
-          "subclasses": [
-            {
-              "id": "youtube-class1-subclass1",
-              "name": "subclass 1",
-              "maxItems": 50,
-              "items": [
-                {
-                  "id": 100,
-                  "name": "YouTube Subclass 1 视频 1",
-                  "url": "https://www.youtube.com/watch?v=subclass1-1",
-                  "text": "Subclass 1 视频 1"
-                },
-                {
-                  "id": 101,
-                  "name": "YouTube Subclass 1 视频 2",
-                  "url": "https://www.youtube.com/watch?v=subclass1-2",
-                  "text": "Subclass 1 视频 2"
-                },
-                {
-                  "id": 102,
-                  "name": "YouTube Subclass 1 视频 3",
-                  "url": "https://www.youtube.com/watch?v=subclass1-3",
-                  "text": "Subclass 1 视频 3"
-                }
-              ]
-            },
-            {
-              "id": "youtube-class1-subclass2",
-              "name": "subclass 2",
-              "maxItems": 50,
-              "items": [
-                {
-                  "id": 103,
-                  "name": "YouTube Subclass 2 视频 1",
-                  "url": "https://www.youtube.com/watch?v=subclass2-1",
-                  "text": "Subclass 2 视频 1"
-                },
-                {
-                  "id": 104,
-                  "name": "YouTube Subclass 2 视频 2",
-                  "url": "https://www.youtube.com/watch?v=subclass2-2",
-                  "text": "Subclass 2 视频 2"
-                }
-              ]
-            },
-            {
-              "id": "youtube-class1-subclass3",
-              "name": "subclass 3",
-              "maxItems": 50,
-              "items": [
-                {
-                  "id": 105,
-                  "name": "YouTube Subclass 3 视频 1",
-                  "url": "https://www.youtube.com/watch?v=subclass3-1",
-                  "text": "Subclass 3 视频 1"
-                },
-                {
-                  "id": 106,
-                  "name": "YouTube Subclass 3 视频 2",
-                  "url": "https://www.youtube.com/watch?v=subclass3-2",
-                  "text": "Subclass 3 视频 2"
-                },
-                {
-                  "id": 107,
-                  "name": "YouTube Subclass 3 视频 3",
-                  "url": "https://www.youtube.com/watch?v=subclass3-3",
-                  "text": "Subclass 3 视频 3"
-                },
-                {
-                  "id": 108,
-                  "name": "YouTube Subclass 3 视频 4",
-                  "url": "https://www.youtube.com/watch?v=subclass3-4",
-                  "text": "Subclass 3 视频 4"
-                }
-              ]
-            }
-          ],
-
+          "id": "hehe-两性",
+          "name": "两性",
           "maxItems": 50,
           "items": [
-  {
-    "id": 1,
-              "name": "数学很棒的可视化",
-              "url": "https://space.bilibili.com/88461692/lists/1528929?type=series",
-              "text": "数学很棒数学很棒的可视的可视化"
-            },
-            {
-              "id": 5,
-              "name": "YouTube Class 1 视频 1",
-              "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-              "text": "YouTube Class 1 视频 1tttttttttttttest long     longlong"
-            },
-            {
-              "id": 6,
-              "name": "YouTube Class 1 视频 2",
-              "url": "https://www.youtube.com/watch?v=jNQXAC9IVRw",
-              "text": "YouTube Class 1 视频 2"
-            }
-          ]
-        },
-        {
-          "id": "youtube-class2",
-          "name": "class 2",
-          "maxItems": 50,
-          "subclasses": [
-            {
-              "id": "youtube-class2-subclass1",
-              "name": "subclass A",
-              "maxItems": 50,
-              "items": [
-                {
-                  "id": 109,
-                  "name": "YouTube Class 2 Subclass A 视频 1",
-                  "url": "https://www.youtube.com/watch?v=class2-subA-1",
-                  "text": "Class 2 Subclass A 视频 1"
-                },
-                {
-                  "id": 110,
-                  "name": "YouTube Class 2 Subclass A 视频 2",
-                  "url": "https://www.youtube.com/watch?v=class2-subA-2",
-                  "text": "Class 2 Subclass A 视频 2"
-                }
-              ]
-            },
-            {
-              "id": "youtube-class2-subclass2",
-              "name": "subclass B",
-              "maxItems": 50,
-              "items": [
-                {
-                  "id": 111,
-                  "name": "YouTube Class 2 Subclass B 视频 1",
-                  "url": "https://www.youtube.com/watch?v=class2-subB-1",
-                  "text": "Class 2 Subclass B 视频 1"
-                }
-              ]
-            }
-          ],
-          "items": [
-            {
-              "id": 7,
-              "name": "YouTube Class 2 视频 1",
-              "url": "https://www.youtube.com/watch?v=9bZkp7q19f0",
-              "text": "YouTube Class 2 视频 1"
-            },
             {
               "id": 8,
-              "name": "YouTube Class 2 视频 2",
-              "url": "https://www.youtube.com/watch?v=kJQP7kiw5Fk",
-              "text": "YouTube Class 2 视频 2"
+              "name": "中指通",
+              "url": "https://www.youtube.com/@%E4%B8%AD%E6%8C%87%E9%80%9A/videos",
+              "text": "中指通"
             }
           ]
-        }
-      ],
-      "items": [
-  {
-    "id": 2,
-          "name": "好玩",
-          "url": "https://www.youtube.com/@BrickTechnology",
-          "text": "好玩"
-  },
-  {
-    "id": 3,
-    "name": "YouTube 单个视频",
-    "url": "https://www.youtube.com/watch?v=w4-tObZnhSg",
-          "text": "YouTube 单个视频"
         },
         {
-          "id": 9,
-          "name": "YouTube 直接视频 1",
-          "url": "https://www.youtube.com/watch?v=example1",
-          "text": "YouTube 直接视频 1"
-        },
-        {
-          "id": 10,
-          "name": "YouTube 直接视频 2",
-          "url": "https://www.youtube.com/watch?v=example2",
-          "text": "YouTube 直接视频 2"
-        },
-        {
-          "id": 11,
-          "name": "YouTube 直接视频 3",
-          "url": "https://www.youtube.com/watch?v=example3",
-          "text": "YouTube 直接视频 3"
-        },
-        {
-          "id": 21,
-          "name": "Tim Huang",
-          "url": "https://www.youtube.com/@Tim-Huang91",
-          "text": "Tim Huang"
+          "id": "hehe-美女",
+          "name": "美女",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 10,
+              "name": "伊織萌",
+              "url": "https://www.youtube.com/@Iorimoe-tanoshi",
+              "text": "伊織萌"
+            },
+            {
+              "id": 26,
+              "name": "표은지Eunji",
+              "url": "https://www.youtube.com/@Eunjipyo",
+              "text": "표은지Eunji"
+            }
+          ]
         }
       ]
     },
     {
-      "id": "bilibili",
-      "name": "Bilibili",
-      "icon": "🔷",
+      "id": "scp-怪谈",
+      "name": "scp/怪谈",
+      "icon": "📁",
       "maxItems": 50,
+      "items": [
+        {
+          "id": 27,
+          "name": "类火柴人可爱画风",
+          "url": "https://www.youtube.com/@SCP/videos",
+          "text": "类火柴人可爱画风"
+        }
+      ]
+    },
+    {
+      "id": "影视",
+      "name": "影视",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [
+        {
+          "id": 1,
+          "name": "饱饱追剧 短剧整合",
+          "url": "https://www.youtube.com/@HMBB8888/videos",
+          "text": "饱饱追剧 短剧整合"
+        }
+      ],
       "subcategories": [
         {
-          "id": "bilibili-class1",
-          "name": "class 1",
+          "id": "影视-恐怖猎奇",
+          "name": "恐怖猎奇",
           "maxItems": 50,
-          "subclasses": [
-            {
-              "id": "bilibili-class1-subclass1",
-              "name": "subclass 1",
-              "maxItems": 50,
-              "items": [
-                {
-                  "id": 112,
-                  "name": "Bilibili Subclass 1 视频 1",
-                  "url": "https://www.bilibili.com/video/BV1subclass1-1",
-                  "text": "Bilibili Subclass 1 视频 1"
-                },
-                {
-                  "id": 113,
-                  "name": "Bilibili Subclass 1 视频 2",
-                  "url": "https://www.bilibili.com/video/BV1subclass1-2",
-                  "text": "Bilibili Subclass 1 视频 2"
-                },
-                {
-                  "id": 114,
-                  "name": "Bilibili Subclass 1 视频 3",
-                  "url": "https://www.bilibili.com/video/BV1subclass1-3",
-                  "text": "Bilibili Subclass 1 视频 3"
-                }
-              ]
-            },
-            {
-              "id": "bilibili-class1-subclass2",
-              "name": "subclass 2",
-              "maxItems": 50,
-              "items": [
-                {
-                  "id": 115,
-                  "name": "Bilibili Subclass 2 视频 1",
-                  "url": "https://www.bilibili.com/video/BV1subclass2-1",
-                  "text": "Bilibili Subclass 2 视频 1"
-                },
-                {
-                  "id": 116,
-                  "name": "Bilibili Subclass 2 视频 2",
-                  "url": "https://www.bilibili.com/video/BV1subclass2-2",
-                  "text": "Bilibili Subclass 2 视频 2"
-                }
-              ]
-            }
-          ],
           "items": [
             {
-              "id": 1,
-              "name": "数学很棒的可视化",
-              "url": "https://space.bilibili.com/88461692/lists/1528929?type=series",
-              "text": "数学很棒的可视化"
-            },
+              "id": 19,
+              "name": "黑白漫画解说",
+              "url": "https://www.youtube.com/@tree2793/videos",
+              "text": "黑白漫画解说"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "新游试玩",
+      "name": "新游试玩",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [
+        {
+          "id": 4,
+          "name": "阿路的精神時光屋 40min一款",
+          "url": "https://www.youtube.com/@rusiru87time/videos",
+          "text": "阿路的精神時光屋 40min一款"
+        }
+      ],
+      "subcategories": [
+        {
+          "id": "新游试玩-恐怖猎奇",
+          "name": "恐怖猎奇",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 9,
+              "name": "神戳戳的苏神",
+              "url": "https://www.youtube.com/@shenchuochuo/videos",
+              "text": "神戳戳的苏神"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "有益",
+      "name": "有益",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [],
+      "subcategories": [
+        {
+          "id": "有益-国标",
+          "name": "国标",
+          "maxItems": 50,
+          "items": [
             {
               "id": 12,
-              "name": "Bilibili Class 1 视频 1",
-              "url": "https://www.bilibili.com/video/BV1example1",
-              "text": "Bilibili Class 1 视频 1"
+              "name": "中国国标搬运",
+              "url": "https://www.youtube.com/@StarDanceShop/videos",
+              "text": "中国国标搬运"
             },
             {
-              "id": 13,
-              "name": "Bilibili Class 1 视频 2",
-              "url": "https://www.bilibili.com/video/BV1example2",
-              "text": "Bilibili Class 1 视频 2"
+              "id": 25,
+              "name": "拉丁 couple 创意多变basic",
+              "url": "https://www.youtube.com/@DanceInsanity/videos",
+              "text": "拉丁 couple 创意多变basic"
             }
-          ]
-        },
-        {
-          "id": "bilibili-class2",
-          "name": "class 2",
-          "maxItems": 50,
+          ],
           "subclasses": [
             {
-              "id": "bilibili-class2-subclass1",
-              "name": "subclass 1",
+              "id": "有益-国标-教学",
+              "name": "教学",
               "maxItems": 50,
               "items": [
                 {
-                  "id": 117,
-                  "name": "Bilibili Class 2 Subclass 1 视频 1",
-                  "url": "https://www.bilibili.com/video/BV1class2-sub1-1",
-                  "text": "Bilibili Class 2 Subclass 1 视频 1"
+                  "id": 17,
+                  "name": "国标 欧洲老头",
+                  "url": "https://www.youtube.com/@EgilsSmagris",
+                  "text": "国标 欧洲老头"
                 },
                 {
-                  "id": 118,
-                  "name": "Bilibili Class 2 Subclass 1 视频 2",
-                  "url": "https://www.bilibili.com/video/BV1class2-sub1-2",
-                  "text": "Bilibili Class 2 Subclass 1 视频 2"
-                },
-                {
-                  "id": 119,
-                  "name": "Bilibili Class 2 Subclass 1 视频 3",
-                  "url": "https://www.bilibili.com/video/BV1class2-sub1-3",
-                  "text": "Bilibili Class 2 Subclass 1 视频 3"
-                },
-                {
-                  "id": 120,
-                  "name": "Bilibili Class 2 Subclass 1 视频 4",
-                  "url": "https://www.bilibili.com/video/BV1class2-sub1-4",
-                  "text": "Bilibili Class 2 Subclass 1 视频 4"
+                  "id": 18,
+                  "name": "国标 拉丁 专业赛事",
+                  "url": "https://www.youtube.com/@DanceToday/videos",
+                  "text": "国标 拉丁 专业赛事"
                 }
               ]
-            }
-          ],
-          "items": [
-  {
-    "id": 4,
-    "name": "Bilibili 单个视频",
-    "url": "https://www.bilibili.com/video/BV1dY1kBfEqy/",
-              "text": "Bilibili 单个视频"
-            },
-            {
-              "id": 14,
-              "name": "Bilibili Class 2 视频 1",
-              "url": "https://www.bilibili.com/video/BV1example3",
-              "text": "Bilibili Class 2 视频 1"
             }
           ]
         },
         {
-          "id": "bilibili-class3",
-          "name": "class 3",
+          "id": "有益-工科",
+          "name": "工科",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 16,
+              "name": "手工老头",
+              "url": "https://www.youtube.com/@tested/videos",
+              "text": "手工老头"
+            },
+            {
+              "id": 20,
+              "name": "diy project + 实验",
+              "url": "https://www.youtube.com/@TheKingofRandom/videos",
+              "text": "diy project + 实验"
+            }
+          ]
+        },
+        {
+          "id": "有益-时政点评",
+          "name": "时政点评",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 3,
+              "name": "台湾 查理 右派自由",
+              "url": "https://www.youtube.com/@godsteammate/videos",
+              "text": "台湾 查理 右派自由"
+            }
+          ]
+        },
+        {
+          "id": "有益-测评",
+          "name": "测评",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 6,
+              "name": "大狸子切切里 科技测评",
+              "url": "https://www.youtube.com/@cherry_official/videos",
+              "text": "大狸子切切里 科技测评"
+            }
+          ]
+        },
+        {
+          "id": "有益-理科",
+          "name": "理科",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 21,
+              "name": "Numberphile 15min 数学 ",
+              "url": "https://www.youtube.com/@numberphile/videos",
+              "text": "Numberphile 15min 数学 "
+            }
+          ]
+        },
+        {
+          "id": "有益-科普",
+          "name": "科普",
           "maxItems": 50,
           "items": [
             {
               "id": 15,
-              "name": "Bilibili Class 3 视频 1",
-              "url": "https://www.bilibili.com/video/BV1example4",
-              "text": "Bilibili Class 3 视频 1"
+              "name": "画风可爱 各类科普",
+              "url": "https://www.youtube.com/@kurzgesagt/videos",
+              "text": "画风可爱 各类科普"
             },
             {
-              "id": 16,
-              "name": "Bilibili Class 3 视频 2",
-              "url": "https://www.bilibili.com/video/BV1example5",
-              "text": "Bilibili Class 3 视频 2"
+              "id": 30,
+              "name": "短视频 深入浅出!",
+              "url": "https://www.youtube.com/@miaodong/videos",
+              "text": "短视频 深入浅出!"
             }
           ]
-        }
-      ],
-      "items": [
-        {
-          "id": 17,
-          "name": "Bilibili 直接视频 1",
-          "url": "https://www.bilibili.com/video/BV1direct1",
-          "text": "Bilibili 直接视频 1"
         },
         {
-          "id": 18,
-          "name": "Bilibili 直接视频 2",
-          "url": "https://www.bilibili.com/video/BV1direct2",
-          "text": "Bilibili 直接视频 2"
+          "id": "有益-访谈",
+          "name": "访谈",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 11,
+              "name": "The Tonight Show jimmy 都是短的",
+              "url": "https://www.youtube.com/@fallontonight/videos",
+              "text": "The Tonight Show jimmy 都是短的"
+            },
+            {
+              "id": 13,
+              "name": "科技类 10min左右",
+              "url": "https://www.youtube.com/@LondonRealTV/videos",
+              "text": "科技类 10min左右"
+            },
+            {
+              "id": 14,
+              "name": "大讨论 围圆圈坐一起",
+              "url": "https://www.youtube.com/@jubilee/videos",
+              "text": "大讨论 围圆圈坐一起"
+            }
+          ]
+        },
+        {
+          "id": "有益-辩论",
+          "name": "辩论",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 28,
+              "name": "马来西亚 辩论辩题 30-50min 左右",
+              "url": "https://www.youtube.com/@BBKNetwork/videos",
+              "text": "马来西亚 辩论辩题 30-50min 左右"
+            }
+          ]
         }
       ]
     },
     {
-      "id": "instagram",
-      "name": "Instagram",
-      "icon": "📸",
+      "id": "游戏实况",
+      "name": "游戏实况",
+      "icon": "📁",
       "maxItems": 50,
       "items": [
         {
-          "id": 19,
-          "name": "Instagram 视频 1",
-          "url": "https://www.instagram.com/p/example1",
-          "text": "Instagram 视频 1"
+          "id": 5,
+          "name": "狐狸头🦊 经常开新游新坑",
+          "url": "https://www.youtube.com/@pfytw/videos",
+          "text": "狐狸头🦊 经常开新游新坑"
         },
         {
-          "id": 20,
-          "name": "Instagram 视频 2",
-          "url": "https://www.instagram.com/p/example2",
-          "text": "Instagram 视频 2"
+          "id": 7,
+          "name": "喵心GG (啥都有 七日杀类多一些)",
+          "url": "https://www.youtube.com/@miaoxinGG/videos",
+          "text": "喵心GG (啥都有 七日杀类多一些)"
+        },
+        {
+          "id": 29,
+          "name": "悠闲 + 恐怖(小小梦魇)",
+          "url": "https://www.youtube.com/@AshanKouki/videos",
+          "text": "悠闲 + 恐怖(小小梦魇)"
+        }
+      ],
+      "subcategories": [
+        {
+          "id": "游戏实况-3a",
+          "name": "3a",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 22,
+              "name": "完美蝙蝠侠",
+              "url": "https://www.youtube.com/@StealthyChannel/videos",
+              "text": "完美蝙蝠侠"
+            }
+          ]
+        },
+        {
+          "id": "游戏实况-格斗",
+          "name": "格斗",
+          "maxItems": 50,
+          "items": [],
+          "subclasses": [
+            {
+              "id": "游戏实况-格斗-mk",
+              "name": "mk",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 2,
+                  "name": "super",
+                  "url": "https://www.youtube.com/@Superman049",
+                  "text": "super"
+                },
+                {
+                  "id": 24,
+                  "name": "SonicFox 电竞高手",
+                  "url": "https://www.youtube.com/@SonicFox5000/videos",
+                  "text": "SonicFox 电竞高手"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "游戏实况-第三人称射击",
+          "name": "第三人称射击",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 23,
+              "name": "Necros 漫威争锋 蜘蛛侠",
+              "url": "https://www.youtube.com/@NecrosOW/videos",
+              "text": "Necros 漫威争锋 蜘蛛侠"
+            }
+          ]
         }
       ]
     },
