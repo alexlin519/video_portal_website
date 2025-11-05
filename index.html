@@ -2,70 +2,50 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的灵感门户</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>我的灵感门户</h1>
-        <p>您专属的内容推荐引擎</p>
-        <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 10px;">
-            数据来源：编辑 <code>data.json</code> 文件添加您的内容源
-        </p>
-    </header>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="sidebar-title">我的灵感门户</h1>
+            </div>
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Categories will be rendered here by JS -->
+            </nav>
+        </aside>
 
-    <main>
-        <section>
-            <h2>🌟 每日速览 (完全随机)</h2>
-            <button class="refresh-btn" onclick="renderSection('global-random-pool', 'all', 5, true)">
-                刷新速览
-            </button>
-            <div id="global-random-pool" class="video-grid"></div>
-        </section>
-
-        <section>
-            <h2>📺 YouTube</h2>
-            <button class="refresh-btn" onclick="renderSection('youtube-section', 'youtube', 4, true)">
-                刷新 YouTube
-            </button>
-            <div id="youtube-section" class="video-grid"></div>
-        </section>
-
-        <section>
-            <h2>🔷 Bilibili</h2>
-            <button class="refresh-btn" onclick="renderSection('bilibili-section', 'bilibili', 4, true)">
-                刷新 Bilibili
-            </button>
-            <div id="bilibili-section" class="video-grid"></div>
-        </section>
-
-        <section>
-            <h2>📸 Instagram</h2>
-            <button class="refresh-btn" onclick="renderSection('instagram-section', 'instagram', 4, true)">
-                刷新 Instagram
-            </button>
-            <div id="instagram-section" class="video-grid"></div>
-        </section>
-
-        <section>
-            <h2>📚 我的合集 (手动)</h2>
-            <button class="refresh-btn" onclick="renderSection('collection-section', 'collection', 4, true)">
-                刷新合集
-            </button>
-            <div id="collection-section" class="video-grid"></div>
-        </section>
-
-    </main>
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h2 id="content-title" class="content-title">选择分类</h2>
+                <div class="header-actions">
+                    <label class="show-all-checkbox-label" id="show-all-label" style="display: none;">
+                        <input type="checkbox" class="show-all-checkbox" id="show-all-checkbox" 
+                               onchange="toggleShowAll()">
+                        <span>显示全部</span>
+                    </label>
+                    <button class="refresh-btn" id="refresh-btn" style="display: none;" onclick="refreshCurrentCategory()">
+                        Random
+                    </button>
+                </div>
+            </div>
+            <div class="content-body" id="content-body">
+                <div class="welcome-message">
+                    <p>请从左侧选择一个分类开始浏览</p>
+                </div>
+            </div>
+        </main>
+    </div>
 
     <script src="main.js"></script>
     <script>
-        // 页面加载时，自动初始化所有区块
+        // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', () => {
-            renderSection('global-random-pool', 'all', 5); 
-            renderSection('youtube-section', 'youtube', 4);
-            renderSection('bilibili-section', 'bilibili', 4);
-            renderSection('instagram-section', 'instagram', 4);
-            renderSection('collection-section', 'collection', 4);
+            initApp();
         });
     </script>
 </body>

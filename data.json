@@ -1,30 +1,214 @@
-[
-  {
-    "id": 1,
-    "name": "YouTube RSS Feed",
-    "type": "youtube",
-    "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCX6OQ3DkcsbYNE6H8uQQuVA",
-    "tags": "RSS, YouTube"
-  },
-  {
-    "id": 2,
-    "name": "Bilibili RSS Feed",
-    "type": "bilibili",
-    "url": "https://rsshub.app/bilibili/user/video/1263732318",
-    "tags": "RSS, B站"
-  },
-  {
-    "id": 3,
-    "name": "YouTube 单个视频",
-    "type": "collection",
-    "url": "https://www.youtube.com/watch?v=w4-tObZnhSg",
-    "tags": "单个视频, YouTube"
-  },
-  {
-    "id": 4,
-    "name": "Bilibili 单个视频",
-    "type": "collection",
-    "url": "https://www.bilibili.com/video/BV1dY1kBfEqy/",
-    "tags": "单个视频, B站"
-  }
-]
+{
+  "categories": [
+    {
+      "id": "daily-random",
+      "name": "每日随机",
+      "icon": "🌟",
+      "isRandom": true,
+      "maxItems": 20,
+      "items": []
+    },
+    {
+      "id": "youtube",
+      "name": "YouTube",
+      "icon": "📺",
+      "maxItems": 50,
+      "subcategories": [
+        {
+          "id": "youtube-class1",
+          "name": "class 1",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 1,
+              "name": "数学很棒的可视化",
+              "url": "https://space.bilibili.com/88461692/lists/1528929?type=series",
+              "text": "数学很棒的可视化"
+            },
+            {
+              "id": 5,
+              "name": "YouTube Class 1 视频 1",
+              "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+              "text": "YouTube Class 1 视频 1"
+            },
+            {
+              "id": 6,
+              "name": "YouTube Class 1 视频 2",
+              "url": "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+              "text": "YouTube Class 1 视频 2"
+            }
+          ]
+        },
+        {
+          "id": "youtube-class2",
+          "name": "class 2",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 7,
+              "name": "YouTube Class 2 视频 1",
+              "url": "https://www.youtube.com/watch?v=9bZkp7q19f0",
+              "text": "YouTube Class 2 视频 1"
+            },
+            {
+              "id": 8,
+              "name": "YouTube Class 2 视频 2",
+              "url": "https://www.youtube.com/watch?v=kJQP7kiw5Fk",
+              "text": "YouTube Class 2 视频 2"
+            }
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "name": "好玩",
+          "url": "https://www.youtube.com/@BrickTechnology",
+          "text": "好玩"
+        },
+        {
+          "id": 3,
+          "name": "YouTube 单个视频",
+          "url": "https://www.youtube.com/watch?v=w4-tObZnhSg",
+          "text": "YouTube 单个视频"
+        },
+        {
+          "id": 9,
+          "name": "YouTube 直接视频 1",
+          "url": "https://www.youtube.com/watch?v=example1",
+          "text": "YouTube 直接视频 1"
+        },
+        {
+          "id": 10,
+          "name": "YouTube 直接视频 2",
+          "url": "https://www.youtube.com/watch?v=example2",
+          "text": "YouTube 直接视频 2"
+        },
+        {
+          "id": 11,
+          "name": "YouTube 直接视频 3",
+          "url": "https://www.youtube.com/watch?v=example3",
+          "text": "YouTube 直接视频 3"
+        },
+        {
+          "id": 21,
+          "name": "Tim Huang",
+          "url": "https://www.youtube.com/@Tim-Huang91",
+          "text": "Tim Huang"
+        }
+      ]
+    },
+    {
+      "id": "bilibili",
+      "name": "Bilibili",
+      "icon": "🔷",
+      "maxItems": 50,
+      "subcategories": [
+        {
+          "id": "bilibili-class1",
+          "name": "class 1",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 1,
+              "name": "数学很棒的可视化",
+              "url": "https://space.bilibili.com/88461692/lists/1528929?type=series",
+              "text": "数学很棒的可视化"
+            },
+            {
+              "id": 12,
+              "name": "Bilibili Class 1 视频 1",
+              "url": "https://www.bilibili.com/video/BV1example1",
+              "text": "Bilibili Class 1 视频 1"
+            },
+            {
+              "id": 13,
+              "name": "Bilibili Class 1 视频 2",
+              "url": "https://www.bilibili.com/video/BV1example2",
+              "text": "Bilibili Class 1 视频 2"
+            }
+          ]
+        },
+        {
+          "id": "bilibili-class2",
+          "name": "class 2",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 4,
+              "name": "Bilibili 单个视频",
+              "url": "https://www.bilibili.com/video/BV1dY1kBfEqy/",
+              "text": "Bilibili 单个视频"
+            },
+            {
+              "id": 14,
+              "name": "Bilibili Class 2 视频 1",
+              "url": "https://www.bilibili.com/video/BV1example3",
+              "text": "Bilibili Class 2 视频 1"
+            }
+          ]
+        },
+        {
+          "id": "bilibili-class3",
+          "name": "class 3",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 15,
+              "name": "Bilibili Class 3 视频 1",
+              "url": "https://www.bilibili.com/video/BV1example4",
+              "text": "Bilibili Class 3 视频 1"
+            },
+            {
+              "id": 16,
+              "name": "Bilibili Class 3 视频 2",
+              "url": "https://www.bilibili.com/video/BV1example5",
+              "text": "Bilibili Class 3 视频 2"
+            }
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": 17,
+          "name": "Bilibili 直接视频 1",
+          "url": "https://www.bilibili.com/video/BV1direct1",
+          "text": "Bilibili 直接视频 1"
+        },
+        {
+          "id": 18,
+          "name": "Bilibili 直接视频 2",
+          "url": "https://www.bilibili.com/video/BV1direct2",
+          "text": "Bilibili 直接视频 2"
+        }
+      ]
+    },
+    {
+      "id": "instagram",
+      "name": "Instagram",
+      "icon": "📸",
+      "maxItems": 50,
+      "items": [
+        {
+          "id": 19,
+          "name": "Instagram 视频 1",
+          "url": "https://www.instagram.com/p/example1",
+          "text": "Instagram 视频 1"
+        },
+        {
+          "id": 20,
+          "name": "Instagram 视频 2",
+          "url": "https://www.instagram.com/p/example2",
+          "text": "Instagram 视频 2"
+        }
+      ]
+    },
+    {
+      "id": "collection",
+      "name": "我的合集",
+      "icon": "📚",
+      "maxItems": 50,
+      "items": []
+    }
+  ]
+}

@@ -1,100 +1,31 @@
-// main.js
+// main.js - Folo-style UI with categories and subcategories
 
-const RSS_TO_JSON_API = "https://api.rss2json.com/v1/api.json?rss_url=";
-const DATA_FILE = 'data.json'; // 静态数据文件
+const DATA_FILE = 'data.json';
 
-/**
- * 直接解析RSS feed XML（当RSS2JSON API失败时使用）
- * @param {string} xmlText - RSS XML文本
- * @returns {Object} 解析后的数据
- */
-function parseRSSFeed(xmlText) {
-    try {
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-        
-        // 检查是否有解析错误
-        const parserError = xmlDoc.querySelector('parsererror');
-        if (parserError) {
-            console.error('RSS解析错误:', parserError.textContent);
-            return null;
-        }
-        
-        const feed = xmlDoc.querySelector('feed'); // Atom格式
-        const channel = xmlDoc.querySelector('channel'); // RSS格式
-        
-        let feedTitle = '';
-        let items = [];
-        
-        if (feed) {
-            // Atom格式
-            feedTitle = feed.querySelector('title')?.textContent || '';
-            const entries = feed.querySelectorAll('entry');
-            items = Array.from(entries).map(entry => {
-                const title = entry.querySelector('title')?.textContent || '';
-                const link = entry.querySelector('link')?.getAttribute('href') || entry.querySelector('link')?.textContent || '';
-                const published = entry.querySelector('published')?.textContent || entry.querySelector('updated')?.textContent || '';
-                
-                // 获取缩略图
-                let thumbnail = '';
-                const mediaThumbnail = entry.querySelector('media\\:thumbnail, thumbnail');
-                if (mediaThumbnail) {
-                    thumbnail = mediaThumbnail.getAttribute('url') || mediaThumbnail.textContent || '';
-                }
-                
-                // 如果没有，尝试从媒体组获取
-                const mediaGroup = entry.querySelector('media\\:group, group');
-                if (mediaGroup && !thumbnail) {
-                    const thumb = mediaGroup.querySelector('media\\:thumbnail, thumbnail');
-                    if (thumb) {
-                        thumbnail = thumb.getAttribute('url') || thumb.textContent || '';
-                    }
-                }
-                
-                return { title, link, published, thumbnail };
-            });
-        } else if (channel) {
-            // RSS格式
-            feedTitle = channel.querySelector('title')?.textContent || '';
-            const itemElements = channel.querySelectorAll('item');
-            items = Array.from(itemElements).map(item => {
-                const title = item.querySelector('title')?.textContent || '';
-                const link = item.querySelector('link')?.textContent || '';
-                const pubDate = item.querySelector('pubDate')?.textContent || '';
-                
-                // 获取缩略图
-                let thumbnail = '';
-                const mediaThumbnail = item.querySelector('media\\:thumbnail, thumbnail');
-                if (mediaThumbnail) {
-                    thumbnail = mediaThumbnail.getAttribute('url') || mediaThumbnail.textContent || '';
-                }
-                
-                // 尝试从enclosure获取
-                const enclosure = item.querySelector('enclosure');
-                if (enclosure && enclosure.getAttribute('type')?.startsWith('image/')) {
-                    thumbnail = enclosure.getAttribute('url') || '';
-                }
-                
-                return { title, link, published: pubDate, thumbnail };
-            });
-        }
-        
-        return {
-            status: 'ok',
-            feed: { title: feedTitle },
-            items: items
-        };
-    } catch (e) {
-        console.error('解析RSS feed时出错:', e);
-        return null;
-    }
-}
+// ============================================
+// CONFIGURATION - Easy to edit variables
+// ============================================
+// Maximum number of items to show for categories (first level)
+const MAX_ITEMS_CATEGORY = 1;
 
-// 从 JSON 文件加载数据
-let cachedData = null; // 缓存数据，避免重复加载
+// Maximum number of items to show for classes/subcategories (second level)
+const MAX_ITEMS_CLASS =1;
 
-async function getMyFollowList() {
-    // 如果已有缓存，直接返回
+// Maximum number of items for Daily Random category
+const MAX_ITEMS_DAILY_RANDOM = 1;
+// ============================================
+
+// State management
+let cachedData = null;
+let currentCategoryId = null;
+let currentSubcategoryId = null;
+let expandedCategories = new Set();
+let expandedSubcategories = new Set();
+let showAllCategory = false; // Show all items for current category
+let showAllSubcategory = false; // Show all items for current subcategory
+
+// Load data from JSON file
+async function getData() {
     if (cachedData !== null) {
         return cachedData;
     }
@@ -103,415 +34,607 @@ async function getMyFollowList() {
         const response = await fetch(DATA_FILE);
         if (!response.ok) {
             console.error('加载数据文件失败:', response.statusText);
-            return [];
+            return null;
         }
         const data = await response.json();
         cachedData = data;
-        console.log('✅ 成功加载数据，共', data.length, '条记录');
+        console.log('✅ 成功加载数据');
         return data;
     } catch (error) {
         console.error('❌ 加载数据文件时出错:', error);
-        return [];
+        return null;
     }
 }
 
-/**
- * 清理和验证视频链接，确保链接格式正确
- * @param {string} link - RSS返回的视频链接
- * @param {string} type - 类型 (youtube, bilibili等)
- * @returns {string} 清理后的视频链接
- */
-function cleanVideoLink(link, type) {
-    if (!link) return link;
-    
-    try {
-        // 移除可能的跟踪参数和多余参数
-        const url = new URL(link);
-        
-        if (type === 'youtube') {
-            // YouTube: 确保是标准的 watch?v= 格式
-            const videoId = url.searchParams.get('v');
-            if (videoId) {
-                // 清理所有参数，只保留 v 参数
-                return `https://www.youtube.com/watch?v=${videoId}`;
-            }
-            // 如果是短链接格式，保持原样
-            if (link.includes('youtu.be/')) {
-                return link.split('?')[0]; // 移除参数
-            }
-        } else if (type === 'bilibili') {
-            // Bilibili: 确保是标准的 /video/BV 格式
-            const bvMatch = link.match(/\/video\/(BV\w+)/);
-            if (bvMatch) {
-                const bvId = bvMatch[1];
-                return `https://www.bilibili.com/video/${bvId}/`;
-            }
-            // 如果已经是完整链接，清理参数
-            if (link.includes('bilibili.com/video/')) {
-                const cleanUrl = link.split('?')[0].split('#')[0];
-                // 确保以 / 结尾
-                return cleanUrl.endsWith('/') ? cleanUrl : cleanUrl + '/';
-            }
-        }
-        
-        // 默认：移除跟踪参数
-        const cleanUrl = link.split('?')[0].split('#')[0];
-        return cleanUrl;
-    } catch (e) {
-        console.warn('清理链接时出错，使用原链接:', e);
-        return link;
-    }
+// Escape HTML to prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
-/**
- * 将博主主页链接转换为RSS feed URL
- * @param {string} url - 用户输入的URL
- * @param {string} type - 类型 (youtube, bilibili等)
- * @returns {string} RSS feed URL
- */
-function convertUrlToRssFeed(url, type) {
-    if (!url) return url;
+// Extract YouTube video ID from URL
+function getYouTubeVideoId(url) {
+    const patterns = [
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([^&\n?#]+)/,
+        /youtube\.com\/shorts\/([^&\n?#]+)/
+    ];
     
-    // 如果已经是RSS feed URL，直接返回
-    if (url.includes('/feeds/videos.xml') || url.includes('rsshub.app') || url.includes('/rss')) {
-        return url;
+    for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match) return match[1];
     }
-    
-    try {
-        if (type === 'youtube') {
-            // YouTube频道ID格式: https://www.youtube.com/channel/UCxxxxx
-            const channelMatch = url.match(/youtube\.com\/channel\/([^\/\?]+)/);
-            if (channelMatch) {
-                const channelId = channelMatch[1];
-                return `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
-            }
-            
-            // YouTube博主主页格式: https://www.youtube.com/@username
-            const atMatch = url.match(/youtube\.com\/@([^\/\?]+)/);
-            if (atMatch) {
-                const username = atMatch[1];
-                // 使用RSSHub获取YouTube频道RSS (支持@username格式)
-                return `https://rsshub.app/youtube/channel/${username}`;
-            }
-            
-            // YouTube用户格式: https://www.youtube.com/user/username
-            const userMatch = url.match(/youtube\.com\/user\/([^\/\?]+)/);
-            if (userMatch) {
-                const username = userMatch[1];
-                return `https://rsshub.app/youtube/user/${username}`;
-            }
-            
-            // YouTube短链接格式: https://youtu.be/VIDEO_ID 或 https://www.youtube.com/watch?v=VIDEO_ID
-            if (url.includes('/watch?v=') || url.includes('youtu.be/')) {
-                return url;
-            }
-        }
-        
-        if (type === 'bilibili') {
-            // Bilibili UP主主页格式: https://space.bilibili.com/UID
-            const spaceMatch = url.match(/space\.bilibili\.com\/(\d+)/);
-            if (spaceMatch) {
-                const uid = spaceMatch[1];
-                return `https://rsshub.app/bilibili/user/video/${uid}`;
-            }
-            
-            // 如果是单个视频链接，直接返回
-            if (url.includes('/video/BV')) {
-                return url;
-            }
-        }
-    } catch (error) {
-        console.error('URL转换失败:', error);
-    }
-    
-    // 如果无法转换，返回原URL
-    return url;
+    return null;
 }
 
-/**
- * 核心函数：渲染一个视频区块
- * @param {string} containerId - 要渲染到哪个div
- * @param {string} type - 要筛选哪个类型 (e.g., 'youtube', 'bilibili', 'all')
- * @param {number} count - 要随机显示几个
- * @param {boolean} isRefresh - (可选) 是否是用户点击刷新
- */
-async function renderSection(containerId, type, count, isRefresh = false) {
-    const grid = document.getElementById(containerId);
-    grid.innerHTML = `<h3 class="loading-msg">加载中...</h3>`;
-
-    const myFollowList = await getMyFollowList(); // 等待数据加载完成
-    console.log(`[${type}] 加载数据，共 ${myFollowList.length} 条记录`);
+// Extract YouTube channel ID or username from URL
+function getYouTubeChannelInfo(url) {
+    // Channel ID format: /channel/UCxxxxx
+    const channelMatch = url.match(/youtube\.com\/channel\/([^\/\?]+)/);
+    if (channelMatch) return { type: 'channel', id: channelMatch[1] };
     
-    if (myFollowList.length === 0) {
-        grid.innerHTML = `<h3 class="loading-msg">数据文件为空或加载失败，请检查 data.json 文件。</h3>`;
+    // Username format: /@username or /user/username
+    const userMatch = url.match(/youtube\.com\/(?:@|user\/)([^\/\?]+)/);
+    if (userMatch) return { type: 'user', id: userMatch[1] };
+    
+    return null;
+}
+
+// Extract Bilibili video BV number from URL
+function getBilibiliVideoId(url) {
+    const match = url.match(/\/video\/(BV\w+)/);
+    return match ? match[1] : null;
+}
+
+// Extract Bilibili UID from URL
+function getBilibiliUID(url) {
+    const match = url.match(/space\.bilibili\.com\/(\d+)/);
+    return match ? match[1] : null;
+}
+
+// Get thumbnail URL for a video link
+function getThumbnailUrl(url) {
+    if (!url) return null;
+    
+    // YouTube video
+    const youtubeVideoId = getYouTubeVideoId(url);
+    if (youtubeVideoId) {
+        return `https://img.youtube.com/vi/${youtubeVideoId}/maxresdefault.jpg`;
+    }
+    
+    // YouTube channel/user - use oEmbed or default
+    const youtubeChannel = getYouTubeChannelInfo(url);
+    if (youtubeChannel) {
+        // For channels, we can't easily get thumbnails, return null
+        return null;
+    }
+    
+    // Bilibili video
+    const bvId = getBilibiliVideoId(url);
+    if (bvId) {
+        // Bilibili doesn't have a simple thumbnail API, but we can try
+        // The actual thumbnail would require API call, so we'll leave it for now
+        return null;
+    }
+    
+    // Bilibili user/space
+    const bilibiliUID = getBilibiliUID(url);
+    if (bilibiliUID) {
+        return null;
+    }
+    
+    return null;
+}
+
+// Count items in a category (including subcategories)
+function countItems(category, data) {
+    // For Daily Random, count all items from all categories
+    if (category.isRandom && data) {
+        return collectAllItems(data).length;
+    }
+    
+    let count = 0;
+    if (category.items) {
+        count += category.items.length;
+    }
+    if (category.subcategories) {
+        category.subcategories.forEach(sub => {
+            if (sub.items) {
+                count += sub.items.length;
+            }
+        });
+    }
+    return count;
+}
+
+// Count items in a subcategory
+function countSubcategoryItems(subcategory) {
+    return subcategory.items ? subcategory.items.length : 0;
+}
+
+// Render sidebar with categories
+async function renderSidebar() {
+    const data = await getData();
+    if (!data || !data.categories) {
+        console.error('数据格式错误');
         return;
     }
 
-    // 1. 按类型/标签过滤
-    let filteredList;
-    if (type === 'all') {
-        filteredList = myFollowList.filter(item => item.type !== 'collection'); // 随机池不过滤类型，但排除手动合集
+    const sidebarNav = document.getElementById('sidebar-nav');
+    let html = '';
+
+    data.categories.forEach(category => {
+        const itemCount = countItems(category, data);
+        const hasSubcategories = category.subcategories && category.subcategories.length > 0;
+        const isExpanded = expandedCategories.has(category.id);
+        const isActive = currentCategoryId === category.id && !currentSubcategoryId;
+
+        // Category header
+        html += `
+            <div class="category" data-category-id="${category.id}">
+                <div class="category-header ${isActive ? 'active' : ''}" 
+                     onclick="selectCategory('${category.id}')">
+                    <div class="category-header-content">
+                        ${hasSubcategories ? `
+                            <span class="category-toggle ${isExpanded ? 'expanded' : ''}" 
+                                  onclick="event.stopPropagation(); toggleCategory('${category.id}')">
+                                ▶
+                            </span>
+                        ` : ''}
+                        <span class="category-icon">${category.icon || '📁'}</span>
+                        <span class="category-name">${escapeHtml(category.name)}</span>
+                    </div>
+                    <span class="category-count">${itemCount}</span>
+                </div>`;
+
+        // Subcategories
+        if (hasSubcategories) {
+            const subcategoriesClass = isExpanded ? 'expanded' : 'collapsed';
+            html += `<div class="subcategories ${subcategoriesClass}">`;
+            
+            category.subcategories.forEach(subcategory => {
+                const subCount = countSubcategoryItems(subcategory);
+                const isSubActive = currentSubcategoryId === subcategory.id;
+                
+                html += `
+                    <div class="subcategory" data-subcategory-id="${subcategory.id}">
+                        <div class="subcategory-header ${isSubActive ? 'active' : ''}" 
+                             onclick="selectSubcategory('${category.id}', '${subcategory.id}')">
+                            <span class="subcategory-name">${escapeHtml(subcategory.name)}</span>
+                            <span class="subcategory-count">${subCount}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+        }
+
+        html += `</div>`;
+    });
+
+    sidebarNav.innerHTML = html;
+}
+
+// Toggle category expansion
+function toggleCategory(categoryId) {
+    if (expandedCategories.has(categoryId)) {
+        expandedCategories.delete(categoryId);
     } else {
-        filteredList = myFollowList.filter(item => item.type === type);
+        expandedCategories.add(categoryId);
     }
+    renderSidebar();
+}
+
+// Collect all items from all categories (for Daily Random)
+function collectAllItems(data) {
+    const allItems = [];
     
-    console.log(`[${type}] 过滤后，共 ${filteredList.length} 条记录`);
+    data.categories.forEach(category => {
+        // Skip daily random itself
+        if (category.id === 'daily-random') return;
+        
+        // Add direct items
+        if (category.items) {
+            category.items.forEach(item => {
+                allItems.push({...item, source: category.name});
+            });
+        }
+        
+        // Add items from subcategories
+        if (category.subcategories) {
+            category.subcategories.forEach(sub => {
+                if (sub.items) {
+                    sub.items.forEach(item => {
+                        allItems.push({...item, source: `${category.name} - ${sub.name}`});
+                    });
+                }
+            });
+        }
+    });
     
-    if (filteredList.length === 0) {
-        grid.innerHTML = `<h3 class="loading-msg">没有找到类型为 "${type}" 的内容。请检查 data.json 文件。</h3>`;
+    return allItems;
+}
+
+// Shuffle array randomly
+function shuffleArray(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+// Select a category
+async function selectCategory(categoryId) {
+    currentCategoryId = categoryId;
+    currentSubcategoryId = null;
+    showAllSubcategory = false; // Reset subcategory show all
+    
+    const data = await getData();
+    if (!data || !data.categories) return;
+
+    const category = data.categories.find(cat => cat.id === categoryId);
+    if (!category) return;
+
+    let items = [];
+    
+    // Handle Daily Random category
+    if (category.isRandom) {
+        const allItems = collectAllItems(data);
+        const maxItems = category.maxItems || MAX_ITEMS_DAILY_RANDOM;
+        const shuffled = shuffleArray(allItems);
+        items = shuffled.slice(0, Math.min(maxItems, shuffled.length));
+    } else {
+        // Regular category - get direct items
+        items = category.items || [];
+        
+        // Always randomize order
+        items = shuffleArray(items);
+        
+        // Apply maxItems limit if not showing all
+        if (!showAllCategory && items.length > 0) {
+            const maxItems = category.maxItems || MAX_ITEMS_CATEGORY;
+            if (items.length > maxItems) {
+                items = items.slice(0, maxItems);
+            }
+        }
+    }
+
+    // Render items
+    renderContent(items, category.name, category.icon);
+
+    // Update UI
+    renderSidebar();
+    updateContentHeader(category.name, category.icon);
+    document.getElementById('refresh-btn').style.display = 'inline-block';
+    updateShowAllButton();
+}
+
+// Select a subcategory
+async function selectSubcategory(categoryId, subcategoryId) {
+    currentCategoryId = categoryId;
+    currentSubcategoryId = subcategoryId;
+    showAllCategory = false; // Reset category show all
+    
+    const data = await getData();
+    if (!data || !data.categories) return;
+
+    const category = data.categories.find(cat => cat.id === categoryId);
+    if (!category || !category.subcategories) return;
+
+    const subcategory = category.subcategories.find(sub => sub.id === subcategoryId);
+    if (!subcategory) return;
+
+    // Expand parent category if collapsed
+    if (!expandedCategories.has(categoryId)) {
+        expandedCategories.add(categoryId);
+    }
+
+    // Get items
+    let items = subcategory.items || [];
+    
+    // Always randomize order
+    items = shuffleArray(items);
+    
+    // Apply maxItems limit if not showing all
+    if (!showAllSubcategory && items.length > 0) {
+        const maxItems = subcategory.maxItems || MAX_ITEMS_CLASS;
+        if (items.length > maxItems) {
+            items = items.slice(0, maxItems);
+        }
+    }
+
+    // Render items
+    renderContent(items, subcategory.name, category.icon);
+
+    // Update UI
+    renderSidebar();
+    updateContentHeader(subcategory.name, category.icon);
+    document.getElementById('refresh-btn').style.display = 'inline-block';
+    updateShowAllButton();
+}
+
+// Render content (buttons)
+function renderContent(items, title, icon) {
+    const contentBody = document.getElementById('content-body');
+    
+    if (!items || items.length === 0) {
+        contentBody.innerHTML = `
+            <div class="empty-state">
+                <p>此分类下暂无内容</p>
+            </div>
+        `;
         return;
     }
 
-    // 2. 随机
-    const shuffledList = filteredList.sort(() => 0.5 - Math.random());
-    const selectedItems = shuffledList.slice(0, count);
-    console.log(`[${type}] 选择了 ${selectedItems.length} 个项目`);
+    let html = '<div class="button-grid">';
+    
+    items.forEach((item, index) => {
+        const buttonText = item.text || item.name || '未命名';
+        const videoUrl = item.url || '#';
+        const thumbnailUrl = getThumbnailUrl(videoUrl);
+        const itemId = `item-${item.id || index}`;
+        
+        // Get thumbnail if available, otherwise use default
+        const hasThumbnail = thumbnailUrl !== null;
+        
+        html += `
+            <div class="video-button-wrapper" data-item-id="${itemId}">
+                <a href="${escapeHtml(videoUrl)}" target="_blank" class="video-button ${hasThumbnail ? 'has-thumbnail' : ''}" 
+                   title="${escapeHtml(buttonText)}"
+                   data-url="${escapeHtml(videoUrl)}">
+                    ${hasThumbnail ? `
+                        <img src="${escapeHtml(thumbnailUrl)}" alt="${escapeHtml(buttonText)}" 
+                             class="button-thumbnail" loading="lazy" 
+                             onerror="this.style.display='none'; this.parentElement.classList.remove('has-thumbnail');">
+                    ` : ''}
+                    <span class="button-text">${escapeHtml(buttonText)}</span>
+                </a>
+                <div class="preview-container" id="preview-${itemId}"></div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    contentBody.innerHTML = html;
+    
+    // Add hover preview functionality
+    setupHoverPreview();
+}
 
-    // 3. 获取数据 & 生成卡片
-    let htmlContent = "";
-    for (const item of selectedItems) {
-        let videoTitle = item.name; // 默认标题
-        let videoLink = "#";
-        let videoThumbnail = "https://via.placeholder.com/300x150?text=No+Image"; // 默认图片
-        let infoText = item.name; // 默认信息
-
-        try {
-            if (item.type === 'collection') {
-                // A. 手动合集/单个视频
-                videoTitle = item.name;
-                videoLink = cleanVideoLink(item.url, 'youtube'); // 先尝试youtube，如果不是会返回原链接
-                videoLink = cleanVideoLink(videoLink, 'bilibili'); // 再尝试bilibili
-                
-                // 尝试从URL提取缩略图
-                if (!item.thumbnail) {
-                    // YouTube视频缩略图
-                    const youtubeMatch = videoLink.match(/[?&]v=([^&]+)/) || videoLink.match(/\/shorts\/([^?&]+)/);
-                    if (youtubeMatch) {
-                        videoThumbnail = `https://img.youtube.com/vi/${youtubeMatch[1]}/maxresdefault.jpg`;
-                    } else {
-                        // Bilibili视频缩略图 - 使用B站API获取
-                        const bvMatch = videoLink.match(/\/video\/(BV\w+)/);
-                        if (bvMatch) {
-                            const bvId = bvMatch[1];
-                            // 使用B站API获取封面（需要CORS代理，但先尝试直接访问）
-                            try {
-                                const biliApiUrl = `https://api.bilibili.com/x/web-interface/view?bvid=${bvId}`;
-                                // 注意：由于CORS限制，这个可能无法直接使用
-                                // 作为备选，使用已知的B站图片URL格式
-                                videoThumbnail = `https://i0.hdslb.com/bfs/archive/${bvId}.jpg`; // 这个可能不工作
-                                // 更好的方案：使用SVG占位符或让用户提供thumbnail
-                            } catch (e) {
-                                console.warn('获取B站封面失败:', e);
-                            }
-                        }
-                    }
-                } else {
-                    videoThumbnail = item.thumbnail;
-                }
-                
-                // 如果还是没有缩略图，使用SVG占位符
-                if (!videoThumbnail || videoThumbnail === "https://via.placeholder.com/300x150?text=No+Image") {
-                    // 生成一个简单的SVG占位符，显示标题
-                    const titleEncoded = encodeURIComponent(item.name.substring(0, 20));
-                    videoThumbnail = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='150'><rect fill='%231e1e1e' width='300' height='150'/><text x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23888' font-size='14' font-family='sans-serif'>${titleEncoded}</text></svg>`;
-                }
-                
-                infoText = "手动合集";
-            } else {
-                // B. RSS 作者
-                let feedUrl = item.url;
-                if (!feedUrl) continue;
-                
-                // 自动转换博主主页链接为RSS feed
-                feedUrl = convertUrlToRssFeed(feedUrl, item.type);
-                
-                // 如果是单个视频链接（不是RSS feed），直接创建卡片
-                if (!feedUrl.includes('rsshub.app') && !feedUrl.includes('/feeds/videos.xml') && !feedUrl.includes('/rss')) {
-                    // 这是单个视频链接，清理后使用
-                    videoTitle = item.name;
-                    videoLink = cleanVideoLink(feedUrl, item.type);
-                    console.log(`[${item.name}] 单个视频链接清理后:`, videoLink);
-                    infoText = item.type === 'youtube' ? 'YouTube视频' : item.type === 'bilibili' ? 'Bilibili视频' : '视频';
-                    // 尝试从URL提取视频ID并获取缩略图
-                    if (item.type === 'youtube') {
-                        // 支持多种YouTube URL格式
-                        let videoId = null;
-                        const watchMatch = feedUrl.match(/[?&]v=([^&]+)/);
-                        const shortMatch = feedUrl.match(/youtu\.be\/([^?&]+)/);
-                        if (watchMatch) {
-                            videoId = watchMatch[1];
-                        } else if (shortMatch) {
-                            videoId = shortMatch[1];
-                        }
-                        if (videoId) {
-                            videoThumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-                        }
-                    } else if (item.type === 'bilibili') {
-                        const bvMatch = feedUrl.match(/\/video\/(BV\w+)/);
-                        if (bvMatch) {
-                            // B站视频封面可以通过API获取，这里先用默认图片
-                            videoThumbnail = item.thumbnail || videoThumbnail;
-                        }
-                    }
-                } else {
-                    // 这是RSS feed，获取最新视频
-                    try {
-                        // 首先尝试使用RSS2JSON API
-                        let data = null;
-                        try {
-                            const apiResponse = await fetch(RSS_TO_JSON_API + encodeURIComponent(feedUrl));
-                            if (apiResponse.ok) {
-                                const apiData = await apiResponse.json();
-                                if (apiData.status === 'ok' && apiData.items && apiData.items.length > 0) {
-                                    data = apiData;
-                                }
-                            }
-                        } catch (apiError) {
-                            console.warn(`[${item.name}] RSS2JSON API失败，尝试直接解析:`, apiError);
-                        }
-                        
-                        // 如果API失败，直接获取并解析RSS feed
-                        if (!data) {
-                            console.log(`[${item.name}] 直接解析RSS feed:`, feedUrl);
-                            const rssResponse = await fetch(feedUrl);
-                            if (rssResponse.ok) {
-                                const xmlText = await rssResponse.text();
-                                data = parseRSSFeed(xmlText);
-                            } else {
-                                throw new Error(`RSS feed请求失败: ${rssResponse.status}`);
-                            }
-                        }
-                        
-                        if (!data || data.status !== 'ok' || !data.items || data.items.length === 0) {
-                            console.warn(`[${item.name}] RSS feed 返回的数据无效或为空`);
-                            // 即使RSS失败，也显示一个卡片
-                            videoTitle = item.name;
-                            videoLink = feedUrl;
-                            infoText = item.type === 'youtube' ? 'YouTube频道' : item.type === 'bilibili' ? 'Bilibili UP主' : '频道';
-                            
-                            // 生成SVG占位符
-                            const titleEncoded = encodeURIComponent(item.name.substring(0, 20));
-                            videoThumbnail = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='150'><rect fill='%231e1e1e' width='300' height='150'/><text x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23888' font-size='14' font-family='sans-serif'>${titleEncoded}</text></svg>`;
-                        } else {
-                            const latestVideo = data.items[0];
-                            videoTitle = latestVideo.title;
-                            
-                            // 获取并清理视频链接
-                            let rawLink = latestVideo.link;
-                            console.log(`[${item.name}] RSS返回的原始链接:`, rawLink);
-                            
-                            // 清理和验证链接
-                            videoLink = cleanVideoLink(rawLink, item.type);
-                            console.log(`[${item.name}] 清理后的链接:`, videoLink);
-                            
-                            infoText = data.feed.title || item.name; // UP主/博主的名字
-
-                            // 智能获取封面 - 多种方式尝试
-                            if (item.type === 'youtube') {
-                                // YouTube: 优先使用RSS返回的thumbnail
-                                videoThumbnail = latestVideo.thumbnail || latestVideo.media?.thumbnail?.url || '';
-                                
-                                // 如果thumbnail不存在，尝试从视频链接提取ID获取缩略图
-                                if (!videoThumbnail || videoThumbnail.includes('placeholder')) {
-                                    const videoIdMatch = videoLink.match(/[?&]v=([^&]+)/) || videoLink.match(/\/shorts\/([^?&]+)/);
-                                    if (videoIdMatch) {
-                                        videoThumbnail = `https://img.youtube.com/vi/${videoIdMatch[1]}/maxresdefault.jpg`;
-                                    }
-                                }
-                            } else if (item.type === 'bilibili') {
-                                // B站RSS (RSSHub) 封面在 description 里
-                                const imgMatch = latestVideo.description?.match(/<img[^>]+src=["']([^"']+)["']/i);
-                                if (imgMatch) {
-                                    videoThumbnail = imgMatch[1];
-                                } else if (latestVideo.thumbnail) {
-                                    videoThumbnail = latestVideo.thumbnail;
-                                } else if (latestVideo.media?.thumbnail?.url) {
-                                    videoThumbnail = latestVideo.media.thumbnail.url;
-                                }
-                                
-                                // 如果还是没找到，尝试从视频链接提取BV号
-                                if (!videoThumbnail || videoThumbnail.includes('placeholder')) {
-                                    const bvMatch = videoLink.match(/\/video\/(BV\w+)/);
-                                    if (bvMatch) {
-                                        // B站视频封面可以通过API获取，这里先用默认图片
-                                        videoThumbnail = item.thumbnail || '';
-                                    }
-                                }
-                            } else if (item.type === 'instagram') {
-                                // Instagram (RSSHub) 封面也在 description 里
-                                const imgMatch = latestVideo.description?.match(/<img[^>]+src=["']([^"']+)["']/i);
-                                if (imgMatch) {
-                                    videoThumbnail = imgMatch[1];
-                                } else if (latestVideo.thumbnail) {
-                                    videoThumbnail = latestVideo.thumbnail;
-                                } else if (latestVideo.media?.thumbnail?.url) {
-                                    videoThumbnail = latestVideo.media.thumbnail.url;
-                                }
-                            }
-                            
-                            // 如果还是没有缩略图，使用SVG占位符
-                            if (!videoThumbnail || videoThumbnail.includes('placeholder')) {
-                                const titleEncoded = encodeURIComponent(videoTitle.substring(0, 20));
-                                videoThumbnail = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='150'><rect fill='%231e1e1e' width='300' height='150'/><text x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23888' font-size='14' font-family='sans-serif'>${titleEncoded}</text></svg>`;
-                            }
-                        }
-                    } catch (fetchError) {
-                        console.error(`[${item.name}] 获取RSS feed时出错:`, fetchError);
-                        // 即使出错，也显示一个卡片
-                        videoTitle = item.name;
-                        videoLink = feedUrl;
-                        infoText = item.type === 'youtube' ? 'YouTube频道' : item.type === 'bilibili' ? 'Bilibili UP主' : '频道';
-                        
-                        // 生成SVG占位符
-                        const titleEncoded = encodeURIComponent(item.name.substring(0, 20));
-                        videoThumbnail = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='150'><rect fill='%231e1e1e' width='300' height='150'/><text x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23888' font-size='14' font-family='sans-serif'>${titleEncoded}</text></svg>`;
-                    }
-                }
-            }
-
-            // 组装HTML卡片 - 添加图片加载失败处理
-            // 转义HTML特殊字符，防止XSS攻击
-            function escapeHtml(text) {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
+// Setup hover preview for buttons
+function setupHoverPreview() {
+    const buttons = document.querySelectorAll('.video-button');
+    let previewTimeout = null;
+    let activePreview = null;
+    let activeButton = null;
+    
+    buttons.forEach(button => {
+        const url = button.getAttribute('data-url');
+        const wrapper = button.closest('.video-button-wrapper');
+        const previewContainer = wrapper.querySelector('.preview-container');
+        
+        button.addEventListener('mouseenter', () => {
+            // Clear any existing timeout
+            if (previewTimeout) {
+                clearTimeout(previewTimeout);
             }
             
-            const escapedTitle = escapeHtml(videoTitle);
-            const escapedInfo = escapeHtml(infoText);
-            const escapedLink = escapeHtml(videoLink);
-            
-            // 如果缩略图是data URI（SVG），不需要转义
-            const escapedThumbnail = videoThumbnail.startsWith('data:') ? videoThumbnail : escapeHtml(videoThumbnail);
-            
-            htmlContent += `
-                <div class="video-card">
-                    <a href="${escapedLink}" target="_blank" title="${escapedTitle}">
-                        <img src="${escapedThumbnail}" 
-                             alt="${escapedTitle}" 
-                             loading="lazy"
-                             style="background-color: #1e1e1e; min-height: 150px;">
-                        <h3>${escapedTitle}</h3>
-                        <div class="card-info">${escapedInfo}</div>
-                    </a>
+            // Show preview after a short delay
+            previewTimeout = setTimeout(() => {
+                showPreview(url, previewContainer, button);
+                activePreview = previewContainer;
+                activeButton = button;
+            }, 500); // 500ms delay before showing preview
+        });
+        
+        button.addEventListener('mouseleave', () => {
+            if (previewTimeout) {
+                clearTimeout(previewTimeout);
+            }
+            hidePreview(previewContainer);
+            if (activePreview === previewContainer) {
+                activePreview = null;
+                activeButton = null;
+            }
+        });
+    });
+    
+    // Update preview position on scroll
+    let scrollUpdateTimeout = null;
+    window.addEventListener('scroll', () => {
+        if (scrollUpdateTimeout) {
+            clearTimeout(scrollUpdateTimeout);
+        }
+        scrollUpdateTimeout = setTimeout(() => {
+            if (activePreview && activeButton && activePreview.classList.contains('active')) {
+                positionPreview(activePreview, activeButton);
+            }
+        }, 10);
+    }, { passive: true });
+}
+
+// Show preview on hover
+function showPreview(url, container, button) {
+    if (!url || url === '#') return;
+    
+    // Check if it's a YouTube or Bilibili link
+    const youtubeVideoId = getYouTubeVideoId(url);
+    const bvId = getBilibiliVideoId(url);
+    
+    let previewHtml = '';
+    
+    if (youtubeVideoId) {
+        // YouTube video embed
+        previewHtml = `
+            <iframe 
+                src="https://www.youtube.com/embed/${youtubeVideoId}?autoplay=0&mute=1" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen
+                class="preview-iframe">
+            </iframe>
+        `;
+    } else if (bvId) {
+        // Bilibili video embed
+        previewHtml = `
+            <iframe 
+                src="https://player.bilibili.com/player.html?bvid=${bvId}&autoplay=0&page=1" 
+                frameborder="0" 
+                allowfullscreen
+                class="preview-iframe">
+            </iframe>
+        `;
+    } else {
+        // For other links, show a simple preview with the URL
+        const thumbnailUrl = getThumbnailUrl(url);
+        if (thumbnailUrl) {
+            previewHtml = `
+                <img src="${escapeHtml(thumbnailUrl)}" alt="Preview" class="preview-image">
+            `;
+        } else {
+            // Show a simple preview box
+            previewHtml = `
+                <div class="preview-placeholder">
+                    <p>${escapeHtml(url)}</p>
                 </div>
             `;
-        } catch (error) {
-            console.error("加载失败:", item.name, error);
-            htmlContent += `
-                <div class="video-card">
-                    <a href="#" target="_blank">
-                        <img src="${videoThumbnail}" alt="">
-                        <h3>${item.name} (加载失败)</h3>
-                        <div class="card-info">${error.message}</div>
-                    </a>
-                </div>`;
         }
     }
+    
+    container.innerHTML = previewHtml;
+    container.classList.add('active');
+    
+    // Position preview near the button
+    positionPreview(container, button);
+}
 
-    if (htmlContent === "") {
-        grid.innerHTML = `<h3 class="loading-msg">没有找到类型为 "${type}" 的内容。</h3>`;
+// Hide preview
+function hidePreview(container) {
+    container.classList.remove('active');
+    // Clear content after animation
+    setTimeout(() => {
+        if (!container.classList.contains('active')) {
+            container.innerHTML = '';
+        }
+    }, 200);
+}
+
+// Position preview container relative to button
+function positionPreview(container, button) {
+    const rect = button.getBoundingClientRect();
+    const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
+    const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+    
+    // Position to the right of the button
+    let left = rect.right + scrollX + 20;
+    let top = rect.top + scrollY;
+    
+    // Check if preview would go off screen horizontally
+    if (left + 560 > window.innerWidth + scrollX) {
+        // Position to the left instead
+        left = rect.left + scrollX - 560 - 20;
+    }
+    
+    // Check if preview would go off screen vertically
+    if (top + 315 > window.innerHeight + scrollY) {
+        top = window.innerHeight + scrollY - 315 - 20;
+    }
+    
+    if (top < scrollY + 20) top = scrollY + 20;
+    if (left < scrollX + 20) left = scrollX + 20;
+    
+    container.style.left = `${left}px`;
+    container.style.top = `${top}px`;
+}
+
+// Update content header
+function updateContentHeader(title, icon) {
+    const contentTitle = document.getElementById('content-title');
+    contentTitle.textContent = `${icon || ''} ${title}`;
+}
+
+// Update show all checkbox visibility
+function updateShowAllButton() {
+    const showAllCheckbox = document.getElementById('show-all-checkbox');
+    const showAllLabel = document.getElementById('show-all-label');
+    if (showAllCheckbox && showAllLabel) {
+        // Show checkbox only for categories/subcategories (not daily random)
+        const data = cachedData;
+        if (data && data.categories) {
+            const category = data.categories.find(cat => cat.id === currentCategoryId);
+            if (category && !category.isRandom) {
+                showAllCheckbox.style.display = 'inline-block';
+                showAllLabel.style.display = 'inline-block';
+                if (currentSubcategoryId) {
+                    showAllCheckbox.checked = showAllSubcategory;
+                } else {
+                    showAllCheckbox.checked = showAllCategory;
+                }
+            } else {
+                showAllCheckbox.style.display = 'none';
+                showAllLabel.style.display = 'none';
+            }
+        }
+    }
+}
+
+// Toggle show all for current category/subcategory
+function toggleShowAll() {
+    const checkbox = document.getElementById('show-all-checkbox');
+    if (!checkbox) return;
+    
+    if (currentSubcategoryId) {
+        showAllSubcategory = checkbox.checked;
     } else {
-        grid.innerHTML = htmlContent;
+        showAllCategory = checkbox.checked;
+    }
+    
+    // Refresh current view
+    if (currentSubcategoryId) {
+        selectSubcategory(currentCategoryId, currentSubcategoryId);
+    } else if (currentCategoryId) {
+        selectCategory(currentCategoryId);
+    }
+}
+
+// Refresh current category (Random)
+function refreshCurrentCategory() {
+    // Reset show all when refreshing
+    showAllCategory = false;
+    showAllSubcategory = false;
+    
+    // Update checkbox state
+    const checkbox = document.getElementById('show-all-checkbox');
+    if (checkbox) {
+        checkbox.checked = false;
+    }
+    
+    if (currentSubcategoryId) {
+        selectSubcategory(currentCategoryId, currentSubcategoryId);
+    } else if (currentCategoryId) {
+        selectCategory(currentCategoryId);
+    }
+}
+
+// Initialize app
+async function initApp() {
+    await renderSidebar();
+    
+    // Auto-select first category if available
+    const data = await getData();
+    if (data && data.categories && data.categories.length > 0) {
+        const firstCategory = data.categories[0];
+        if (firstCategory.subcategories && firstCategory.subcategories.length > 0) {
+            // If has subcategories, expand and select first subcategory
+            expandedCategories.add(firstCategory.id);
+            if (firstCategory.subcategories[0].items && firstCategory.subcategories[0].items.length > 0) {
+                selectSubcategory(firstCategory.id, firstCategory.subcategories[0].id);
+            }
+        } else if (firstCategory.items && firstCategory.items.length > 0) {
+            selectCategory(firstCategory.id);
+        }
     }
 }
