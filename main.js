@@ -578,15 +578,19 @@ function renderContent(items, title, icon) {
         const isPinned = isPinnedFromData || isPinnedFromStorage;
         const isFav = isFavorite(itemId);
         
+        // Check if we're in favorites category (hide pin button in favorites)
+        const isFavoritesCategory = currentCategoryId === 'favorites';
+        
         html += `
             <div class="video-button-wrapper">
+                ${!isFavoritesCategory ? `
+                    <button class="pin-btn ${isPinned ? 'active' : ''}" onclick="togglePinItem(${itemId}, event);" title="${isPinned ? 'Unpin' : 'Pin'}">
+                        ${isPinned ? '📌' : '📎'}
+                    </button>
+                ` : ''}
                 <a href="${escapeHtml(videoUrl)}" target="_blank" class="video-button ${isPinned ? 'pinned' : ''}" title="${escapeHtml(buttonText)}">
-                    ${isPinned ? '<span class="pin-icon" title="Pinned">📌</span>' : ''}
                     <span class="button-text">${escapeHtml(buttonText)}</span>
                 </a>
-                <button class="pin-btn ${isPinned ? 'active' : ''}" onclick="togglePinItem(${itemId}, event);" title="${isPinned ? 'Unpin' : 'Pin'}">
-                    ${isPinned ? '📌' : '📎'}
-                </button>
                 <button class="favorite-btn ${isFav ? 'active' : ''}" onclick="toggleFavoriteItem(${itemId}, event);" title="${isFav ? 'Remove from favorites' : 'Add to favorites'}">
                     ${isFav ? '⭐' : '☆'}
                 </button>
@@ -655,11 +659,12 @@ function updateShowAllButton() {
     const showAllCheckbox = document.getElementById('show-all-checkbox');
     const showAllLabel = document.getElementById('show-all-label');
     if (showAllCheckbox && showAllLabel) {
-        // Show checkbox for all categories (including daily random)
+        // Show checkbox for all categories (including daily random and favorites)
         const data = cachedData;
         if (data && data.categories) {
             const category = data.categories.find(cat => cat.id === currentCategoryId);
-            if (category) {
+            // Show checkbox if category exists OR if it's favorites (which is not in data.json)
+            if (category || currentCategoryId === 'favorites') {
                 showAllCheckbox.style.display = 'inline-block';
                 showAllLabel.style.display = 'inline-block';
                 // Sync checkbox with current state (don't change it, just update display)
@@ -698,17 +703,10 @@ function toggleShowAll() {
 
 // Refresh current category (Random)
 function refreshCurrentCategory() {
-    // Reset show all when refreshing
-    showAllCategory = false;
-    showAllSubcategory = false;
+    // Don't reset show all state - just refresh the view to randomize items
+    // The checkbox state should be preserved
     
-    // Update checkbox state FIRST
-    const checkbox = document.getElementById('show-all-checkbox');
-    if (checkbox) {
-        checkbox.checked = false;
-    }
-    
-    // Then refresh the view
+    // Refresh the view (this will re-randomize items while keeping showAll state)
     if (currentSubcategoryId) {
         selectSubcategory(currentCategoryId, currentSubcategoryId);
     } else if (currentCategoryId) {
