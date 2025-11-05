@@ -771,7 +771,7 @@ function renderContent(items, title, icon) {
                     </button>
                 ` : ''}
                 <a href="${escapeHtml(videoUrl)}" target="_blank" class="video-button ${isPinned && !isFavoritesCategory ? 'pinned' : ''}" title="${escapeHtml(buttonText)}">
-                    <span class="button-text">${escapeHtml(buttonText)}</span>
+                    <span class="button-text">${escapeHtml(buttonText).replace(/\n/g, '<br>')}</span>
                 </a>
                 <button class="favorite-btn ${isFav ? 'active' : ''}" onclick="toggleFavoriteItem(${itemId}, event);" title="${isFav ? 'Remove from favorites' : 'Add to favorites'}">
                     ${isFav ? '⭐' : '☆'}

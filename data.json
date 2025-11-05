@@ -9,6 +9,36 @@
       "items": []
     },
     {
+      "id": "category",
+      "name": "category",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [],
+      "subcategories": [
+        {
+          "id": "category-class",
+          "name": "class",
+          "maxItems": 50,
+          "items": [],
+          "subclasses": [
+            {
+              "id": "category-class-subclass",
+              "name": "subclass",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 1,
+                  "name": "text",
+                  "url": "﻿link",
+                  "text": "text"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "hehe",
       "name": "hehe",
       "icon": "📁",
@@ -21,7 +51,7 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 8,
+              "id": 9,
               "name": "中指通",
               "url": "https://www.youtube.com/@%E4%B8%AD%E6%8C%87%E9%80%9A/videos",
               "text": "中指通"
@@ -34,13 +64,13 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 10,
+              "id": 11,
               "name": "伊織萌",
               "url": "https://www.youtube.com/@Iorimoe-tanoshi",
               "text": "伊織萌"
             },
             {
-              "id": 26,
+              "id": 27,
               "name": "표은지Eunji",
               "url": "https://www.youtube.com/@Eunjipyo",
               "text": "표은지Eunji"
@@ -56,7 +86,7 @@
       "maxItems": 50,
       "items": [
         {
-          "id": 27,
+          "id": 28,
           "name": "类火柴人可爱画风",
           "url": "https://www.youtube.com/@SCP/videos",
           "text": "类火柴人可爱画风"
@@ -70,10 +100,10 @@
       "maxItems": 50,
       "items": [
         {
-          "id": 1,
+          "id": 2,
           "name": "饱饱追剧 短剧整合",
           "url": "https://www.youtube.com/@HMBB8888/videos",
-          "text": "饱饱追剧 短剧整合"
+          "text": "饱饱追剧\n短剧整合"
         }
       ],
       "subcategories": [
@@ -83,7 +113,7 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 19,
+              "id": 20,
               "name": "黑白漫画解说",
               "url": "https://www.youtube.com/@tree2793/videos",
               "text": "黑白漫画解说"
@@ -99,10 +129,10 @@
       "maxItems": 50,
       "items": [
         {
-          "id": 4,
+          "id": 5,
           "name": "阿路的精神時光屋 40min一款",
           "url": "https://www.youtube.com/@rusiru87time/videos",
-          "text": "阿路的精神時光屋 40min一款"
+          "text": "阿路的精神時光屋\n40min一款"
         }
       ],
       "subcategories": [
@@ -112,7 +142,7 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 9,
+              "id": 10,
               "name": "神戳戳的苏神",
               "url": "https://www.youtube.com/@shenchuochuo/videos",
               "text": "神戳戳的苏神"
@@ -134,16 +164,16 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 12,
+              "id": 13,
               "name": "中国国标搬运",
               "url": "https://www.youtube.com/@StarDanceShop/videos",
               "text": "中国国标搬运"
             },
             {
-              "id": 25,
+              "id": 26,
               "name": "拉丁 couple 创意多变basic",
               "url": "https://www.youtube.com/@DanceInsanity/videos",
-              "text": "拉丁 couple 创意多变basic"
+              "text": "拉丁 couple \n 创意多变basic"
             }
           ],
           "subclasses": [
@@ -153,13 +183,13 @@
               "maxItems": 50,
               "items": [
                 {
-                  "id": 17,
+                  "id": 18,
                   "name": "国标 欧洲老头",
                   "url": "https://www.youtube.com/@EgilsSmagris",
                   "text": "国标 欧洲老头"
                 },
                 {
-                  "id": 18,
+                  "id": 19,
                   "name": "国标 拉丁 专业赛事",
                   "url": "https://www.youtube.com/@DanceToday/videos",
                   "text": "国标 拉丁 专业赛事"
@@ -174,13 +204,13 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 16,
+              "id": 17,
               "name": "手工老头",
               "url": "https://www.youtube.com/@tested/videos",
               "text": "手工老头"
             },
             {
-              "id": 20,
+              "id": 21,
               "name": "diy project + 实验",
               "url": "https://www.youtube.com/@TheKingofRandom/videos",
               "text": "diy project + 实验"
@@ -193,10 +223,10 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 3,
+              "id": 4,
               "name": "台湾 查理 右派自由",
               "url": "https://www.youtube.com/@godsteammate/videos",
-              "text": "台湾 查理 右派自由"
+              "text": "台湾 查理\n右派自由"
             }
           ]
         },
@@ -206,10 +236,10 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 6,
+              "id": 7,
               "name": "大狸子切切里 科技测评",
               "url": "https://www.youtube.com/@cherry_official/videos",
-              "text": "大狸子切切里 科技测评"
+              "text": "大狸子切切里\n科技测评"
             }
           ]
         },
@@ -219,10 +249,10 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 21,
-              "name": "Numberphile 15min 数学 ",
+              "id": 22,
+              "name": "Numberphile 15min 数学",
               "url": "https://www.youtube.com/@numberphile/videos",
-              "text": "Numberphile 15min 数学 "
+              "text": "Numberphile\n15min 数学"
             }
           ]
         },
@@ -232,13 +262,13 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 15,
+              "id": 16,
               "name": "画风可爱 各类科普",
               "url": "https://www.youtube.com/@kurzgesagt/videos",
               "text": "画风可爱 各类科普"
             },
             {
-              "id": 30,
+              "id": 31,
               "name": "短视频 深入浅出!",
               "url": "https://www.youtube.com/@miaodong/videos",
               "text": "短视频 深入浅出!"
@@ -251,19 +281,19 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 11,
+              "id": 12,
               "name": "The Tonight Show jimmy 都是短的",
               "url": "https://www.youtube.com/@fallontonight/videos",
-              "text": "The Tonight Show jimmy 都是短的"
+              "text": "The Tonight Show jimmy\n都是短的"
             },
             {
-              "id": 13,
+              "id": 14,
               "name": "科技类 10min左右",
               "url": "https://www.youtube.com/@LondonRealTV/videos",
               "text": "科技类 10min左右"
             },
             {
-              "id": 14,
+              "id": 15,
               "name": "大讨论 围圆圈坐一起",
               "url": "https://www.youtube.com/@jubilee/videos",
               "text": "大讨论 围圆圈坐一起"
@@ -276,10 +306,10 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 28,
+              "id": 29,
               "name": "马来西亚 辩论辩题 30-50min 左右",
               "url": "https://www.youtube.com/@BBKNetwork/videos",
-              "text": "马来西亚 辩论辩题 30-50min 左右"
+              "text": "马来西亚 辩论辩题\n30-50min 左右"
             }
           ]
         }
@@ -292,19 +322,19 @@
       "maxItems": 50,
       "items": [
         {
-          "id": 5,
+          "id": 6,
           "name": "狐狸头🦊 经常开新游新坑",
           "url": "https://www.youtube.com/@pfytw/videos",
-          "text": "狐狸头🦊 经常开新游新坑"
+          "text": "狐狸头🦊\n经常开新游新坑"
         },
         {
-          "id": 7,
+          "id": 8,
           "name": "喵心GG (啥都有 七日杀类多一些)",
           "url": "https://www.youtube.com/@miaoxinGG/videos",
-          "text": "喵心GG (啥都有 七日杀类多一些)"
+          "text": "喵心GG\n(啥都有 七日杀类多一些)"
         },
         {
-          "id": 29,
+          "id": 30,
           "name": "悠闲 + 恐怖(小小梦魇)",
           "url": "https://www.youtube.com/@AshanKouki/videos",
           "text": "悠闲 + 恐怖(小小梦魇)"
@@ -317,7 +347,7 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 22,
+              "id": 23,
               "name": "完美蝙蝠侠",
               "url": "https://www.youtube.com/@StealthyChannel/videos",
               "text": "完美蝙蝠侠"
@@ -336,16 +366,16 @@
               "maxItems": 50,
               "items": [
                 {
-                  "id": 2,
+                  "id": 3,
                   "name": "super",
                   "url": "https://www.youtube.com/@Superman049",
                   "text": "super"
                 },
                 {
-                  "id": 24,
+                  "id": 25,
                   "name": "SonicFox 电竞高手",
                   "url": "https://www.youtube.com/@SonicFox5000/videos",
-                  "text": "SonicFox 电竞高手"
+                  "text": "SonicFox\n电竞高手"
                 }
               ]
             }
@@ -357,10 +387,10 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 23,
+              "id": 24,
               "name": "Necros 漫威争锋 蜘蛛侠",
               "url": "https://www.youtube.com/@NecrosOW/videos",
-              "text": "Necros 漫威争锋 蜘蛛侠"
+              "text": "Necros\n漫威争锋 蜘蛛侠"
             }
           ]
         }
