@@ -192,12 +192,12 @@ function addItemToLocation(categoryId, subcategoryId, subclassId, name, url, tex
     });
     const newId = maxId - 1;
     
-    // Create new item
+    // Create new item (name is displayed on button, text is note/remark)
     const newItem = {
         id: newId,
         name: name,
         url: url,
-        text: text || name
+        text: text || '' // text is now a note/remark, not displayed on button
     };
     
     // Add to location
@@ -208,6 +208,110 @@ function addItemToLocation(categoryId, subcategoryId, subclassId, name, url, tex
     
     saveUserAddedItems(userAddedItems);
     return newItem;
+}
+
+// Update item in a specific location
+function updateItemInLocation(itemId, name, url, text) {
+    const userAddedItems = getUserAddedItems();
+    
+    // Find the item in userAddedItems
+    for (const locationKey in userAddedItems) {
+        const items = userAddedItems[locationKey];
+        const index = items.findIndex(item => item.id === itemId);
+        if (index !== -1) {
+            // Update the item
+            items[index].name = name;
+            items[index].url = url;
+            items[index].text = text || '';
+            saveUserAddedItems(userAddedItems);
+            return true;
+        }
+    }
+    
+    // If not found in userAddedItems, it's from data.json
+    // Create a modified copy in userAddedItems at the current location
+    // We'll mark the original as deleted and add the modified version
+    const locationKey = currentSubclassId 
+        ? `${currentCategoryId}:${currentSubcategoryId}:${currentSubclassId}`
+        : currentSubcategoryId 
+        ? `${currentCategoryId}:${currentSubcategoryId}`
+        : currentCategoryId;
+    
+    if (!userAddedItems[locationKey]) {
+        userAddedItems[locationKey] = [];
+    }
+    
+    // Add modified item with same ID (will override data.json item)
+    const modifiedItem = {
+        id: itemId,
+        name: name,
+        url: url,
+        text: text || ''
+    };
+    
+    userAddedItems[locationKey].push(modifiedItem);
+    saveUserAddedItems(userAddedItems);
+    return true;
+}
+
+// Get item by ID (from both data.json and userAddedItems)
+async function getItemById(itemId) {
+    const data = await getData();
+    const userAddedItems = getUserAddedItems();
+    const deletedItems = getDeletedItems();
+    
+    // Check if item is deleted
+    if (deletedItems.includes(itemId)) {
+        return null;
+    }
+    
+    // Check user-added items first
+    for (const locationKey in userAddedItems) {
+        const items = userAddedItems[locationKey];
+        const item = items.find(item => item.id === itemId);
+        if (item) {
+            return { ...item, isUserAdded: true };
+        }
+    }
+    
+    // Check data.json items
+    if (data && data.categories) {
+        for (const category of data.categories) {
+            // Check category items
+            if (category.items) {
+                const item = category.items.find(item => item.id === itemId);
+                if (item) {
+                    return { ...item, isUserAdded: false };
+                }
+            }
+            
+            // Check subcategory items
+            if (category.subcategories) {
+                for (const subcategory of category.subcategories) {
+                    if (subcategory.items) {
+                        const item = subcategory.items.find(item => item.id === itemId);
+                        if (item) {
+                            return { ...item, isUserAdded: false };
+                        }
+                    }
+                    
+                    // Check subclass items
+                    if (subcategory.subclasses) {
+                        for (const subclass of subcategory.subclasses) {
+                            if (subclass.items) {
+                                const item = subclass.items.find(item => item.id === itemId);
+                                if (item) {
+                                    return { ...item, isUserAdded: false };
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    return null;
 }
 
 function togglePin(itemId) {
@@ -623,7 +727,13 @@ function collectAllItems(data) {
         if (category.items) {
             category.items.forEach(item => {
                 if (!deletedItems.includes(item.id)) {
-                    allItems.push({...item, source: category.name});
+                    // Ensure item has name for display (backwards compatibility: use text as name if name doesn't exist)
+                    const displayItem = {
+                        ...item,
+                        name: item.name || item.text || '未命名',
+                        source: category.name
+                    };
+                    allItems.push(displayItem);
                 }
             });
         }
@@ -645,7 +755,14 @@ function collectAllItems(data) {
                 if (sub.items) {
                     sub.items.forEach(item => {
                         if (!deletedItems.includes(item.id)) {
-                            allItems.push({...item, source: `${category.name} - ${sub.name}`});
+                            // Ensure item has name for display (backwards compatibility: use text as name if name doesn't exist)
+                            const displayItem = {
+                                ...item,
+                                name: item.name || item.text || '未命名',
+                                text: item.text || item.name || '', // Keep text as note
+                                source: `${category.name} - ${sub.name}`
+                            };
+                            allItems.push(displayItem);
                         }
                     });
                 }
@@ -655,7 +772,13 @@ function collectAllItems(data) {
                 if (userAddedItems[subcategoryKey]) {
                     userAddedItems[subcategoryKey].forEach(item => {
                         if (!deletedItems.includes(item.id)) {
-                            allItems.push({...item, source: `${category.name} - ${sub.name}`});
+                            // Ensure item has name for display (backwards compatibility)
+                            const displayItem = {
+                                ...item,
+                                name: item.name || item.text || '未命名',
+                                source: `${category.name} - ${sub.name}`
+                            };
+                            allItems.push(displayItem);
                         }
                     });
                 }
@@ -663,20 +786,33 @@ function collectAllItems(data) {
                 // Add items from subclasses
                 if (sub.subclasses) {
                     sub.subclasses.forEach(subclass => {
-                        if (subclass.items) {
-                            subclass.items.forEach(item => {
-                                if (!deletedItems.includes(item.id)) {
-                                    allItems.push({...item, source: `${category.name} - ${sub.name} - ${subclass.name}`});
-                                }
-                            });
+                if (subclass.items) {
+                    subclass.items.forEach(item => {
+                        if (!deletedItems.includes(item.id)) {
+                            // Ensure item has name for display (backwards compatibility: use text as name if name doesn't exist)
+                            const displayItem = {
+                                ...item,
+                                name: item.name || item.text || '未命名',
+                                text: item.text || item.name || '', // Keep text as note
+                                source: `${category.name} - ${sub.name} - ${subclass.name}`
+                            };
+                            allItems.push(displayItem);
                         }
+                    });
+                }
                         
                         // Add user-added items for this subclass
                         const subclassKey = `${category.id}:${sub.id}:${subclass.id}`;
                         if (userAddedItems[subclassKey]) {
                             userAddedItems[subclassKey].forEach(item => {
                                 if (!deletedItems.includes(item.id)) {
-                                    allItems.push({...item, source: `${category.name} - ${sub.name} - ${subclass.name}`});
+                                    // Ensure item has name for display (backwards compatibility)
+                                    const displayItem = {
+                                        ...item,
+                                        name: item.name || item.text || '未命名',
+                                        source: `${category.name} - ${sub.name} - ${subclass.name}`
+                                    };
+                                    allItems.push(displayItem);
                                 }
                             });
                         }
@@ -826,8 +962,13 @@ async function selectCategory(categoryId) {
         // Regular category - get direct items from data.json
         let baseItems = category.items || [];
         
-        // Filter out deleted items
-        baseItems = baseItems.filter(item => !deletedItems.includes(item.id));
+        // Filter out deleted items and ensure items have name for display
+        baseItems = baseItems
+            .filter(item => !deletedItems.includes(item.id))
+            .map(item => ({
+                ...item,
+                name: item.name || item.text || '未命名' // backwards compatibility
+            }));
         
         // Get user-added items for this category
         const userAddedItems = getItemsForLocation(categoryId);
@@ -930,8 +1071,13 @@ async function selectSubcategory(categoryId, subcategoryId) {
     let items = subcategory.items || [];
     const deletedItems = getDeletedItems();
     
-    // Filter out deleted items
-    items = items.filter(item => !deletedItems.includes(item.id));
+    // Filter out deleted items and ensure items have name for display
+    items = items
+        .filter(item => !deletedItems.includes(item.id))
+        .map(item => ({
+            ...item,
+            name: item.name || item.text || '未命名' // backwards compatibility
+        }));
     
     // Also collect items from all subclasses within this subcategory
     if (subcategory.subclasses) {
@@ -944,8 +1090,15 @@ async function selectSubcategory(categoryId, subcategoryId) {
     }
     
     // Get user-added items for this subcategory
-    const userAddedItems = getItemsForLocation(categoryId, subcategoryId);
-    items = [...items, ...userAddedItems];
+    const userAddedItemsList = getItemsForLocation(categoryId, subcategoryId);
+    
+    // Ensure user-added items have name for display (backwards compatibility)
+    const userAddedItemsWithName = userAddedItemsList.map(item => ({
+        ...item,
+        name: item.name || item.text || '未命名'
+    }));
+    
+    items = [...items, ...userAddedItemsWithName];
     
     // Separate pinned and unpinned items (from both data.json and localStorage)
     // This handles pinned items from both subcategory items and subclass items
@@ -1041,13 +1194,45 @@ async function selectSubclass(categoryId, subcategoryId, subclassId) {
     // Get items
     let items = subclass.items || [];
     const deletedItems = getDeletedItems();
+    const userAddedItems = getUserAddedItems();
+    const subclassKey = `${categoryId}:${subcategoryId}:${subclassId}`;
     
-    // Filter out deleted items
-    items = items.filter(item => !deletedItems.includes(item.id));
+    // Filter out deleted items and check for modifications
+    items = items
+        .filter(item => !deletedItems.includes(item.id))
+        .map(item => {
+            // Check if this item has been modified in userAddedItems
+            const modifiedItem = userAddedItems[subclassKey]?.find(userItem => userItem.id === item.id);
+            if (modifiedItem) {
+                // Use modified version
+                return modifiedItem;
+            }
+            // Use original with name for display (backwards compatibility)
+            return {
+                ...item,
+                name: item.name || item.text || '未命名',
+                text: item.text || ''
+            };
+        });
     
-    // Get user-added items for this subclass
-    const userAddedItems = getItemsForLocation(categoryId, subcategoryId, subclassId);
-    items = [...items, ...userAddedItems];
+    // Get user-added items for this subclass (new items, not modifications)
+    const userAddedItemsList = getItemsForLocation(categoryId, subcategoryId, subclassId);
+    
+    // Filter out items that are modifications (they're already in items)
+    const originalItemIds = new Set();
+    if (subclass.items) {
+        subclass.items.forEach(item => originalItemIds.add(item.id));
+    }
+    
+    const newUserAddedItems = userAddedItemsList.filter(userItem => !originalItemIds.has(userItem.id));
+    
+    // Ensure user-added items have name for display (backwards compatibility)
+    const userAddedItemsWithName = newUserAddedItems.map(item => ({
+        ...item,
+        name: item.name || item.text || '未命名'
+    }));
+    
+    items = [...items, ...userAddedItemsWithName];
     
     // Separate pinned and unpinned items (from both data.json and localStorage)
     const pins = getPins();
@@ -1111,15 +1296,16 @@ function renderContent(items, title, icon) {
         contentBody.innerHTML = `
             <div class="empty-state">
                 <p>此分类下暂无内容</p>
-            </div>
-        `;
+                </div>
+            `;
         return;
     }
 
     let html = '<div class="button-grid">';
     
     items.forEach((item) => {
-        const buttonText = item.text || item.name || '未命名';
+        // Display name on button, text is now a note (not displayed)
+        const buttonText = item.name || '未命名';
         const videoUrl = item.url || '#';
         const itemId = item.id;
         // Check both data.json pinned and localStorage pinned
@@ -1143,6 +1329,9 @@ function renderContent(items, title, icon) {
                 </a>
                 <button class="favorite-btn ${isFav ? 'active' : ''}" onclick="toggleFavoriteItem(${itemId}, event);" title="${isFav ? 'Remove from favorites' : 'Add to favorites'}">
                     ${isFav ? '⭐' : '☆'}
+                </button>
+                <button class="edit-btn" onclick="showEditModal(${itemId}, event);" title="Edit">
+                    ✎
                 </button>
                 <button class="delete-btn" onclick="deleteItemWithConfirm(${itemId}, event);" title="Delete">
                     ×
@@ -1235,25 +1424,59 @@ function showAddNewModal() {
     const modal = document.getElementById('add-item-modal');
     if (modal) {
         modal.style.display = 'flex';
+        modal.setAttribute('data-mode', 'add');
         // Clear form
         document.getElementById('add-item-name').value = '';
         document.getElementById('add-item-url').value = '';
         document.getElementById('add-item-text').value = '';
+        document.getElementById('add-item-modal-title').textContent = '新增按钮';
         // Focus on name input
         document.getElementById('add-item-name').focus();
     }
 }
 
-// Hide add new item modal
+// Show edit item modal
+async function showEditModal(itemId, event) {
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+    
+    const item = await getItemById(itemId);
+    if (!item) {
+        alert('无法找到该项目');
+        return;
+    }
+    
+    const modal = document.getElementById('add-item-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        modal.setAttribute('data-mode', 'edit');
+        modal.setAttribute('data-item-id', itemId);
+        // Fill form with item data
+        document.getElementById('add-item-name').value = item.name || '';
+        document.getElementById('add-item-url').value = item.url || '';
+        document.getElementById('add-item-text').value = item.text || '';
+        document.getElementById('add-item-modal-title').textContent = '编辑按钮';
+        // Focus on name input
+        document.getElementById('add-item-name').focus();
+    }
+}
+
+// Hide add/edit item modal
 function hideAddNewModal() {
     const modal = document.getElementById('add-item-modal');
     if (modal) {
         modal.style.display = 'none';
+        modal.removeAttribute('data-mode');
+        modal.removeAttribute('data-item-id');
     }
 }
 
-// Add new item
-function addNewItem() {
+// Add new item or update existing item
+async function addNewItem() {
+    const modal = document.getElementById('add-item-modal');
+    const mode = modal.getAttribute('data-mode');
     const name = document.getElementById('add-item-name').value.trim();
     const url = document.getElementById('add-item-url').value.trim();
     const text = document.getElementById('add-item-text').value.trim();
@@ -1263,8 +1486,14 @@ function addNewItem() {
         return;
     }
     
-    // Add item to current location
-    addItemToLocation(currentCategoryId, currentSubcategoryId, currentSubclassId, name, url, text);
+    if (mode === 'edit') {
+        // Edit existing item
+        const itemId = parseInt(modal.getAttribute('data-item-id'));
+        updateItemInLocation(itemId, name, url, text);
+    } else {
+        // Add new item
+        addItemToLocation(currentCategoryId, currentSubcategoryId, currentSubclassId, name, url, text);
+    }
     
     // Hide modal
     hideAddNewModal();
@@ -1352,6 +1581,9 @@ function refreshCurrentCategory() {
 
 // Initialize app
 async function initApp() {
+    // Initialize sidebar state
+    initSidebarState();
+    
     await renderSidebar();
     
     // Auto-select Daily Random category by default
@@ -1375,33 +1607,41 @@ async function initApp() {
         }
     }
     
-    // Add Enter key support for modal
+    // Add Escape key support for modal (no Enter key submission, only button click)
     document.addEventListener('keydown', (e) => {
         const modal = document.getElementById('add-item-modal');
         if (!modal) return;
         
-        if (e.key === 'Enter' && modal.style.display === 'flex') {
-            const target = e.target;
-            if (target.id === 'add-item-name' || target.id === 'add-item-url' || target.id === 'add-item-text') {
-                if (e.shiftKey && target.id === 'add-item-text') {
-                    // Allow Shift+Enter for new line in textarea
-                    return;
-                }
-                e.preventDefault();
-                addNewItem();
-            }
-        } else if (e.key === 'Escape' && modal.style.display === 'flex') {
+        if (e.key === 'Escape' && modal.style.display === 'flex') {
             hideAddNewModal();
         }
+        // Note: Enter key no longer submits - only click on confirm button
     });
     
-    // Close modal when clicking outside
-    document.addEventListener('click', (e) => {
-        const modal = document.getElementById('add-item-modal');
-        if (modal && modal.style.display === 'flex') {
-            if (e.target === modal) {
-                hideAddNewModal();
+    // Note: Removed click outside to close modal - user must use cancel button or Escape key
+}
+
+// Toggle sidebar collapse
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) {
+        sidebar.classList.toggle('collapsed');
+        // Save state to localStorage
+        const isCollapsed = sidebar.classList.contains('collapsed');
+        localStorage.setItem('sidebar_collapsed', JSON.stringify(isCollapsed));
+    }
+}
+
+// Initialize sidebar state from localStorage
+function initSidebarState() {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) {
+        const savedState = localStorage.getItem('sidebar_collapsed');
+        if (savedState) {
+            const isCollapsed = JSON.parse(savedState);
+            if (isCollapsed) {
+                sidebar.classList.add('collapsed');
             }
         }
-    });
+    }
 }

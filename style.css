@@ -45,11 +45,52 @@ body {
     flex-direction: column;
     overflow-y: auto;
     overflow-x: hidden;
+    transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+    width: 60px;
 }
 
 .sidebar-header {
     padding: 24px 20px;
     border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.sidebar.collapsed .sidebar-header {
+    padding: 24px 12px;
+    justify-content: center;
+}
+
+.sidebar-toggle {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-toggle:hover {
+    background-color: var(--hover-color);
+    color: var(--text-color);
+}
+
+.sidebar.collapsed .sidebar-toggle {
+    transform: rotate(180deg);
 }
 
 .sidebar-title {
@@ -57,12 +98,29 @@ body {
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    transition: opacity 0.3s ease, width 0.3s ease;
+    flex: 1;
+}
+
+.sidebar.collapsed .sidebar-title {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    margin: 0;
 }
 
 .sidebar-nav {
     flex: 1;
     padding: 12px;
     overflow-y: auto;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-nav {
+    opacity: 0;
+    pointer-events: none;
 }
 
 /* Category Styles */
@@ -410,8 +468,8 @@ body {
     transition: all 0.2s ease;
     cursor: pointer;
     box-shadow: var(--shadow-sm);
-    padding-right: 40px; /* Space for favorite button */
-    padding-left: 40px; /* Space for pin button */
+    padding-right: 45px; /* Space for favorite button */
+    padding-left: 35px; /* Space for pin button */
     min-height: 60px; /* Fixed height for 2 lines */
     height: 60px;
 }
@@ -441,10 +499,10 @@ body {
 .favorite-btn {
     position: absolute;
     top: 8px;
-    right: 28px;
+    right: 20px;
     background: transparent;
     border: none;
-    font-size: 1.2rem;
+    font-size: 1rem;
     cursor: pointer;
     padding: 4px;
     border-radius: var(--radius-sm);
@@ -459,13 +517,13 @@ body {
     transform: scale(1.1);
 }
 
-.delete-btn {
+.edit-btn {
     position: absolute;
-    top: 2px;
-    right: 2px;
+    bottom: 4px;
+    right: 4px;
     background: transparent;
     border: none;
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     cursor: pointer;
     padding: 2px 4px;
     border-radius: var(--radius-sm);
@@ -473,8 +531,41 @@ body {
     line-height: 1;
     color: rgba(255, 255, 255, 0.2);
     z-index: 3;
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 300;
+    opacity: 0;
+}
+
+.video-button-wrapper:hover .edit-btn {
+    opacity: 1;
+}
+
+.edit-btn:hover {
+    color: rgba(99, 102, 241, 0.9);
+    background-color: rgba(99, 102, 241, 0.15);
+    transform: scale(1.2);
+}
+
+.delete-btn {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: transparent;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.2);
+    z-index: 3;
+    width: 16px;
+    height: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -499,11 +590,11 @@ body {
 .pin-btn {
     position: absolute;
     top: 50%;
-    left: 8px;
+    left: 6px;
     transform: translateY(-50%);
     background: transparent;
     border: none;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     cursor: pointer;
     padding: 4px;
     border-radius: var(--radius-sm);
@@ -741,6 +832,19 @@ body {
 .form-group textarea {
     resize: vertical;
     min-height: 80px;
+}
+
+/* Prevent Enter key from submitting form in textarea, only Shift+Enter for new line */
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Make sure name input doesn't allow line breaks */
+.form-group input[type="text"] {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .modal-footer {
