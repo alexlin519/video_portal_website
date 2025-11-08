@@ -38,6 +38,8 @@ const FAVORITES_KEY = 'video_portal_favorites';
 const PINS_KEY = 'video_portal_pins';
 const CATEGORY_ORDER_KEY = 'video_portal_category_order';
 const SUBCATEGORY_ORDER_KEY_PREFIX = 'video_portal_subcategory_order_';
+const USER_ADDED_ITEMS_KEY = 'video_portal_user_added_items';
+const DELETED_ITEMS_KEY = 'video_portal_deleted_items';
 
 function getFavorites() {
     try {
@@ -92,6 +94,120 @@ function savePins(pins) {
     } catch (e) {
         console.error('Error saving pins:', e);
     }
+}
+
+// User-added items management
+function getUserAddedItems() {
+    try {
+        const items = localStorage.getItem(USER_ADDED_ITEMS_KEY);
+        return items ? JSON.parse(items) : {};
+    } catch (e) {
+        console.error('Error loading user-added items:', e);
+        return {};
+    }
+}
+
+function saveUserAddedItems(items) {
+    try {
+        localStorage.setItem(USER_ADDED_ITEMS_KEY, JSON.stringify(items));
+    } catch (e) {
+        console.error('Error saving user-added items:', e);
+    }
+}
+
+// Deleted items management
+function getDeletedItems() {
+    try {
+        const items = localStorage.getItem(DELETED_ITEMS_KEY);
+        return items ? JSON.parse(items) : [];
+    } catch (e) {
+        console.error('Error loading deleted items:', e);
+        return [];
+    }
+}
+
+function saveDeletedItems(items) {
+    try {
+        localStorage.setItem(DELETED_ITEMS_KEY, JSON.stringify(items));
+    } catch (e) {
+        console.error('Error saving deleted items:', e);
+    }
+}
+
+function deleteItem(itemId) {
+    const deleted = getDeletedItems();
+    if (!deleted.includes(itemId)) {
+        deleted.push(itemId);
+        saveDeletedItems(deleted);
+    }
+}
+
+function restoreItem(itemId) {
+    const deleted = getDeletedItems();
+    const index = deleted.indexOf(itemId);
+    if (index > -1) {
+        deleted.splice(index, 1);
+        saveDeletedItems(deleted);
+    }
+}
+
+function isItemDeleted(itemId) {
+    const deleted = getDeletedItems();
+    return deleted.includes(itemId);
+}
+
+// Get items for a specific location (category/subcategory/subclass)
+// This merges data.json items with user-added items and filters deleted items
+function getItemsForLocation(categoryId, subcategoryId = null, subclassId = null) {
+    const userAddedItems = getUserAddedItems();
+    
+    // Build location key
+    let locationKey = categoryId;
+    if (subcategoryId) locationKey += `:${subcategoryId}`;
+    if (subclassId) locationKey += `:${subclassId}`;
+    
+    // Get user-added items for the location
+    const userItems = userAddedItems[locationKey] || [];
+    
+    return userItems;
+}
+
+// Add item to a specific location
+function addItemToLocation(categoryId, subcategoryId, subclassId, name, url, text) {
+    const userAddedItems = getUserAddedItems();
+    
+    // Build location key
+    let locationKey = categoryId;
+    if (subcategoryId) locationKey += `:${subcategoryId}`;
+    if (subclassId) locationKey += `:${subclassId}`;
+    
+    // Generate a unique ID (use negative numbers to avoid conflicts with data.json IDs)
+    let maxId = -1;
+    Object.values(userAddedItems).forEach(items => {
+        items.forEach(item => {
+            if (item.id < 0 && item.id < maxId) {
+                maxId = item.id;
+            }
+        });
+    });
+    const newId = maxId - 1;
+    
+    // Create new item
+    const newItem = {
+        id: newId,
+        name: name,
+        url: url,
+        text: text || name
+    };
+    
+    // Add to location
+    if (!userAddedItems[locationKey]) {
+        userAddedItems[locationKey] = [];
+    }
+    userAddedItems[locationKey].push(newItem);
+    
+    saveUserAddedItems(userAddedItems);
+    return newItem;
 }
 
 function togglePin(itemId) {
@@ -496,25 +612,51 @@ function saveSubcategoryOrder(categoryId) {
 // Collect all items from all categories (for Daily Random)
 function collectAllItems(data) {
     const allItems = [];
+    const deletedItems = getDeletedItems();
+    const userAddedItems = getUserAddedItems();
     
     data.categories.forEach(category => {
         // Skip daily random itself and favorites
         if (category.id === 'daily-random' || category.id === 'favorites') return;
         
-        // Add direct items
+        // Add direct items (filter deleted)
         if (category.items) {
             category.items.forEach(item => {
-                allItems.push({...item, source: category.name});
+                if (!deletedItems.includes(item.id)) {
+                    allItems.push({...item, source: category.name});
+                }
+            });
+        }
+        
+        // Add user-added items for this category
+        const categoryKey = category.id;
+        if (userAddedItems[categoryKey]) {
+            userAddedItems[categoryKey].forEach(item => {
+                if (!deletedItems.includes(item.id)) {
+                    allItems.push({...item, source: category.name});
+                }
             });
         }
         
         // Add items from subcategories
         if (category.subcategories) {
             category.subcategories.forEach(sub => {
-                // Add items directly in subcategory
+                // Add items directly in subcategory (filter deleted)
                 if (sub.items) {
                     sub.items.forEach(item => {
-                        allItems.push({...item, source: `${category.name} - ${sub.name}`});
+                        if (!deletedItems.includes(item.id)) {
+                            allItems.push({...item, source: `${category.name} - ${sub.name}`});
+                        }
+                    });
+                }
+                
+                // Add user-added items for this subcategory
+                const subcategoryKey = `${category.id}:${sub.id}`;
+                if (userAddedItems[subcategoryKey]) {
+                    userAddedItems[subcategoryKey].forEach(item => {
+                        if (!deletedItems.includes(item.id)) {
+                            allItems.push({...item, source: `${category.name} - ${sub.name}`});
+                        }
                     });
                 }
                 
@@ -523,7 +665,19 @@ function collectAllItems(data) {
                     sub.subclasses.forEach(subclass => {
                         if (subclass.items) {
                             subclass.items.forEach(item => {
-                                allItems.push({...item, source: `${category.name} - ${sub.name} - ${subclass.name}`});
+                                if (!deletedItems.includes(item.id)) {
+                                    allItems.push({...item, source: `${category.name} - ${sub.name} - ${subclass.name}`});
+                                }
+                            });
+                        }
+                        
+                        // Add user-added items for this subclass
+                        const subclassKey = `${category.id}:${sub.id}:${subclass.id}`;
+                        if (userAddedItems[subclassKey]) {
+                            userAddedItems[subclassKey].forEach(item => {
+                                if (!deletedItems.includes(item.id)) {
+                                    allItems.push({...item, source: `${category.name} - ${sub.name} - ${subclass.name}`});
+                                }
                             });
                         }
                     });
@@ -545,7 +699,7 @@ function getItemsWithPinning(items) {
     items.forEach(item => {
         if (item.pinned === true) {
             pinned.push(item);
-        } else {
+                } else {
             unpinned.push(item);
         }
     });
@@ -576,7 +730,7 @@ async function selectCategory(categoryId) {
     if (checkbox) {
         showAllCategory = checkbox.checked;
         console.log(`[Category] Checkbox state read: ${showAllCategory}`);
-    } else {
+            } else {
         showAllCategory = false; // Default to false if checkbox doesn't exist
         console.log(`[Category] Checkbox not found, defaulting to false`);
     }
@@ -625,6 +779,7 @@ async function selectCategory(categoryId) {
     if (!category) return;
 
     let items = [];
+    const deletedItems = getDeletedItems();
     
     // Handle Daily Random category
     if (category.isRandom) {
@@ -632,18 +787,21 @@ async function selectCategory(categoryId) {
         // Always use the constant, ignore category.maxItems from data.json
         const maxItems = MAX_ITEMS_DAILY_RANDOM;
         
+        // Filter out deleted items
+        const filteredItems = allItems.filter(item => !deletedItems.includes(item.id));
+        
         // Separate pinned and unpinned items (from localStorage only for Daily Random)
         const pins = getPins();
         const pinned = [];
         const unpinned = [];
         
-        allItems.forEach(item => {
+        filteredItems.forEach(item => {
             // Check localStorage pinned
             const isPinnedFromStorage = pins.includes(item.id);
             
             if (isPinnedFromStorage) {
                 pinned.push({...item, pinned: true}); // Mark as pinned
-            } else {
+                } else {
                 unpinned.push(item);
             }
         });
@@ -659,14 +817,23 @@ async function selectCategory(categoryId) {
             console.log(`[Daily Random] Showing all items (${pinned.length} pinned, ${shuffledUnpinned.length} unpinned)`);
         } else if (unpinned.length > 0) {
             limitedUnpinned = shuffledUnpinned.slice(0, Math.min(maxItems, shuffledUnpinned.length));
-            console.log(`[Daily Random] Showing ${pinned.length} pinned + ${limitedUnpinned.length} unpinned items (maxItems: ${maxItems}, total available: ${allItems.length})`);
+            console.log(`[Daily Random] Showing ${pinned.length} pinned + ${limitedUnpinned.length} unpinned items (maxItems: ${maxItems}, total available: ${filteredItems.length})`);
         }
         
         // Combine: pinned items first, then unpinned
         items = [...pinned, ...limitedUnpinned];
-    } else {
-        // Regular category - get direct items
-        items = category.items || [];
+                } else {
+        // Regular category - get direct items from data.json
+        let baseItems = category.items || [];
+        
+        // Filter out deleted items
+        baseItems = baseItems.filter(item => !deletedItems.includes(item.id));
+        
+        // Get user-added items for this category
+        const userAddedItems = getItemsForLocation(categoryId);
+        
+        // Merge user-added items with base items
+        items = [...baseItems, ...userAddedItems];
         
         // Separate pinned and unpinned items (from both data.json and localStorage)
         const pins = getPins();
@@ -699,7 +866,7 @@ async function selectCategory(categoryId) {
             if (unpinned.length > maxItems) {
                 limitedUnpinned = shuffledUnpinned.slice(0, maxItems);
                 console.log(`[Category] Limited unpinned to ${maxItems} items, now showing ${pinned.length} pinned + ${limitedUnpinned.length} unpinned`);
-            } else {
+                            } else {
                 limitedUnpinned = shuffledUnpinned.slice(0, maxItems);
                 console.log(`[Category] Showing ${pinned.length} pinned + ${limitedUnpinned.length} unpinned items`);
             }
@@ -716,6 +883,14 @@ async function selectCategory(categoryId) {
     renderSidebar();
     updateContentHeader(category.name, category.icon);
     document.getElementById('refresh-btn').style.display = 'inline-block';
+    const addNewBtn = document.getElementById('add-new-btn');
+    if (addNewBtn) {
+        if (category.isRandom || categoryId === 'favorites') {
+            addNewBtn.style.display = 'none';
+                            } else {
+            addNewBtn.style.display = 'inline-block';
+        }
+    }
     updateShowAllButton();
 }
 
@@ -732,7 +907,7 @@ async function selectSubcategory(categoryId, subcategoryId) {
     if (checkbox) {
         showAllSubcategory = checkbox.checked;
         console.log(`[Subcategory] Checkbox state read: ${showAllSubcategory}`);
-    } else {
+                        } else {
         showAllSubcategory = false; // Default to false if checkbox doesn't exist
         console.log(`[Subcategory] Checkbox not found, defaulting to false`);
     }
@@ -753,15 +928,24 @@ async function selectSubcategory(categoryId, subcategoryId) {
 
     // Get items from subcategory directly
     let items = subcategory.items || [];
+    const deletedItems = getDeletedItems();
+    
+    // Filter out deleted items
+    items = items.filter(item => !deletedItems.includes(item.id));
     
     // Also collect items from all subclasses within this subcategory
     if (subcategory.subclasses) {
         subcategory.subclasses.forEach(subclass => {
             if (subclass.items) {
-                items = items.concat(subclass.items);
+                const subclassItems = subclass.items.filter(item => !deletedItems.includes(item.id));
+                items = items.concat(subclassItems);
             }
         });
     }
+    
+    // Get user-added items for this subcategory
+    const userAddedItems = getItemsForLocation(categoryId, subcategoryId);
+    items = [...items, ...userAddedItems];
     
     // Separate pinned and unpinned items (from both data.json and localStorage)
     // This handles pinned items from both subcategory items and subclass items
@@ -811,6 +995,7 @@ async function selectSubcategory(categoryId, subcategoryId) {
     renderSidebar();
     updateContentHeader(subcategory.name, category.icon);
     document.getElementById('refresh-btn').style.display = 'inline-block';
+    document.getElementById('add-new-btn').style.display = 'inline-block';
     updateShowAllButton();
 }
 
@@ -855,6 +1040,14 @@ async function selectSubclass(categoryId, subcategoryId, subclassId) {
 
     // Get items
     let items = subclass.items || [];
+    const deletedItems = getDeletedItems();
+    
+    // Filter out deleted items
+    items = items.filter(item => !deletedItems.includes(item.id));
+    
+    // Get user-added items for this subclass
+    const userAddedItems = getItemsForLocation(categoryId, subcategoryId, subclassId);
+    items = [...items, ...userAddedItems];
     
     // Separate pinned and unpinned items (from both data.json and localStorage)
     const pins = getPins();
@@ -903,6 +1096,10 @@ async function selectSubclass(categoryId, subcategoryId, subclassId) {
     renderSidebar();
     updateContentHeader(subclass.name, category.icon);
     document.getElementById('refresh-btn').style.display = 'inline-block';
+    const addNewBtn = document.getElementById('add-new-btn');
+    if (addNewBtn) {
+        addNewBtn.style.display = 'inline-block';
+    }
     updateShowAllButton();
 }
 
@@ -947,8 +1144,11 @@ function renderContent(items, title, icon) {
                 <button class="favorite-btn ${isFav ? 'active' : ''}" onclick="toggleFavoriteItem(${itemId}, event);" title="${isFav ? 'Remove from favorites' : 'Add to favorites'}">
                     ${isFav ? '⭐' : '☆'}
                 </button>
-            </div>
-        `;
+                <button class="delete-btn" onclick="deleteItemWithConfirm(${itemId}, event);" title="Delete">
+                    ×
+                </button>
+                </div>
+            `;
     });
     
     html += '</div>';
@@ -994,11 +1194,92 @@ function togglePinItem(itemId, event) {
     const wasPinned = togglePin(itemId);
     
     // Refresh current view to update pin status and reorder items
-    if (currentSubcategoryId) {
+    if (currentSubclassId) {
+        selectSubclass(currentCategoryId, currentSubcategoryId, currentSubclassId);
+    } else if (currentSubcategoryId) {
         selectSubcategory(currentCategoryId, currentSubcategoryId);
     } else if (currentCategoryId) {
         selectCategory(currentCategoryId);
     }
+}
+
+// Delete item with confirmation
+function deleteItemWithConfirm(itemId, event) {
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+    
+    const confirmed = confirm('确定要删除这个按钮吗？');
+    if (!confirmed) {
+        return;
+    }
+    
+    deleteItem(itemId);
+    
+    // Refresh current view to show updated items
+    if (currentSubclassId) {
+        selectSubclass(currentCategoryId, currentSubcategoryId, currentSubclassId);
+    } else if (currentSubcategoryId) {
+        selectSubcategory(currentCategoryId, currentSubcategoryId);
+    } else if (currentCategoryId) {
+        selectCategory(currentCategoryId);
+    }
+    
+    // Update sidebar counts
+    renderSidebar();
+}
+
+// Show add new item modal
+function showAddNewModal() {
+    const modal = document.getElementById('add-item-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        // Clear form
+        document.getElementById('add-item-name').value = '';
+        document.getElementById('add-item-url').value = '';
+        document.getElementById('add-item-text').value = '';
+        // Focus on name input
+        document.getElementById('add-item-name').focus();
+    }
+}
+
+// Hide add new item modal
+function hideAddNewModal() {
+    const modal = document.getElementById('add-item-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Add new item
+function addNewItem() {
+    const name = document.getElementById('add-item-name').value.trim();
+    const url = document.getElementById('add-item-url').value.trim();
+    const text = document.getElementById('add-item-text').value.trim();
+    
+    if (!name || !url) {
+        alert('请输入名称和链接');
+        return;
+    }
+    
+    // Add item to current location
+    addItemToLocation(currentCategoryId, currentSubcategoryId, currentSubclassId, name, url, text);
+    
+    // Hide modal
+    hideAddNewModal();
+    
+    // Refresh current view
+    if (currentSubclassId) {
+        selectSubclass(currentCategoryId, currentSubcategoryId, currentSubclassId);
+    } else if (currentSubcategoryId) {
+        selectSubcategory(currentCategoryId, currentSubcategoryId);
+    } else if (currentCategoryId) {
+        selectCategory(currentCategoryId);
+    }
+    
+    // Update sidebar counts
+    renderSidebar();
 }
 
 // Update content header
@@ -1025,7 +1306,7 @@ function updateShowAllButton() {
                     showAllCheckbox.checked = showAllSubclass;
                 } else if (currentSubcategoryId) {
                     showAllCheckbox.checked = showAllSubcategory;
-                } else {
+    } else {
                     showAllCheckbox.checked = showAllCategory;
                 }
                 console.log(`[updateShowAllButton] Checkbox synced: ${showAllCheckbox.checked} (subclass: ${currentSubclassId ? showAllSubclass : 'N/A'}, subcategory: ${currentSubcategoryId ? showAllSubcategory : 'N/A'}, category: ${currentSubcategoryId ? 'N/A' : showAllCategory})`);
@@ -1093,4 +1374,34 @@ async function initApp() {
             }
         }
     }
+    
+    // Add Enter key support for modal
+    document.addEventListener('keydown', (e) => {
+        const modal = document.getElementById('add-item-modal');
+        if (!modal) return;
+        
+        if (e.key === 'Enter' && modal.style.display === 'flex') {
+            const target = e.target;
+            if (target.id === 'add-item-name' || target.id === 'add-item-url' || target.id === 'add-item-text') {
+                if (e.shiftKey && target.id === 'add-item-text') {
+                    // Allow Shift+Enter for new line in textarea
+                    return;
+                }
+                e.preventDefault();
+                addNewItem();
+            }
+        } else if (e.key === 'Escape' && modal.style.display === 'flex') {
+            hideAddNewModal();
+        }
+    });
+    
+    // Close modal when clicking outside
+    document.addEventListener('click', (e) => {
+        const modal = document.getElementById('add-item-modal');
+        if (modal && modal.style.display === 'flex') {
+            if (e.target === modal) {
+                hideAddNewModal();
+            }
+        }
+    });
 }

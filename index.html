@@ -28,6 +28,9 @@
                                onchange="toggleShowAll()">
                         <span>显示全部</span>
                     </label>
+                    <button class="add-new-btn" id="add-new-btn" style="display: none;" onclick="showAddNewModal()">
+                        + 新增
+                    </button>
                     <button class="refresh-btn" id="refresh-btn" style="display: none;" onclick="refreshCurrentCategory()">
                         Random
                     </button>
@@ -39,6 +42,34 @@
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- Add Item Modal -->
+    <div id="add-item-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>新增按钮</h3>
+                <button class="modal-close" onclick="hideAddNewModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="add-item-name">名称:</label>
+                    <input type="text" id="add-item-name" placeholder="输入按钮名称" />
+                </div>
+                <div class="form-group">
+                    <label for="add-item-url">链接:</label>
+                    <input type="url" id="add-item-url" placeholder="输入链接地址" />
+                </div>
+                <div class="form-group">
+                    <label for="add-item-text">文本 (可选):</label>
+                    <textarea id="add-item-text" placeholder="输入按钮显示的文本（留空则使用名称）" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="hideAddNewModal()">取消</button>
+                <button class="btn-confirm" onclick="addNewItem()">确认</button>
+            </div>
+        </div>
     </div>
 
     <script src="main.js"></script>
