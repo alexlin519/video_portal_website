@@ -2553,3 +2553,137 @@ function saveFilterCategoryOrder() {
     const order = Array.from(categories).map(cat => cat.getAttribute('data-category-id'));
     localStorage.setItem(FILTER_CATEGORY_ORDER_KEY, JSON.stringify(order));
 }
+
+// Export localStorage data
+function exportLocalStorage() {
+    try {
+        // Collect all localStorage data related to this app
+        const exportData = {
+            version: '1.0',
+            exportDate: new Date().toISOString(),
+            data: {
+                favorites: localStorage.getItem(FAVORITES_KEY),
+                pins: localStorage.getItem(PINS_KEY),
+                categoryOrder: localStorage.getItem(CATEGORY_ORDER_KEY),
+                filterCategoryOrder: localStorage.getItem(FILTER_CATEGORY_ORDER_KEY),
+                userAddedItems: localStorage.getItem(USER_ADDED_ITEMS_KEY),
+                deletedItems: localStorage.getItem(DELETED_ITEMS_KEY),
+                dailyRandomFilter: localStorage.getItem(DAILY_RANDOM_FILTER_KEY),
+                sidebarCollapsed: localStorage.getItem('sidebar_collapsed'),
+                // Get all subcategory orders
+                subcategoryOrders: {}
+            }
+        };
+        
+        // Collect all subcategory orders
+        const data = cachedData;
+        if (data && data.categories) {
+            data.categories.forEach(category => {
+                if (category.subcategories) {
+                    const subcategoryOrder = localStorage.getItem(`${SUBCATEGORY_ORDER_KEY_PREFIX}${category.id}`);
+                    if (subcategoryOrder) {
+                        exportData.data.subcategoryOrders[category.id] = subcategoryOrder;
+                    }
+                }
+            });
+        }
+        
+        // Create JSON string
+        const jsonString = JSON.stringify(exportData, null, 2);
+        
+        // Create blob and download
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `video_portal_backup_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        alert('✅ 设置已成功导出！');
+    } catch (error) {
+        console.error('导出失败:', error);
+        alert('❌ 导出失败，请查看控制台获取详细信息');
+    }
+}
+
+// Import localStorage data
+function importLocalStorage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importData = JSON.parse(e.target.result);
+            
+            // Validate data structure
+            if (!importData.data) {
+                throw new Error('无效的备份文件格式');
+            }
+            
+            // Confirm import
+            const confirmMessage = `确定要导入设置吗？\n\n这将覆盖当前的：\n- 排序设置\n- 收藏/置顶\n- 用户添加的项目\n- 筛选设置\n\n导入后页面将自动刷新。`;
+            if (!confirm(confirmMessage)) {
+                event.target.value = ''; // Reset file input
+                return;
+            }
+            
+            // Import data
+            if (importData.data.favorites !== null && importData.data.favorites !== undefined) {
+                localStorage.setItem(FAVORITES_KEY, importData.data.favorites);
+            }
+            if (importData.data.pins !== null && importData.data.pins !== undefined) {
+                localStorage.setItem(PINS_KEY, importData.data.pins);
+            }
+            if (importData.data.categoryOrder !== null && importData.data.categoryOrder !== undefined) {
+                localStorage.setItem(CATEGORY_ORDER_KEY, importData.data.categoryOrder);
+            }
+            if (importData.data.filterCategoryOrder !== null && importData.data.filterCategoryOrder !== undefined) {
+                localStorage.setItem(FILTER_CATEGORY_ORDER_KEY, importData.data.filterCategoryOrder);
+            }
+            if (importData.data.userAddedItems !== null && importData.data.userAddedItems !== undefined) {
+                localStorage.setItem(USER_ADDED_ITEMS_KEY, importData.data.userAddedItems);
+            }
+            if (importData.data.deletedItems !== null && importData.data.deletedItems !== undefined) {
+                localStorage.setItem(DELETED_ITEMS_KEY, importData.data.deletedItems);
+            }
+            if (importData.data.dailyRandomFilter !== null && importData.data.dailyRandomFilter !== undefined) {
+                localStorage.setItem(DAILY_RANDOM_FILTER_KEY, importData.data.dailyRandomFilter);
+            }
+            if (importData.data.sidebarCollapsed !== null && importData.data.sidebarCollapsed !== undefined) {
+                localStorage.setItem('sidebar_collapsed', importData.data.sidebarCollapsed);
+            }
+            
+            // Import subcategory orders
+            if (importData.data.subcategoryOrders) {
+                Object.keys(importData.data.subcategoryOrders).forEach(categoryId => {
+                    localStorage.setItem(
+                        `${SUBCATEGORY_ORDER_KEY_PREFIX}${categoryId}`,
+                        importData.data.subcategoryOrders[categoryId]
+                    );
+                });
+            }
+            
+            alert('✅ 设置已成功导入！页面将自动刷新。');
+            
+            // Reload page to apply changes
+            window.location.reload();
+        } catch (error) {
+            console.error('导入失败:', error);
+            alert('❌ 导入失败：' + error.message + '\n\n请检查文件格式是否正确。');
+        }
+        
+        // Reset file input
+        event.target.value = '';
+    };
+    
+    reader.onerror = function() {
+        alert('❌ 读取文件失败');
+        event.target.value = '';
+    };
+    
+    reader.readAsText(file);
+}

@@ -19,6 +19,15 @@
             <nav class="sidebar-nav" id="sidebar-nav">
                 <!-- Categories will be rendered here by JS -->
             </nav>
+            <div class="sidebar-footer">
+                <button class="export-btn" onclick="exportLocalStorage()" title="导出设置">
+                    📥 导出
+                </button>
+                <button class="import-btn" onclick="document.getElementById('import-file-input').click()" title="导入设置">
+                    📤 导入
+                </button>
+                <input type="file" id="import-file-input" accept=".json" style="display: none;" onchange="importLocalStorage(event)">
+            </div>
         </aside>
 
         <!-- Main Content -->

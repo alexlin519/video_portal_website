@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "exportDate": "2025-01-01T00:00:00.000Z",
+  "data": {
+    "favorites": "[1,2,5,9,11,20,27,28,31,114,115]",
+    "pins": "[1,2,5,9,11,20,27,28,31,114,115]",
+    "categoryOrder": "[\"favorites\",\"daily-random\",\"hehe\",\"scp-怪谈\",\"影视\",\"新游试玩\",\"有益\",\"游戏实况\",\"category\",\"collection\"]",
+    "filterCategoryOrder": "[\"hehe\",\"scp-怪谈\",\"影视\",\"新游试玩\",\"有益\",\"游戏实况\",\"category\",\"collection\"]",
+    "userAddedItems": "{\"hehe:hehe-两性\":[{\"id\":-1,\"name\":\"用户添加项1\",\"url\":\"https://www.youtube.com/@user1\",\"text\":\"备注1\"},{\"id\":-2,\"name\":\"用户添加项2\",\"url\":\"https://www.youtube.com/@user2\",\"text\":\"备注2\\n多行备注\"}],\"hehe:hehe-美女\":[{\"id\":-3,\"name\":\"用户添加项3\",\"url\":\"https://www.youtube.com/@user3\",\"text\":\"\"}],\"新游试玩\":[{\"id\":-4,\"name\":\"用户添加项4\",\"url\":\"https://www.youtube.com/@user4\",\"text\":\"备注4\"}],\"daily-random\":[{\"id\":-5,\"name\":\"用户添加项5\",\"url\":\"https://www.youtube.com/@user5\",\"text\":\"\"}],\"scp-怪谈\":[{\"id\":-6,\"name\":\"用户添加项6\",\"url\":\"https://www.youtube.com/@user6\",\"text\":\"备注6\"}]}",
+    "deletedItems": "[11,20,31]",
+    "dailyRandomFilter": "{\"categories\":[\"hehe\",\"影视\",\"新游试玩\",\"有益\",\"游戏实况\",\"scp-怪谈\"],\"subcategories\":[\"hehe-两性\",\"影视-恐怖猎奇\"],\"subclasses\":[],\"excludedSubcategories\":[\"hehe-美女\"],\"excludedSubclasses\":[]}",
+    "sidebarCollapsed": "true",
+    "subcategoryOrders": {
+      "hehe": "[\"hehe-美女\",\"hehe-两性\"]",
+      "影视": "[\"影视-恐怖猎奇\"]",
+      "新游试玩": "[\"新游试玩-恐怖猎奇\",\"新游试玩-阿路的精神时光\",\"新游试玩-访谈\"]"
+    }
+  }
+}
+

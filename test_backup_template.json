@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "exportDate": "2025-01-01T00:00:00.000Z",
+  "data": {
+    "favorites": "[1,2,9,28]",
+    "pins": "[1,11,27,28]",
+    "categoryOrder": "[\"daily-random\",\"favorites\",\"hehe\",\"scp-怪谈\",\"影视\",\"新游试玩\",\"有益\",\"游戏实况\",\"category\",\"collection\"]",
+    "filterCategoryOrder": "[\"hehe\",\"影视\",\"新游试玩\",\"有益\",\"游戏实况\",\"scp-怪谈\",\"category\",\"collection\"]",
+    "userAddedItems": "{\"hehe:hehe-两性\":[{\"id\":-1,\"name\":\"测试用户添加1\",\"url\":\"https://www.youtube.com/@test\",\"text\":\"这是测试备注\"}],\"新游试玩\":[{\"id\":-2,\"name\":\"测试用户添加2\",\"url\":\"https://www.youtube.com/@test2\",\"text\":\"测试备注2\"}],\"daily-random\":[{\"id\":-3,\"name\":\"测试每日随机添加\",\"url\":\"https://www.youtube.com/@test3\",\"text\":\"\"}]}",
+    "deletedItems": "[11,20]",
+    "dailyRandomFilter": "{\"categories\":[\"hehe\",\"影视\"],\"subcategories\":[\"hehe-两性\"],\"subclasses\":[],\"excludedSubcategories\":[\"hehe-美女\"],\"excludedSubclasses\":[]}",
+    "sidebarCollapsed": "false",
+    "subcategoryOrders": {
+      "hehe": "[\"hehe-两性\",\"hehe-美女\"]",
+      "影视": "[\"影视-恐怖猎奇\"]"
+    }
+  }
+}
+

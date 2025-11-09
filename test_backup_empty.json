@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "exportDate": "2025-01-01T00:00:00.000Z",
+  "data": {
+    "favorites": "[]",
+    "pins": "[]",
+    "categoryOrder": "null",
+    "filterCategoryOrder": "null",
+    "userAddedItems": "{}",
+    "deletedItems": "[]",
+    "dailyRandomFilter": "null",
+    "sidebarCollapsed": "false",
+    "subcategoryOrders": {}
+  }
+}
+

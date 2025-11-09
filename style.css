@@ -123,6 +123,45 @@ body {
     pointer-events: none;
 }
 
+.sidebar-footer {
+    padding: 12px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.sidebar.collapsed .sidebar-footer {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.export-btn,
+.import-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--card-color);
+    color: var(--text-color);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.export-btn:hover,
+.import-btn:hover {
+    background-color: var(--hover-color);
+    border-color: var(--accent-color);
+    transform: translateY(-1px);
+}
+
+.export-btn:active,
+.import-btn:active {
+    transform: translateY(0);
+}
+
 /* Category Styles */
 .category {
     margin-bottom: 2px;
