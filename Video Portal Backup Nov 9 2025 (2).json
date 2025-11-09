@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "exportDate": "2025-11-09T09:25:16.258Z",
+  "data": {
+    "favorites": "[3,20,-2,12,29]",
+    "pins": "[114,115,31,4]",
+    "categoryOrder": "[\"favorites\",\"daily-random\",\"category\",\"scp-怪谈\",\"影视\",\"新游试玩\",\"有益\",\"游戏实况\",\"hehe\",\"collection\"]",
+    "filterCategoryOrder": "[\"hehe\",\"有益\",\"category\",\"新游试玩\",\"scp-怪谈\",\"游戏实况\",\"影视\",\"collection\"]",
+    "userAddedItems": "{\"hehe:hehe-两性\":[{\"id\":-2,\"name\":\"testetest\",\"url\":\"https://www.youtube.com/@jackfrags\",\"text\":\"????\"}],\"新游试玩\":[{\"id\":-3,\"name\":\"test2\",\"url\":\"https://www.youtube.com/@jackfrags\",\"text\":\"test2\"},{\"id\":-4,\"name\":\"wgwh fsdvs\",\"url\":\"https://www.youtube.com/@jackfrags\",\"text\":\"wgwh\\nfsdvs\"}],\"daily-random\":[{\"id\":15,\"name\":\"大讨论 围圆圈坐一起\",\"url\":\"https://www.youtube.com/@jubilee/videos\",\"text\":\"\"},{\"id\":12,\"name\":\"The Tonight Show\",\"url\":\"https://www.youtube.com/@fallontonight/videos\",\"text\":\"The Tonight Show jimmy\"},{\"id\":31,\"name\":\"浅出!\",\"url\":\"https://www.youtube.com/@miaodong/videos\",\"text\":\"短视频 深入\"},{\"id\":29,\"name\":\"马来西亚 辩题 \\n30-50min\",\"url\":\"https://www.youtube.com/@BBKNetwork/videos\",\"text\":\"马来西亚\"},{\"id\":17,\"name\":\"手工老头!!!@@\",\"url\":\"https://www.youtube.com/@tested/videos\",\"text\":\"uuu\"},{\"id\":4,\"name\":\"台湾 查理 右派\",\"url\":\"https://www.youtube.com/@godsteammate/videos\",\"text\":\"\"}],\"有益:有益-工科\":[{\"id\":17,\"name\":\"手工老头!!!\",\"url\":\"https://www.youtube.com/@tested/videos\",\"text\":\"uuu\"},{\"id\":21,\"name\":\"diy project \\n实验\",\"url\":\"https://www.youtube.com/@TheKingofRandom/videos\",\"text\":\"diy project + 实验\"}]}",
+    "deletedItems": "[11,20]",
+    "dailyRandomFilter": "{\"categories\":[\"有益\"],\"subcategories\":[],\"subclasses\":[],\"excludedSubcategories\":[],\"excludedSubclasses\":[]}",
+    "sidebarCollapsed": "false",
+    "subcategoryOrders": {
+      "hehe": "[\"hehe-美女\",\"hehe-两性\"]",
+      "影视": "[\"影视-恐怖猎奇\"]",
+      "新游试玩": "[\"新游试玩-恐怖猎奇\",\"新游试玩-阿路的精神时光\",\"新游试玩-访谈\"]"
+    }
+  }
+}

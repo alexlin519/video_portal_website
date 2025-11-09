@@ -216,42 +216,38 @@ function addItemToLocation(categoryId, subcategoryId, subclassId, name, url, tex
 function updateItemInLocation(itemId, name, url, text) {
     const userAddedItems = getUserAddedItems();
     
-    // Find the item in userAddedItems
-    for (const locationKey in userAddedItems) {
-        const items = userAddedItems[locationKey];
-        const index = items.findIndex(item => item.id === itemId);
-        if (index !== -1) {
-            // Update the item
-            items[index].name = name;
-            items[index].url = url;
-            items[index].text = text || '';
-            saveUserAddedItems(userAddedItems);
-            return true;
-        }
-    }
-    
-    // If not found in userAddedItems, it's from data.json
-    // Create a modified copy in userAddedItems at the current location
-    // We'll mark the original as deleted and add the modified version
+    // Determine the location key for the current context
     const locationKey = currentSubclassId 
         ? `${currentCategoryId}:${currentSubcategoryId}:${currentSubclassId}`
         : currentSubcategoryId 
         ? `${currentCategoryId}:${currentSubcategoryId}`
         : currentCategoryId;
     
+    // Initialize location if it doesn't exist
     if (!userAddedItems[locationKey]) {
         userAddedItems[locationKey] = [];
     }
     
-    // Add modified item with same ID (will override data.json item)
-    const modifiedItem = {
-        id: itemId,
-        name: name,
-        url: url,
-        text: text || ''
-    };
+    // Check if item already exists in userAddedItems at this location
+    const existingIndex = userAddedItems[locationKey].findIndex(item => item.id === itemId);
     
-    userAddedItems[locationKey].push(modifiedItem);
+    if (existingIndex !== -1) {
+        // Update existing item in userAddedItems
+        userAddedItems[locationKey][existingIndex].name = name;
+        userAddedItems[locationKey][existingIndex].url = url;
+        userAddedItems[locationKey][existingIndex].text = text || '';
+    } else {
+        // Item is from data.json, create a modified copy in userAddedItems
+        // This will replace the original item when rendering (same ID)
+        const modifiedItem = {
+            id: itemId,
+            name: name,
+            url: url,
+            text: text || ''
+        };
+        userAddedItems[locationKey].push(modifiedItem);
+    }
+    
     saveUserAddedItems(userAddedItems);
     return true;
 }
@@ -814,12 +810,16 @@ function isSubclassIncluded(categoryId, subcategoryId, subclassId, filter) {
 }
 
 // Collect all items from all categories (for Daily Random)
+// Uses overwrite approach: faster O(n+m) instead of O(n*m)
 function collectAllItems(data) {
-    const allItems = [];
     const deletedItems = getDeletedItems();
     const userAddedItems = getUserAddedItems();
     const filter = getDailyRandomFilter();
     
+    // Step 1: Create a Map to store items by ID (for fast lookup and overwrite)
+    const itemsMap = new Map();
+    
+    // Step 2: Collect all items from data.json into the Map
     data.categories.forEach(category => {
         // Skip daily random itself and favorites
         if (category.id === 'daily-random' || category.id === 'favorites') return;
@@ -827,66 +827,30 @@ function collectAllItems(data) {
         // Check if category is included in filter
         const categoryIncluded = isCategoryIncluded(category.id, filter);
         
-        // If category is included, add all its items and all subcategories
+        // Helper function to add item to map
+        const addItemToMap = (item, source, locationKey) => {
+            itemsMap.set(item.id, {
+                ...item,
+                name: item.name || item.text || '未命名',
+                source: source,
+                locationKey: locationKey
+            });
+        };
+        
         if (categoryIncluded) {
             // Add direct items from category
             if (category.items) {
                 category.items.forEach(item => {
-                    if (!deletedItems.includes(item.id)) {
-                        const displayItem = {
-                            ...item,
-                            name: item.name || item.text || '未命名',
-                            source: category.name
-                        };
-                        allItems.push(displayItem);
-                    }
+                    addItemToMap(item, category.name, category.id);
                 });
             }
             
-            // Add user-added items for this category
-            const categoryKey = category.id;
-            if (userAddedItems[categoryKey]) {
-                userAddedItems[categoryKey].forEach(item => {
-                    if (!deletedItems.includes(item.id)) {
-                        const displayItem = {
-                            ...item,
-                            name: item.name || item.text || '未命名',
-                            source: category.name
-                        };
-                        allItems.push(displayItem);
-                    }
-                });
-            }
-            
-            // Add all subcategories and their items (category is selected, so all subcategories are included)
+            // Add all subcategories and their items
             if (category.subcategories) {
                 category.subcategories.forEach(sub => {
-                    // Add items directly in subcategory
                     if (sub.items) {
                         sub.items.forEach(item => {
-                            if (!deletedItems.includes(item.id)) {
-                                const displayItem = {
-                                    ...item,
-                                    name: item.name || item.text || '未命名',
-                                    source: `${category.name} - ${sub.name}`
-                                };
-                                allItems.push(displayItem);
-                            }
-                        });
-                    }
-                    
-                    // Add user-added items for this subcategory
-                    const subcategoryKey = `${category.id}:${sub.id}`;
-                    if (userAddedItems[subcategoryKey]) {
-                        userAddedItems[subcategoryKey].forEach(item => {
-                            if (!deletedItems.includes(item.id)) {
-                                const displayItem = {
-                                    ...item,
-                                    name: item.name || item.text || '未命名',
-                                    source: `${category.name} - ${sub.name}`
-                                };
-                                allItems.push(displayItem);
-                            }
+                            addItemToMap(item, `${category.name} - ${sub.name}`, `${category.id}:${sub.id}`);
                         });
                     }
                     
@@ -895,29 +859,7 @@ function collectAllItems(data) {
                         sub.subclasses.forEach(subclass => {
                             if (subclass.items) {
                                 subclass.items.forEach(item => {
-                                    if (!deletedItems.includes(item.id)) {
-                                        const displayItem = {
-                                            ...item,
-                                            name: item.name || item.text || '未命名',
-                                            source: `${category.name} - ${sub.name} - ${subclass.name}`
-                                        };
-                                        allItems.push(displayItem);
-                                    }
-                                });
-                            }
-                            
-                            // Add user-added items for this subclass
-                            const subclassKey = `${category.id}:${sub.id}:${subclass.id}`;
-                            if (userAddedItems[subclassKey]) {
-                                userAddedItems[subclassKey].forEach(item => {
-                                    if (!deletedItems.includes(item.id)) {
-                                        const displayItem = {
-                                            ...item,
-                                            name: item.name || item.text || '未命名',
-                                            source: `${category.name} - ${sub.name} - ${subclass.name}`
-                                        };
-                                        allItems.push(displayItem);
-                                    }
+                                    addItemToMap(item, `${category.name} - ${sub.name} - ${subclass.name}`, `${category.id}:${sub.id}:${subclass.id}`);
                                 });
                             }
                         });
@@ -935,64 +877,21 @@ function collectAllItems(data) {
                         // Add items directly in subcategory
                         if (sub.items) {
                             sub.items.forEach(item => {
-                                if (!deletedItems.includes(item.id)) {
-                                    const displayItem = {
-                                        ...item,
-                                        name: item.name || item.text || '未命名',
-                                        source: `${category.name} - ${sub.name}`
-                                    };
-                                    allItems.push(displayItem);
-                                }
+                                addItemToMap(item, `${category.name} - ${sub.name}`, subcategoryKey);
                             });
                         }
                         
-                        // Add user-added items for this subcategory
-                        if (userAddedItems[subcategoryKey]) {
-                            userAddedItems[subcategoryKey].forEach(item => {
-                                if (!deletedItems.includes(item.id)) {
-                                    const displayItem = {
-                                        ...item,
-                                        name: item.name || item.text || '未命名',
-                                        source: `${category.name} - ${sub.name}`
-                                    };
-                                    allItems.push(displayItem);
-                                }
-                            });
-                        }
-                        
-                        // Add all subclasses under this subcategory (subcategory is selected)
+                        // Add all subclasses under this subcategory
                         if (sub.subclasses) {
                             sub.subclasses.forEach(subclass => {
                                 if (subclass.items) {
                                     subclass.items.forEach(item => {
-                                        if (!deletedItems.includes(item.id)) {
-                                            const displayItem = {
-                                                ...item,
-                                                name: item.name || item.text || '未命名',
-                                                source: `${category.name} - ${sub.name} - ${subclass.name}`
-                                            };
-                                            allItems.push(displayItem);
-                                        }
-                                    });
-                                }
-                                
-                                // Add user-added items for this subclass
-                                const subclassKey = `${category.id}:${sub.id}:${subclass.id}`;
-                                if (userAddedItems[subclassKey]) {
-                                    userAddedItems[subclassKey].forEach(item => {
-                                        if (!deletedItems.includes(item.id)) {
-                                            const displayItem = {
-                                                ...item,
-                                                name: item.name || item.text || '未命名',
-                                                source: `${category.name} - ${sub.name} - ${subclass.name}`
-                                            };
-                                            allItems.push(displayItem);
-                                        }
+                                        addItemToMap(item, `${category.name} - ${sub.name} - ${subclass.name}`, `${category.id}:${sub.id}:${subclass.id}`);
                                     });
                                 }
                             });
                         }
-            } else {
+                    } else {
                         // Subcategory not included, but check if any subclasses are specifically included
                         if (sub.subclasses) {
                             sub.subclasses.forEach(subclass => {
@@ -1002,28 +901,7 @@ function collectAllItems(data) {
                                 if (subclassIncluded) {
                                     if (subclass.items) {
                                         subclass.items.forEach(item => {
-                                            if (!deletedItems.includes(item.id)) {
-                                                const displayItem = {
-                                                    ...item,
-                                                    name: item.name || item.text || '未命名',
-                                                    source: `${category.name} - ${sub.name} - ${subclass.name}`
-                                                };
-                                                allItems.push(displayItem);
-                                            }
-                                        });
-                                    }
-                                    
-                                    // Add user-added items for this subclass
-                                    if (userAddedItems[subclassKey]) {
-                                        userAddedItems[subclassKey].forEach(item => {
-                                            if (!deletedItems.includes(item.id)) {
-                                                const displayItem = {
-                                                    ...item,
-                                                    name: item.name || item.text || '未命名',
-                                                    source: `${category.name} - ${sub.name} - ${subclass.name}`
-                                                };
-                                                allItems.push(displayItem);
-                                            }
+                                            addItemToMap(item, `${category.name} - ${sub.name} - ${subclass.name}`, subclassKey);
                                         });
                                     }
                                 }
@@ -1034,6 +912,45 @@ function collectAllItems(data) {
             }
         }
     });
+    
+    // Step 3: Overwrite with userAddedItems (edits and new items)
+    Object.keys(userAddedItems).forEach(locationKey => {
+        userAddedItems[locationKey].forEach(item => {
+            const existingItem = itemsMap.get(item.id);
+            
+            // Get source from existing item or parse from locationKey
+            let source = existingItem?.source;
+            if (!source) {
+                // Parse source from locationKey (e.g., "category:subcategory:subclass")
+                const parts = locationKey.split(':');
+                const cat = data.categories.find(c => c.id === parts[0]);
+                if (cat) {
+                    if (parts.length === 1) {
+                        source = cat.name;
+                    } else if (parts.length === 2) {
+                        const sub = cat.subcategories?.find(s => s.id === parts[1]);
+                        source = sub ? `${cat.name} - ${sub.name}` : cat.name;
+                    } else if (parts.length === 3) {
+                        const sub = cat.subcategories?.find(s => s.id === parts[1]);
+                        const subclass = sub?.subclasses?.find(sc => sc.id === parts[2]);
+                        source = subclass ? `${cat.name} - ${sub.name} - ${subclass.name}` : (sub ? `${cat.name} - ${sub.name}` : cat.name);
+                    }
+                }
+            }
+            
+            // Overwrite existing item or add new item
+            itemsMap.set(item.id, {
+                ...item,
+                name: item.name || item.text || '未命名',
+                source: source || '未知来源',
+                locationKey: locationKey
+            });
+        });
+    });
+    
+    // Step 4: Convert Map to array and filter deleted items
+    const allItems = Array.from(itemsMap.values())
+        .filter(item => !deletedItems.includes(item.id));
     
     return allItems;
 }
@@ -1048,7 +965,7 @@ function getItemsWithPinning(items) {
     items.forEach(item => {
         if (item.pinned === true) {
             pinned.push(item);
-                } else {
+            } else {
             unpinned.push(item);
         }
     });
@@ -1132,25 +1049,23 @@ async function selectCategory(categoryId) {
     
     // Handle Daily Random category
     if (category.isRandom) {
+        // collectAllItems already filters deleted items and applies edits via overwrite
         const allItems = collectAllItems(data);
         // Always use the constant, ignore category.maxItems from data.json
         const maxItems = MAX_ITEMS_DAILY_RANDOM;
-        
-        // Filter out deleted items
-        const filteredItems = allItems.filter(item => !deletedItems.includes(item.id));
         
         // Separate pinned and unpinned items (from localStorage only for Daily Random)
         const pins = getPins();
         const pinned = [];
         const unpinned = [];
         
-        filteredItems.forEach(item => {
+        allItems.forEach(item => {
             // Check localStorage pinned
             const isPinnedFromStorage = pins.includes(item.id);
             
             if (isPinnedFromStorage) {
                 pinned.push({...item, pinned: true}); // Mark as pinned
-                        } else {
+                } else {
                 unpinned.push(item);
             }
         });
@@ -1166,7 +1081,7 @@ async function selectCategory(categoryId) {
             console.log(`[Daily Random] Showing all items (${pinned.length} pinned, ${shuffledUnpinned.length} unpinned)`);
         } else if (unpinned.length > 0) {
             limitedUnpinned = shuffledUnpinned.slice(0, Math.min(maxItems, shuffledUnpinned.length));
-            console.log(`[Daily Random] Showing ${pinned.length} pinned + ${limitedUnpinned.length} unpinned items (maxItems: ${maxItems}, total available: ${filteredItems.length})`);
+            console.log(`[Daily Random] Showing ${pinned.length} pinned + ${limitedUnpinned.length} unpinned items (maxItems: ${maxItems}, total available: ${allItems.length})`);
         }
         
         // Combine: pinned items first, then unpinned
@@ -1186,8 +1101,14 @@ async function selectCategory(categoryId) {
         // Get user-added items for this category
         const userAddedItems = getItemsForLocation(categoryId);
         
-        // Merge user-added items with base items
-        items = [...baseItems, ...userAddedItems];
+        // Get user-added item IDs to filter out from baseItems (edited items should replace original)
+        const userAddedItemIds = new Set(userAddedItems.map(item => item.id));
+        
+        // Filter out base items that have been edited (exist in userAddedItems with same ID)
+        const baseItemsNotEdited = baseItems.filter(item => !userAddedItemIds.has(item.id));
+        
+        // Merge: base items (not edited) + user-added items (including edited items)
+        items = [...baseItemsNotEdited, ...userAddedItems];
         
         // Separate pinned and unpinned items (from both data.json and localStorage)
         const pins = getPins();
@@ -1242,7 +1163,7 @@ async function selectCategory(categoryId) {
     if (addNewBtn) {
         if (category.isRandom || categoryId === 'favorites') {
             addNewBtn.style.display = 'none';
-        } else {
+                        } else {
             addNewBtn.style.display = 'inline-block';
         }
     }
@@ -1313,12 +1234,19 @@ async function selectSubcategory(categoryId, subcategoryId) {
     // Get user-added items for this subcategory
     const userAddedItemsList = getItemsForLocation(categoryId, subcategoryId);
     
+    // Get user-added item IDs to filter out from base items (edited items should replace original)
+    const userAddedItemIds = new Set(userAddedItemsList.map(item => item.id));
+    
+    // Filter out base items that have been edited (exist in userAddedItems with same ID)
+    items = items.filter(item => !userAddedItemIds.has(item.id));
+    
     // Ensure user-added items have name for display (backwards compatibility)
     const userAddedItemsWithName = userAddedItemsList.map(item => ({
         ...item,
         name: item.name || item.text || '未命名'
     }));
     
+    // Merge: base items (not edited) + user-added items (including edited items)
     items = [...items, ...userAddedItemsWithName];
     
     // Separate pinned and unpinned items (from both data.json and localStorage)
@@ -1698,7 +1626,13 @@ function hideAddNewModal() {
 async function addNewItem() {
     const modal = document.getElementById('add-item-modal');
     const mode = modal.getAttribute('data-mode');
-    const name = document.getElementById('add-item-name').value.trim();
+    
+    // Get name value - preserve line breaks but trim only start/end whitespace
+    const nameElement = document.getElementById('add-item-name');
+    let name = nameElement.value;
+    // Trim only leading and trailing whitespace, preserve internal line breaks
+    name = name.replace(/^\s+|\s+$/g, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    
     const url = document.getElementById('add-item-url').value.trim();
     const text = document.getElementById('add-item-text').value.trim();
     
@@ -2603,7 +2537,7 @@ function exportLocalStorage() {
         URL.revokeObjectURL(url);
         
         alert('✅ 设置已成功导出！');
-    } catch (error) {
+        } catch (error) {
         console.error('导出失败:', error);
         alert('❌ 导出失败，请查看控制台获取详细信息');
     }
@@ -2686,4 +2620,249 @@ function importLocalStorage(event) {
     };
     
     reader.readAsText(file);
+}
+
+// Export merged data.json (combines original data.json with user changes)
+async function exportMergedDataJson() {
+    try {
+        // Get original data
+        const data = await getData();
+        if (!data || !data.categories) {
+            alert('❌ 无法加载原始数据');
+            return;
+        }
+        
+        // Get user data from localStorage
+        const userAddedItems = getUserAddedItems();
+        const deletedItems = getDeletedItems();
+        
+        // Create a deep copy of the data
+        const mergedData = JSON.parse(JSON.stringify(data));
+        
+        // Process each category
+        mergedData.categories.forEach(category => {
+            // Process category-level items
+            if (category.items) {
+                // Remove deleted items
+                category.items = category.items.filter(item => !deletedItems.includes(item.id));
+                
+                // Merge user-added items for this category
+                const categoryKey = category.id;
+                if (userAddedItems[categoryKey]) {
+                    userAddedItems[categoryKey].forEach(userItem => {
+                        // Check if this is an edit (same ID exists) or new item
+                        const existingIndex = category.items.findIndex(item => item.id === userItem.id);
+                        if (existingIndex !== -1) {
+                            // Update existing item
+                            category.items[existingIndex] = {
+                                id: userItem.id,
+                                name: userItem.name,
+                                url: userItem.url,
+                                text: userItem.text || ''
+                            };
+    } else {
+                            // Add new item (only if ID is positive, negative IDs are user-added and shouldn't be in data.json)
+                            if (userItem.id > 0) {
+                                category.items.push({
+                                    id: userItem.id,
+                                    name: userItem.name,
+                                    url: userItem.url,
+                                    text: userItem.text || ''
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+            
+            // Process subcategories
+            if (category.subcategories) {
+                category.subcategories.forEach(subcategory => {
+                    // Process subcategory-level items
+                    if (subcategory.items) {
+                        // Remove deleted items
+                        subcategory.items = subcategory.items.filter(item => !deletedItems.includes(item.id));
+                        
+                        // Merge user-added items for this subcategory
+                        const subcategoryKey = `${category.id}:${subcategory.id}`;
+                        if (userAddedItems[subcategoryKey]) {
+                            userAddedItems[subcategoryKey].forEach(userItem => {
+                                const existingIndex = subcategory.items.findIndex(item => item.id === userItem.id);
+                                if (existingIndex !== -1) {
+                                    // Update existing item
+                                    subcategory.items[existingIndex] = {
+                                        id: userItem.id,
+                                        name: userItem.name,
+                                        url: userItem.url,
+                                        text: userItem.text || ''
+                                    };
+                                } else {
+                                    // Add new item (only if ID is positive)
+                                    if (userItem.id > 0) {
+                                        subcategory.items.push({
+                                            id: userItem.id,
+                                            name: userItem.name,
+                                            url: userItem.url,
+                                            text: userItem.text || ''
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    
+                    // Process subclasses
+                    if (subcategory.subclasses) {
+                        subcategory.subclasses.forEach(subclass => {
+                            if (subclass.items) {
+                                // Remove deleted items
+                                subclass.items = subclass.items.filter(item => !deletedItems.includes(item.id));
+                                
+                                // Merge user-added items for this subclass
+                                const subclassKey = `${category.id}:${subcategory.id}:${subclass.id}`;
+                                if (userAddedItems[subclassKey]) {
+                                    userAddedItems[subclassKey].forEach(userItem => {
+                                        const existingIndex = subclass.items.findIndex(item => item.id === userItem.id);
+                                        if (existingIndex !== -1) {
+                                            // Update existing item
+                                            subclass.items[existingIndex] = {
+                                                id: userItem.id,
+                                                name: userItem.name,
+                                                url: userItem.url,
+                                                text: userItem.text || ''
+                                            };
+                                        } else {
+                                            // Add new item (only if ID is positive)
+                                            if (userItem.id > 0) {
+                                                subclass.items.push({
+                                                    id: userItem.id,
+                                                    name: userItem.name,
+                                                    url: userItem.url,
+                                                    text: userItem.text || ''
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        
+        // Add user-added items with positive IDs that don't exist in original data
+        // (These are new items added by user, but we need to assign them proper IDs)
+        let maxId = 0;
+        mergedData.categories.forEach(category => {
+            if (category.items) {
+                category.items.forEach(item => {
+                    if (item.id > maxId) maxId = item.id;
+                });
+            }
+            if (category.subcategories) {
+                category.subcategories.forEach(sub => {
+                    if (sub.items) {
+                        sub.items.forEach(item => {
+                            if (item.id > maxId) maxId = item.id;
+                        });
+                    }
+                    if (sub.subclasses) {
+                        sub.subclasses.forEach(subclass => {
+                            if (subclass.items) {
+                                subclass.items.forEach(item => {
+                                    if (item.id > maxId) maxId = item.id;
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        
+        // Add user-added items with negative IDs (assign them new positive IDs)
+        Object.keys(userAddedItems).forEach(locationKey => {
+            const parts = locationKey.split(':');
+            const categoryId = parts[0];
+            const subcategoryId = parts.length > 1 ? parts[1] : null;
+            const subclassId = parts.length > 2 ? parts[2] : null;
+            
+            const category = mergedData.categories.find(cat => cat.id === categoryId);
+            if (!category) return;
+            
+            userAddedItems[locationKey].forEach(userItem => {
+                // Skip if already processed (positive ID) or deleted
+                if (userItem.id > 0 || deletedItems.includes(userItem.id)) return;
+                
+                // Assign new positive ID
+                maxId++;
+                const newItem = {
+                    id: maxId,
+                    name: userItem.name,
+                    url: userItem.url,
+                    text: userItem.text || ''
+                };
+                
+                if (subclassId) {
+                    // Add to subclass
+                    const subcategory = category.subcategories?.find(sub => sub.id === subcategoryId);
+                    const subclass = subcategory?.subclasses?.find(sub => sub.id === subclassId);
+                    if (subclass) {
+                        if (!subclass.items) subclass.items = [];
+                        subclass.items.push(newItem);
+                    }
+                } else if (subcategoryId) {
+                    // Add to subcategory
+                    const subcategory = category.subcategories?.find(sub => sub.id === subcategoryId);
+                    if (subcategory) {
+                        if (!subcategory.items) subcategory.items = [];
+                        subcategory.items.push(newItem);
+                    }
+                } else {
+                    // Add to category
+                    if (!category.items) category.items = [];
+                    category.items.push(newItem);
+                }
+            });
+        });
+        
+        // Sort items by ID (optional, for consistency)
+        function sortItems(items) {
+            if (!items) return;
+            items.sort((a, b) => a.id - b.id);
+        }
+        
+        mergedData.categories.forEach(category => {
+            sortItems(category.items);
+            if (category.subcategories) {
+                category.subcategories.forEach(sub => {
+                    sortItems(sub.items);
+                    if (sub.subclasses) {
+                        sub.subclasses.forEach(subclass => {
+                            sortItems(subclass.items);
+                        });
+                    }
+                });
+            }
+        });
+        
+        // Create JSON string with proper formatting
+        const jsonString = JSON.stringify(mergedData, null, 2);
+        
+        // Create blob and download
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `data_merged_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        alert('✅ 合并后的 data.json 已生成！\n\n请下载文件并替换项目中的 data.json 文件。\n\n注意：\n- 用户添加的项目（负 ID）已被分配新的正 ID\n- 已删除的项目已被移除\n- 编辑的项目已更新\n- 请备份原始 data.json 文件');
+    } catch (error) {
+        console.error('生成合并文件失败:', error);
+        alert('❌ 生成合并文件失败：' + error.message + '\n\n请查看控制台获取详细信息');
+    }
 }

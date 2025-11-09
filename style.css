@@ -127,6 +127,7 @@ body {
     padding: 12px;
     border-top: 1px solid var(--border-color);
     display: flex;
+    flex-direction: column;
     gap: 8px;
     flex-shrink: 0;
 }
@@ -137,8 +138,9 @@ body {
 }
 
 .export-btn,
-.import-btn {
-    flex: 1;
+.import-btn,
+.merge-btn {
+    width: 100%;
     padding: 8px 12px;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
@@ -151,14 +153,16 @@ body {
 }
 
 .export-btn:hover,
-.import-btn:hover {
+.import-btn:hover,
+.merge-btn:hover {
     background-color: var(--hover-color);
     border-color: var(--accent-color);
     transform: translateY(-1px);
 }
 
 .export-btn:active,
-.import-btn:active {
+.import-btn:active,
+.merge-btn:active {
     transform: translateY(0);
 }
 
@@ -893,20 +897,14 @@ body {
 
 .form-group textarea {
     resize: vertical;
-    min-height: 80px;
+    min-height: 60px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
-/* Prevent Enter key from submitting form in textarea, only Shift+Enter for new line */
-.form-group textarea {
-    resize: vertical;
-    min-height: 80px;
-}
-
-/* Make sure name input doesn't allow line breaks */
-.form-group input[type="text"] {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* Name textarea should be smaller */
+#add-item-name {
+    min-height: 50px;
 }
 
 .modal-footer {

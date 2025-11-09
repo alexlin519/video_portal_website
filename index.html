@@ -26,6 +26,9 @@
                 <button class="import-btn" onclick="document.getElementById('import-file-input').click()" title="导入设置">
                     📤 导入
                 </button>
+                <button class="merge-btn" onclick="exportMergedDataJson()" title="生成合并后的 data.json">
+                    💾 保存到 data.json
+                </button>
                 <input type="file" id="import-file-input" accept=".json" style="display: none;" onchange="importLocalStorage(event)">
             </div>
         </aside>
@@ -69,7 +72,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="add-item-name">名称:</label>
-                    <input type="text" id="add-item-name" placeholder="输入按钮名称（显示在按钮上）" />
+                    <textarea id="add-item-name" placeholder="输入按钮名称（显示在按钮上，Shift+Enter换行）" rows="2"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="add-item-url">链接:</label>

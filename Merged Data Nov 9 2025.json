@@ -1,0 +1,431 @@
+{
+  "categories": [
+    {
+      "id": "daily-random",
+      "name": "每日随机",
+      "icon": "🌟",
+      "isRandom": true,
+      "maxItems": 20,
+      "items": [
+        {
+          "id": 12,
+          "name": "The Tonight Show",
+          "url": "https://www.youtube.com/@fallontonight/videos",
+          "text": "The Tonight Show jimmy"
+        },
+        {
+          "id": 15,
+          "name": "大讨论 围圆圈坐一起",
+          "url": "https://www.youtube.com/@jubilee/videos",
+          "text": ""
+        },
+        {
+          "id": 31,
+          "name": "浅出!",
+          "url": "https://www.youtube.com/@miaodong/videos",
+          "text": "短视频 深入"
+        }
+      ]
+    },
+    {
+      "id": "category",
+      "name": "category",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [],
+      "subcategories": [
+        {
+          "id": "category-class",
+          "name": "class",
+          "maxItems": 50,
+          "items": [],
+          "subclasses": [
+            {
+              "id": "category-class-subclass",
+              "name": "subclass",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 1,
+                  "name": "text",
+                  "url": "﻿link",
+                  "text": "text"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hehe",
+      "name": "hehe",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [],
+      "subcategories": [
+        {
+          "id": "hehe-两性",
+          "name": "两性",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 9,
+              "name": "中指通",
+              "url": "https://www.youtube.com/@%E4%B8%AD%E6%8C%87%E9%80%9A/videos",
+              "text": "中指通"
+            },
+            {
+              "id": 32,
+              "name": "testetest",
+              "url": "https://www.youtube.com/@jackfrags",
+              "text": "????"
+            }
+          ]
+        },
+        {
+          "id": "hehe-美女",
+          "name": "美女",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 27,
+              "name": "표은지Eunji",
+              "url": "https://www.youtube.com/@Eunjipyo",
+              "text": "표은지Eunji"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scp-怪谈",
+      "name": "scp/怪谈",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [
+        {
+          "id": 28,
+          "name": "类火柴人可爱画风",
+          "url": "https://www.youtube.com/@SCP/videos",
+          "text": "类火柴人可爱画风"
+        }
+      ]
+    },
+    {
+      "id": "影视",
+      "name": "影视",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [
+        {
+          "id": 2,
+          "name": "饱饱追剧 短剧整合",
+          "url": "https://www.youtube.com/@HMBB8888/videos",
+          "text": "饱饱追剧\n短剧整合"
+        }
+      ],
+      "subcategories": [
+        {
+          "id": "影视-恐怖猎奇",
+          "name": "恐怖猎奇",
+          "maxItems": 50,
+          "items": []
+        }
+      ]
+    },
+    {
+      "id": "新游试玩",
+      "name": "新游试玩",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [
+        {
+          "id": 5,
+          "name": "阿路的精神時光屋 40min一款",
+          "url": "https://www.youtube.com/@rusiru87time/videos",
+          "text": "阿路的精神時光屋\n40min一款"
+        },
+        {
+          "id": 33,
+          "name": "test2",
+          "url": "https://www.youtube.com/@jackfrags",
+          "text": "test2"
+        },
+        {
+          "id": 34,
+          "name": "wgwh fsdvs",
+          "url": "https://www.youtube.com/@jackfrags",
+          "text": "wgwh\nfsdvs"
+        }
+      ],
+      "subcategories": [
+        {
+          "id": "新游试玩-恐怖猎奇",
+          "name": "恐怖猎奇",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 10,
+              "name": "神戳戳的苏神",
+              "url": "https://www.youtube.com/@shenchuochuo/videos",
+              "text": "神戳戳的苏神"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "有益",
+      "name": "有益",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [],
+      "subcategories": [
+        {
+          "id": "有益-国标",
+          "name": "国标",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 13,
+              "name": "中国国标搬运",
+              "url": "https://www.youtube.com/@StarDanceShop/videos",
+              "text": "中国国标搬运"
+            },
+            {
+              "id": 26,
+              "name": "拉丁 couple 创意多变basic",
+              "url": "https://www.youtube.com/@DanceInsanity/videos",
+              "text": "拉丁 couple \n 创意多变basic"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "有益-国标-教学",
+              "name": "教学",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 18,
+                  "name": "国标 欧洲老头",
+                  "url": "https://www.youtube.com/@EgilsSmagris",
+                  "text": "国标 欧洲老头"
+                },
+                {
+                  "id": 19,
+                  "name": "国标 拉丁 专业赛事",
+                  "url": "https://www.youtube.com/@DanceToday/videos",
+                  "text": "国标 拉丁 专业赛事"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "有益-工科",
+          "name": "工科",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 17,
+              "name": "手工老头!!!",
+              "url": "https://www.youtube.com/@tested/videos",
+              "text": "uuu"
+            },
+            {
+              "id": 21,
+              "name": "diy project \n实验",
+              "url": "https://www.youtube.com/@TheKingofRandom/videos",
+              "text": "diy project + 实验"
+            }
+          ]
+        },
+        {
+          "id": "有益-时政点评",
+          "name": "时政点评",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 4,
+              "name": "台湾 查理 右派自由",
+              "url": "https://www.youtube.com/@godsteammate/videos",
+              "text": "台湾 查理\n右派自由"
+            }
+          ]
+        },
+        {
+          "id": "有益-测评",
+          "name": "测评",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 7,
+              "name": "大狸子切切里 科技测评",
+              "url": "https://www.youtube.com/@cherry_official/videos",
+              "text": "大狸子切切里\n科技测评"
+            }
+          ]
+        },
+        {
+          "id": "有益-理科",
+          "name": "理科",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 22,
+              "name": "Numberphile 15min 数学",
+              "url": "https://www.youtube.com/@numberphile/videos",
+              "text": "Numberphile\n15min 数学"
+            }
+          ]
+        },
+        {
+          "id": "有益-科普",
+          "name": "科普",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 16,
+              "name": "画风可爱 各类科普",
+              "url": "https://www.youtube.com/@kurzgesagt/videos",
+              "text": "画风可爱 各类科普"
+            },
+            {
+              "id": 31,
+              "name": "短视频 深入浅出!",
+              "url": "https://www.youtube.com/@miaodong/videos",
+              "text": "短视频 深入浅出!"
+            }
+          ]
+        },
+        {
+          "id": "有益-访谈",
+          "name": "访谈",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 12,
+              "name": "The Tonight Show jimmy 都是短的",
+              "url": "https://www.youtube.com/@fallontonight/videos",
+              "text": "The Tonight Show jimmy\n都是短的"
+            },
+            {
+              "id": 14,
+              "name": "科技类 10min左右",
+              "url": "https://www.youtube.com/@LondonRealTV/videos",
+              "text": "科技类 10min左右"
+            },
+            {
+              "id": 15,
+              "name": "大讨论 围圆圈坐一起",
+              "url": "https://www.youtube.com/@jubilee/videos",
+              "text": "大讨论 围圆圈坐一起"
+            }
+          ]
+        },
+        {
+          "id": "有益-辩论",
+          "name": "辩论",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 29,
+              "name": "马来西亚 辩论辩题 30-50min 左右",
+              "url": "https://www.youtube.com/@BBKNetwork/videos",
+              "text": "马来西亚 辩论辩题\n30-50min 左右"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "游戏实况",
+      "name": "游戏实况",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [
+        {
+          "id": 6,
+          "name": "狐狸头🦊 经常开新游新坑",
+          "url": "https://www.youtube.com/@pfytw/videos",
+          "text": "狐狸头🦊\n经常开新游新坑"
+        },
+        {
+          "id": 8,
+          "name": "喵心GG (啥都有 七日杀类多一些)",
+          "url": "https://www.youtube.com/@miaoxinGG/videos",
+          "text": "喵心GG\n(啥都有 七日杀类多一些)"
+        },
+        {
+          "id": 30,
+          "name": "悠闲 + 恐怖(小小梦魇)",
+          "url": "https://www.youtube.com/@AshanKouki/videos",
+          "text": "悠闲 + 恐怖(小小梦魇)"
+        }
+      ],
+      "subcategories": [
+        {
+          "id": "游戏实况-3a",
+          "name": "3a",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 23,
+              "name": "完美蝙蝠侠",
+              "url": "https://www.youtube.com/@StealthyChannel/videos",
+              "text": "完美蝙蝠侠"
+            }
+          ]
+        },
+        {
+          "id": "游戏实况-格斗",
+          "name": "格斗",
+          "maxItems": 50,
+          "items": [],
+          "subclasses": [
+            {
+              "id": "游戏实况-格斗-mk",
+              "name": "mk",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 3,
+                  "name": "super",
+                  "url": "https://www.youtube.com/@Superman049",
+                  "text": "super"
+                },
+                {
+                  "id": 25,
+                  "name": "SonicFox 电竞高手",
+                  "url": "https://www.youtube.com/@SonicFox5000/videos",
+                  "text": "SonicFox\n电竞高手"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "游戏实况-第三人称射击",
+          "name": "第三人称射击",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 24,
+              "name": "Necros 漫威争锋 蜘蛛侠",
+              "url": "https://www.youtube.com/@NecrosOW/videos",
+              "text": "Necros\n漫威争锋 蜘蛛侠"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "collection",
+      "name": "我的合集",
+      "icon": "📚",
+      "maxItems": 50,
+      "items": []
+    }
+  ]
+}
