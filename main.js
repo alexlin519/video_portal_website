@@ -38,6 +38,7 @@ const FAVORITES_KEY = 'video_portal_favorites';
 const PINS_KEY = 'video_portal_pins';
 const CATEGORY_ORDER_KEY = 'video_portal_category_order';
 const SUBCATEGORY_ORDER_KEY_PREFIX = 'video_portal_subcategory_order_';
+const FILTER_CATEGORY_ORDER_KEY = 'video_portal_filter_category_order';
 const USER_ADDED_ITEMS_KEY = 'video_portal_user_added_items';
 const DELETED_ITEMS_KEY = 'video_portal_deleted_items';
 const DAILY_RANDOM_FILTER_KEY = 'video_portal_daily_random_filter';
@@ -595,6 +596,13 @@ function handleCategoryDragOver(event) {
     const categoryElement = event.currentTarget.closest('.category');
     if (!categoryElement || categoryElement === draggedCategoryElement) return;
     
+    // Remove drag-over classes from all categories first
+    document.querySelectorAll('.category').forEach(cat => {
+        if (cat !== categoryElement && cat !== draggedCategoryElement) {
+            cat.classList.remove('drag-over-top', 'drag-over-bottom');
+        }
+    });
+    
     const rect = categoryElement.getBoundingClientRect();
     const next = (event.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
     
@@ -662,6 +670,13 @@ function handleSubcategoryDragOver(event) {
     // Only allow dropping within the same category
     const parentCategory = subcategoryElement.getAttribute('data-parent-category');
     if (parentCategory !== draggedSubcategoryParentCategory) return;
+    
+    // Remove drag-over classes from all subcategories in the same category first
+    document.querySelectorAll(`.subcategory[data-parent-category="${parentCategory}"]`).forEach(sub => {
+        if (sub !== subcategoryElement && sub !== draggedSubcategoryElement) {
+            sub.classList.remove('drag-over-top', 'drag-over-bottom');
+        }
+    });
     
     const rect = subcategoryElement.getBoundingClientRect();
     const next = (event.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
@@ -1889,11 +1904,28 @@ async function renderFilterSidebar(data) {
     if (!sidebar) return;
     
     const filter = getDailyRandomFilter();
-    const categories = data.categories.filter(cat => cat.id !== 'daily-random' && cat.id !== 'favorites');
+    let categories = data.categories.filter(cat => cat.id !== 'daily-random' && cat.id !== 'favorites');
+    
+    // Get saved filter category order from localStorage
+    const savedFilterCategoryOrder = JSON.parse(localStorage.getItem(FILTER_CATEGORY_ORDER_KEY) || '[]');
+    
+    // Sort categories based on saved order
+    const sortedCategories = [...categories].sort((a, b) => {
+        const indexA = savedFilterCategoryOrder.indexOf(a.id);
+        const indexB = savedFilterCategoryOrder.indexOf(b.id);
+        // If both are in saved order, use their order
+        if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+        // If only A is in saved order, A comes first
+        if (indexA !== -1) return -1;
+        // If only B is in saved order, B comes first
+        if (indexB !== -1) return 1;
+        // If neither is in saved order, keep original order
+        return 0;
+    });
     
     let html = '';
     
-    categories.forEach(category => {
+    sortedCategories.forEach(category => {
         const categoryId = category.id;
         
         // Check current checkbox state in DOM (if exists) to preserve user's manual changes
@@ -1913,13 +1945,22 @@ async function renderFilterSidebar(data) {
         
         html += `
             <div class="filter-category-item ${isActive ? 'active' : ''}" 
-                 onclick="selectFilterCategory('${categoryId}')">
-                <input type="checkbox" class="filter-category-checkbox" 
-                       data-category-id="${categoryId}"
-                       ${categoryChecked ? 'checked' : ''}
-                       onchange="handleCategoryFilterChange('${categoryId}', this.checked, event)"
-                       onclick="event.stopPropagation()">
-                <span class="filter-category-item-name">${escapeHtml(category.icon || '')} ${escapeHtml(category.name)}</span>
+                 data-category-id="${categoryId}"
+                 ondragover="handleFilterCategoryDragOver(event)"
+                 ondrop="handleFilterCategoryDrop(event)">
+                <span class="filter-drag-handle" 
+                      draggable="true"
+                      ondragstart="handleFilterCategoryDragStart(event, '${categoryId}')"
+                      ondragend="handleFilterCategoryDragEnd(event)"
+                      onmousedown="event.stopPropagation()">⋮⋮</span>
+                <div class="filter-category-content" onclick="selectFilterCategory('${categoryId}')">
+                    <input type="checkbox" class="filter-category-checkbox" 
+                           data-category-id="${categoryId}"
+                           ${categoryChecked ? 'checked' : ''}
+                           onchange="handleCategoryFilterChange('${categoryId}', this.checked, event)"
+                           onclick="event.stopPropagation()">
+                    <span class="filter-category-item-name">${escapeHtml(category.icon || '')} ${escapeHtml(category.name)}</span>
+                </div>
             </div>
         `;
     });
@@ -2432,4 +2473,83 @@ async function applyFilter() {
     if (currentCategoryId === 'daily-random') {
         selectCategory('daily-random');
     }
+}
+
+// Drag and Drop handlers for Filter Categories
+let draggedFilterCategoryElement = null;
+
+function handleFilterCategoryDragStart(event, categoryId) {
+    // Find the parent category item element
+    const categoryItem = event.target.closest('.filter-category-item');
+    if (!categoryItem) return;
+    
+    draggedFilterCategoryElement = categoryItem;
+    categoryItem.classList.add('dragging');
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/html', categoryItem.outerHTML);
+    event.dataTransfer.setData('category-id', categoryId);
+    // Stop propagation to prevent triggering category selection
+    event.stopPropagation();
+}
+
+function handleFilterCategoryDragOver(event) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    
+    const categoryElement = event.currentTarget.closest('.filter-category-item');
+    if (!categoryElement || categoryElement === draggedFilterCategoryElement) return;
+    
+    // Remove drag-over classes from all items first
+    document.querySelectorAll('.filter-category-item').forEach(item => {
+        if (item !== categoryElement && item !== draggedFilterCategoryElement) {
+            item.classList.remove('drag-over-top', 'drag-over-bottom');
+        }
+    });
+    
+    const rect = categoryElement.getBoundingClientRect();
+    const next = (event.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+    
+    categoryElement.classList.remove('drag-over-top', 'drag-over-bottom');
+    if (next) {
+        categoryElement.classList.add('drag-over-bottom');
+    } else {
+        categoryElement.classList.add('drag-over-top');
+    }
+}
+
+function handleFilterCategoryDrop(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (!draggedFilterCategoryElement) return;
+    
+    const categoryElement = event.currentTarget.closest('.filter-category-item');
+    if (!categoryElement || categoryElement === draggedFilterCategoryElement) return;
+    
+    const rect = categoryElement.getBoundingClientRect();
+    const next = (event.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+    
+    if (next) {
+        categoryElement.parentNode.insertBefore(draggedFilterCategoryElement, categoryElement.nextSibling);
+    } else {
+        categoryElement.parentNode.insertBefore(draggedFilterCategoryElement, categoryElement);
+    }
+    
+    saveFilterCategoryOrder();
+}
+
+function handleFilterCategoryDragEnd(event) {
+    if (draggedFilterCategoryElement) {
+        draggedFilterCategoryElement.classList.remove('dragging');
+    }
+    document.querySelectorAll('.filter-category-item').forEach(item => {
+        item.classList.remove('drag-over-top', 'drag-over-bottom');
+    });
+    draggedFilterCategoryElement = null;
+}
+
+function saveFilterCategoryOrder() {
+    const categories = document.querySelectorAll('.filter-category-item');
+    const order = Array.from(categories).map(cat => cat.getAttribute('data-category-id'));
+    localStorage.setItem(FILTER_CATEGORY_ORDER_KEY, JSON.stringify(order));
 }

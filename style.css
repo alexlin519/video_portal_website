@@ -125,14 +125,15 @@ body {
 
 /* Category Styles */
 .category {
-    margin-bottom: 4px;
+    margin-bottom: 2px;
+    position: relative;
 }
 
 .category-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 14px;
+    padding: 8px 14px;
     border-radius: var(--radius-md);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -157,6 +158,7 @@ body {
     height: 2px;
     background-color: var(--accent-color);
     z-index: 10;
+    border-radius: 1px;
 }
 
 .category.drag-over-bottom::after {
@@ -168,6 +170,7 @@ body {
     height: 2px;
     background-color: var(--accent-color);
     z-index: 10;
+    border-radius: 1px;
 }
 
 .drag-handle {
@@ -252,6 +255,7 @@ body {
 
 .subcategory {
     margin-bottom: 2px;
+    position: relative;
 }
 
 .subcategory-header {
@@ -279,6 +283,7 @@ body {
     height: 2px;
     background-color: var(--accent-color);
     z-index: 10;
+    border-radius: 1px;
 }
 
 .subcategory.drag-over-bottom::after {
@@ -290,6 +295,7 @@ body {
     height: 2px;
     background-color: var(--accent-color);
     z-index: 10;
+    border-radius: 1px;
 }
 
 .subcategory-header:hover {
@@ -906,11 +912,12 @@ body {
 .filter-modal-content {
     max-width: 1200px;
     width: 95vw;
-    max-height: 80vh;
+    max-height: 85vh;
+    height: 85vh;
 }
 
 .filter-modal-body {
-    max-height: 60vh;
+    max-height: 70vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -961,15 +968,16 @@ body {
 }
 
 .filter-category-item {
-    padding: 10px 12px;
+    padding: 8px 12px;
     border-radius: var(--radius-md);
     cursor: pointer;
     transition: all 0.2s ease;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     display: flex;
     align-items: center;
     gap: 8px;
     user-select: none;
+    position: relative;
 }
 
 .filter-category-item:hover {
@@ -981,11 +989,68 @@ body {
     color: var(--bg-color);
 }
 
+.filter-category-item.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.filter-category-item.drag-over-top::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--accent-color);
+    z-index: 10;
+    border-radius: 1px;
+}
+
+.filter-category-item.drag-over-bottom::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--accent-color);
+    z-index: 10;
+    border-radius: 1px;
+}
+
+.filter-drag-handle {
+    cursor: grab;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    user-select: none;
+    padding: 2px 4px;
+    display: flex;
+    align-items: center;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.filter-category-item:hover .filter-drag-handle {
+    opacity: 1;
+}
+
+.filter-category-item.dragging .filter-drag-handle,
+.filter-drag-handle:active {
+    cursor: grabbing;
+}
+
 .filter-category-item input[type="checkbox"] {
     width: 18px;
     height: 18px;
     cursor: pointer;
     accent-color: var(--accent-color);
+}
+
+.filter-category-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .filter-category-item-name {
