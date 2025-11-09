@@ -31,6 +31,9 @@
                                onchange="toggleShowAll()">
                         <span>显示全部</span>
                     </label>
+                    <button class="filter-btn" id="filter-btn" style="display: none;" onclick="showFilterModal()" title="筛选">
+                        🔍 Filter
+                    </button>
                     <button class="add-new-btn" id="add-new-btn" style="display: none;" onclick="showAddNewModal()">
                         + 新增
                     </button>
@@ -71,6 +74,36 @@
             <div class="modal-footer">
                 <button class="btn-cancel" onclick="hideAddNewModal()">取消</button>
                 <button class="btn-confirm" onclick="addNewItem()">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Modal for Daily Random -->
+    <div id="filter-modal" class="modal" style="display: none;">
+        <div class="modal-content filter-modal-content">
+            <div class="modal-header">
+                <h3>筛选类别</h3>
+                <button class="modal-close" onclick="hideFilterModal()">×</button>
+            </div>
+            <div class="modal-body filter-modal-body">
+                <div class="filter-actions">
+                    <button class="btn-select-all" onclick="selectAllFilters()">全选</button>
+                    <button class="btn-deselect-all" onclick="deselectAllFilters()">全不选</button>
+                </div>
+                <div class="filter-container">
+                    <div class="filter-categories-sidebar" id="filter-categories-sidebar">
+                        <!-- Categories list will be rendered here -->
+                    </div>
+                    <div class="filter-details-area" id="filter-details-area">
+                        <div class="filter-placeholder">
+                            <p>请从左侧选择一个分类</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="hideFilterModal()">取消</button>
+                <button class="btn-confirm" onclick="applyFilter()">确认</button>
             </div>
         </div>
     </div>

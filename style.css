@@ -728,6 +728,23 @@ body {
     transform: translateY(-1px);
 }
 
+.filter-btn {
+    background-color: var(--card-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    background-color: var(--hover-color);
+    border-color: var(--accent-color);
+}
+
 /* Modal Styles */
 .modal {
     display: none;
@@ -883,4 +900,203 @@ body {
 .btn-confirm:hover {
     background-color: var(--accent-hover);
     transform: translateY(-1px);
+}
+
+/* Filter Modal Styles */
+.filter-modal-content {
+    max-width: 900px;
+    width: 90vw;
+    max-height: 80vh;
+}
+
+.filter-modal-body {
+    max-height: 60vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.btn-select-all,
+.btn-deselect-all {
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: var(--card-color);
+    color: var(--text-color);
+}
+
+.btn-select-all:hover,
+.btn-deselect-all:hover {
+    background-color: var(--hover-color);
+    border-color: var(--accent-color);
+}
+
+.filter-container {
+    display: flex;
+    gap: 16px;
+    overflow: hidden;
+    flex: 1;
+    min-height: 0;
+}
+
+.filter-categories-sidebar {
+    width: 200px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+    padding-right: 12px;
+}
+
+.filter-category-item {
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    user-select: none;
+}
+
+.filter-category-item:hover {
+    background-color: var(--hover-color);
+}
+
+.filter-category-item.active {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+}
+
+.filter-category-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--accent-color);
+}
+
+.filter-category-item-name {
+    font-size: 0.95rem;
+    flex: 1;
+}
+
+.filter-details-area {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.filter-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.filter-subcategory-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border-color);
+    overflow-x: auto;
+    flex-wrap: wrap;
+    /* Prevent layout shift */
+    min-height: 40px;
+}
+
+.filter-subcategory-tab {
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--card-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    user-select: none;
+    /* Prevent layout shift when active state changes */
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.filter-subcategory-tab:hover:not(.active) {
+    background-color: var(--hover-color);
+    border-color: var(--accent-color);
+}
+
+.filter-subcategory-tab.active {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    border-color: var(--accent-color);
+}
+
+.filter-subcategory-tab input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--accent-color);
+    /* Prevent checkbox from affecting layout */
+    flex-shrink: 0;
+    pointer-events: auto;
+}
+
+.filter-subcategory-tab span {
+    /* Prevent text from affecting layout */
+    flex-shrink: 0;
+}
+
+.filter-subclasses-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-subclass-item {
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--card-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.filter-subclass-item:hover {
+    background-color: var(--hover-color);
+    border-color: var(--accent-color);
+}
+
+.filter-subclass-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--accent-color);
+}
+
+.filter-subclass-item-name {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    flex: 1;
 }

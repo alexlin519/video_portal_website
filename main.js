@@ -40,6 +40,7 @@ const CATEGORY_ORDER_KEY = 'video_portal_category_order';
 const SUBCATEGORY_ORDER_KEY_PREFIX = 'video_portal_subcategory_order_';
 const USER_ADDED_ITEMS_KEY = 'video_portal_user_added_items';
 const DELETED_ITEMS_KEY = 'video_portal_deleted_items';
+const DAILY_RANDOM_FILTER_KEY = 'video_portal_daily_random_filter';
 
 function getFavorites() {
     try {
@@ -713,112 +714,309 @@ function saveSubcategoryOrder(categoryId) {
     localStorage.setItem(`${SUBCATEGORY_ORDER_KEY_PREFIX}${categoryId}`, JSON.stringify(order));
 }
 
+// Get daily random filter settings
+function getDailyRandomFilter() {
+    try {
+        const filter = localStorage.getItem(DAILY_RANDOM_FILTER_KEY);
+        return filter ? JSON.parse(filter) : null; // null means no filter (show all)
+    } catch (e) {
+        console.error('Error loading daily random filter:', e);
+        return null;
+    }
+}
+
+// Save daily random filter settings
+function saveDailyRandomFilter(filter) {
+    try {
+        localStorage.setItem(DAILY_RANDOM_FILTER_KEY, JSON.stringify(filter));
+                            } catch (e) {
+        console.error('Error saving daily random filter:', e);
+    }
+}
+
+// Check if category should be included based on filter
+function isCategoryIncluded(categoryId, filter) {
+    if (!filter) return true; // No filter means include all
+    if (!filter.categories) return true; // No categories in filter means include all
+    return filter.categories.includes(categoryId);
+}
+
+// Check if subcategory should be included based on filter
+function isSubcategoryIncluded(categoryId, subcategoryId, filter) {
+    if (!filter) return true; // No filter means include all
+    const key = `${categoryId}:${subcategoryId}`;
+    
+    // Check if explicitly excluded
+    if (filter.excludedSubcategories && filter.excludedSubcategories.includes(key)) {
+        return false;
+    }
+    
+    // If parent category is included, subcategory is automatically included (unless excluded)
+    if (filter.categories && filter.categories.includes(categoryId)) {
+        return true;
+    }
+    
+    // Otherwise, check if subcategory is specifically included
+    if (filter.subcategories && filter.subcategories.includes(key)) {
+        return true;
+    }
+    
+    return false;
+}
+
+// Check if subclass should be included based on filter
+function isSubclassIncluded(categoryId, subcategoryId, subclassId, filter) {
+    if (!filter) return true; // No filter means include all
+    const key = `${categoryId}:${subcategoryId}:${subclassId}`;
+    const subcategoryKey = `${categoryId}:${subcategoryId}`;
+    
+    // Check if explicitly excluded
+    if (filter.excludedSubclasses && filter.excludedSubclasses.includes(key)) {
+        return false;
+    }
+    
+    // Check if parent subcategory is excluded (if so, all subclasses are excluded)
+    if (filter.excludedSubcategories && filter.excludedSubcategories.includes(subcategoryKey)) {
+        return false;
+    }
+    
+    // If parent category is included, subclass is automatically included (unless excluded)
+    if (filter.categories && filter.categories.includes(categoryId)) {
+        return true;
+    }
+    
+    // If parent subcategory is included, subclass is automatically included (unless excluded)
+    if (filter.subcategories && filter.subcategories.includes(subcategoryKey)) {
+        return true;
+    }
+    
+    // Otherwise, check if subclass is specifically included
+    if (filter.subclasses && filter.subclasses.includes(key)) {
+        return true;
+    }
+    
+    return false;
+}
+
 // Collect all items from all categories (for Daily Random)
 function collectAllItems(data) {
     const allItems = [];
     const deletedItems = getDeletedItems();
     const userAddedItems = getUserAddedItems();
+    const filter = getDailyRandomFilter();
     
     data.categories.forEach(category => {
         // Skip daily random itself and favorites
         if (category.id === 'daily-random' || category.id === 'favorites') return;
         
-        // Add direct items (filter deleted)
-        if (category.items) {
-            category.items.forEach(item => {
-                if (!deletedItems.includes(item.id)) {
-                    // Ensure item has name for display (backwards compatibility: use text as name if name doesn't exist)
-                    const displayItem = {
-                        ...item,
-                        name: item.name || item.text || '未命名',
-                        source: category.name
-                    };
-                    allItems.push(displayItem);
-                }
-            });
-        }
+        // Check if category is included in filter
+        const categoryIncluded = isCategoryIncluded(category.id, filter);
         
-        // Add user-added items for this category
-        const categoryKey = category.id;
-        if (userAddedItems[categoryKey]) {
-            userAddedItems[categoryKey].forEach(item => {
-                if (!deletedItems.includes(item.id)) {
-                    allItems.push({...item, source: category.name});
-                }
-            });
-        }
-        
-        // Add items from subcategories
-        if (category.subcategories) {
-            category.subcategories.forEach(sub => {
-                // Add items directly in subcategory (filter deleted)
-                if (sub.items) {
-                    sub.items.forEach(item => {
-                        if (!deletedItems.includes(item.id)) {
-                            // Ensure item has name for display (backwards compatibility: use text as name if name doesn't exist)
-                            const displayItem = {
-                                ...item,
-                                name: item.name || item.text || '未命名',
-                                text: item.text || item.name || '', // Keep text as note
-                                source: `${category.name} - ${sub.name}`
-                            };
-                            allItems.push(displayItem);
-                        }
-                    });
-                }
-                
-                // Add user-added items for this subcategory
-                const subcategoryKey = `${category.id}:${sub.id}`;
-                if (userAddedItems[subcategoryKey]) {
-                    userAddedItems[subcategoryKey].forEach(item => {
-                        if (!deletedItems.includes(item.id)) {
-                            // Ensure item has name for display (backwards compatibility)
-                            const displayItem = {
-                                ...item,
-                                name: item.name || item.text || '未命名',
-                                source: `${category.name} - ${sub.name}`
-                            };
-                            allItems.push(displayItem);
-                        }
-                    });
-                }
-                
-                // Add items from subclasses
-                if (sub.subclasses) {
-                    sub.subclasses.forEach(subclass => {
-                if (subclass.items) {
-                    subclass.items.forEach(item => {
-                        if (!deletedItems.includes(item.id)) {
-                            // Ensure item has name for display (backwards compatibility: use text as name if name doesn't exist)
-                            const displayItem = {
-                                ...item,
-                                name: item.name || item.text || '未命名',
-                                text: item.text || item.name || '', // Keep text as note
-                                source: `${category.name} - ${sub.name} - ${subclass.name}`
-                            };
-                            allItems.push(displayItem);
-                        }
-                    });
-                }
-                        
-                        // Add user-added items for this subclass
-                        const subclassKey = `${category.id}:${sub.id}:${subclass.id}`;
-                        if (userAddedItems[subclassKey]) {
-                            userAddedItems[subclassKey].forEach(item => {
+        // If category is included, add all its items and all subcategories
+        if (categoryIncluded) {
+            // Add direct items from category
+            if (category.items) {
+                category.items.forEach(item => {
+                    if (!deletedItems.includes(item.id)) {
+                        const displayItem = {
+                            ...item,
+                            name: item.name || item.text || '未命名',
+                            source: category.name
+                        };
+                        allItems.push(displayItem);
+                    }
+                });
+            }
+            
+            // Add user-added items for this category
+            const categoryKey = category.id;
+            if (userAddedItems[categoryKey]) {
+                userAddedItems[categoryKey].forEach(item => {
+                    if (!deletedItems.includes(item.id)) {
+                        const displayItem = {
+                            ...item,
+                            name: item.name || item.text || '未命名',
+                            source: category.name
+                        };
+                        allItems.push(displayItem);
+                    }
+                });
+            }
+            
+            // Add all subcategories and their items (category is selected, so all subcategories are included)
+            if (category.subcategories) {
+                category.subcategories.forEach(sub => {
+                    // Add items directly in subcategory
+                    if (sub.items) {
+                        sub.items.forEach(item => {
+                            if (!deletedItems.includes(item.id)) {
+                                const displayItem = {
+                                    ...item,
+                                    name: item.name || item.text || '未命名',
+                                    source: `${category.name} - ${sub.name}`
+                                };
+                                allItems.push(displayItem);
+                            }
+                        });
+                    }
+                    
+                    // Add user-added items for this subcategory
+                    const subcategoryKey = `${category.id}:${sub.id}`;
+                    if (userAddedItems[subcategoryKey]) {
+                        userAddedItems[subcategoryKey].forEach(item => {
+                            if (!deletedItems.includes(item.id)) {
+                                const displayItem = {
+                                    ...item,
+                                    name: item.name || item.text || '未命名',
+                                    source: `${category.name} - ${sub.name}`
+                                };
+                                allItems.push(displayItem);
+                            }
+                        });
+                    }
+                    
+                    // Add all subclasses and their items
+                    if (sub.subclasses) {
+                        sub.subclasses.forEach(subclass => {
+                            if (subclass.items) {
+                                subclass.items.forEach(item => {
+                                    if (!deletedItems.includes(item.id)) {
+                                        const displayItem = {
+                                            ...item,
+                                            name: item.name || item.text || '未命名',
+                                            source: `${category.name} - ${sub.name} - ${subclass.name}`
+                                        };
+                                        allItems.push(displayItem);
+                                    }
+                                });
+                            }
+                            
+                            // Add user-added items for this subclass
+                            const subclassKey = `${category.id}:${sub.id}:${subclass.id}`;
+                            if (userAddedItems[subclassKey]) {
+                                userAddedItems[subclassKey].forEach(item => {
+                                    if (!deletedItems.includes(item.id)) {
+                                        const displayItem = {
+                                            ...item,
+                                            name: item.name || item.text || '未命名',
+                                            source: `${category.name} - ${sub.name} - ${subclass.name}`
+                                        };
+                                        allItems.push(displayItem);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+                    }
+                } else {
+            // Category not included, but check if any subcategories are specifically included
+            if (category.subcategories) {
+                category.subcategories.forEach(sub => {
+                    const subcategoryKey = `${category.id}:${sub.id}`;
+                    const subcategoryIncluded = isSubcategoryIncluded(category.id, sub.id, filter);
+                    
+                    if (subcategoryIncluded) {
+                        // Add items directly in subcategory
+                        if (sub.items) {
+                            sub.items.forEach(item => {
                                 if (!deletedItems.includes(item.id)) {
-                                    // Ensure item has name for display (backwards compatibility)
                                     const displayItem = {
                                         ...item,
                                         name: item.name || item.text || '未命名',
-                                        source: `${category.name} - ${sub.name} - ${subclass.name}`
+                                        source: `${category.name} - ${sub.name}`
                                     };
                                     allItems.push(displayItem);
                                 }
                             });
                         }
-                    });
-                }
-            });
+                        
+                        // Add user-added items for this subcategory
+                        if (userAddedItems[subcategoryKey]) {
+                            userAddedItems[subcategoryKey].forEach(item => {
+                                if (!deletedItems.includes(item.id)) {
+                                    const displayItem = {
+                                        ...item,
+                                        name: item.name || item.text || '未命名',
+                                        source: `${category.name} - ${sub.name}`
+                                    };
+                                    allItems.push(displayItem);
+                                }
+                            });
+                        }
+                        
+                        // Add all subclasses under this subcategory (subcategory is selected)
+                        if (sub.subclasses) {
+                            sub.subclasses.forEach(subclass => {
+                                if (subclass.items) {
+                                    subclass.items.forEach(item => {
+                                        if (!deletedItems.includes(item.id)) {
+                                            const displayItem = {
+                                                ...item,
+                                                name: item.name || item.text || '未命名',
+                                                source: `${category.name} - ${sub.name} - ${subclass.name}`
+                                            };
+                                            allItems.push(displayItem);
+                                        }
+                                    });
+                                }
+                                
+                                // Add user-added items for this subclass
+                                const subclassKey = `${category.id}:${sub.id}:${subclass.id}`;
+                                if (userAddedItems[subclassKey]) {
+                                    userAddedItems[subclassKey].forEach(item => {
+                                        if (!deletedItems.includes(item.id)) {
+                                            const displayItem = {
+                                                ...item,
+                                                name: item.name || item.text || '未命名',
+                                                source: `${category.name} - ${sub.name} - ${subclass.name}`
+                                            };
+                                            allItems.push(displayItem);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+            } else {
+                        // Subcategory not included, but check if any subclasses are specifically included
+                        if (sub.subclasses) {
+                            sub.subclasses.forEach(subclass => {
+                                const subclassKey = `${category.id}:${sub.id}:${subclass.id}`;
+                                const subclassIncluded = isSubclassIncluded(category.id, sub.id, subclass.id, filter);
+                                
+                                if (subclassIncluded) {
+                                    if (subclass.items) {
+                                        subclass.items.forEach(item => {
+                                            if (!deletedItems.includes(item.id)) {
+                                                const displayItem = {
+                                                    ...item,
+                                                    name: item.name || item.text || '未命名',
+                                                    source: `${category.name} - ${sub.name} - ${subclass.name}`
+                                                };
+                                                allItems.push(displayItem);
+                                            }
+                                        });
+                                    }
+                                    
+                                    // Add user-added items for this subclass
+                                    if (userAddedItems[subclassKey]) {
+                                        userAddedItems[subclassKey].forEach(item => {
+                                            if (!deletedItems.includes(item.id)) {
+                                                const displayItem = {
+                                                    ...item,
+                                                    name: item.name || item.text || '未命名',
+                                                    source: `${category.name} - ${sub.name} - ${subclass.name}`
+                                                };
+                                                allItems.push(displayItem);
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
         }
     });
     
@@ -866,7 +1064,7 @@ async function selectCategory(categoryId) {
     if (checkbox) {
         showAllCategory = checkbox.checked;
         console.log(`[Category] Checkbox state read: ${showAllCategory}`);
-            } else {
+                            } else {
         showAllCategory = false; // Default to false if checkbox doesn't exist
         console.log(`[Category] Checkbox not found, defaulting to false`);
     }
@@ -937,7 +1135,7 @@ async function selectCategory(categoryId) {
             
             if (isPinnedFromStorage) {
                 pinned.push({...item, pinned: true}); // Mark as pinned
-                } else {
+                        } else {
                 unpinned.push(item);
             }
         });
@@ -1025,11 +1223,19 @@ async function selectCategory(categoryId) {
     updateContentHeader(category.name, category.icon);
     document.getElementById('refresh-btn').style.display = 'inline-block';
     const addNewBtn = document.getElementById('add-new-btn');
+    const filterBtn = document.getElementById('filter-btn');
     if (addNewBtn) {
         if (category.isRandom || categoryId === 'favorites') {
             addNewBtn.style.display = 'none';
-                            } else {
+        } else {
             addNewBtn.style.display = 'inline-block';
+        }
+    }
+    if (filterBtn) {
+        if (category.isRandom) {
+            filterBtn.style.display = 'inline-block';
+        } else {
+            filterBtn.style.display = 'none';
         }
     }
     updateShowAllButton();
@@ -1607,13 +1813,17 @@ async function initApp() {
         }
     }
     
-    // Add Escape key support for modal (no Enter key submission, only button click)
+    // Add Escape key support for modals (no Enter key submission, only button click)
     document.addEventListener('keydown', (e) => {
-        const modal = document.getElementById('add-item-modal');
-        if (!modal) return;
+        const addModal = document.getElementById('add-item-modal');
+        const filterModal = document.getElementById('filter-modal');
         
-        if (e.key === 'Escape' && modal.style.display === 'flex') {
-            hideAddNewModal();
+        if (e.key === 'Escape') {
+            if (addModal && addModal.style.display === 'flex') {
+                hideAddNewModal();
+            } else if (filterModal && filterModal.style.display === 'flex') {
+                hideFilterModal();
+            }
         }
         // Note: Enter key no longer submits - only click on confirm button
     });
@@ -1643,5 +1853,583 @@ function initSidebarState() {
                 sidebar.classList.add('collapsed');
             }
         }
+    }
+}
+
+// Show filter modal for Daily Random
+let selectedFilterCategoryId = null;
+
+async function showFilterModal() {
+    const modal = document.getElementById('filter-modal');
+    if (!modal) return;
+    
+    const data = await getData();
+    if (!data || !data.categories) return;
+    
+    selectedFilterCategoryId = null;
+    
+    // Render filter sidebar and details
+    renderFilterSidebar(data);
+    renderFilterDetails(data, null);
+    
+    modal.style.display = 'flex';
+}
+
+// Hide filter modal
+function hideFilterModal() {
+    const modal = document.getElementById('filter-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Render filter sidebar (categories list)
+async function renderFilterSidebar(data) {
+    const sidebar = document.getElementById('filter-categories-sidebar');
+    if (!sidebar) return;
+    
+    const filter = getDailyRandomFilter();
+    const categories = data.categories.filter(cat => cat.id !== 'daily-random' && cat.id !== 'favorites');
+    
+    let html = '';
+    
+    categories.forEach(category => {
+        const categoryId = category.id;
+        
+        // Check current checkbox state in DOM (if exists) to preserve user's manual changes
+        const existingCheckbox = document.querySelector(`.filter-category-checkbox[data-category-id="${categoryId}"]`);
+        const categoryCheckedFromDOM = existingCheckbox ? existingCheckbox.checked : null;
+        
+        // Category is checked if:
+        // 1. DOM checkbox exists and is checked (user's current selection takes priority)
+        // 2. OR no filter (default all selected)
+        // 3. OR filter.categories includes this category
+        // 4. OR filter is empty/null (means show all)
+        const categoryChecked = categoryCheckedFromDOM !== null
+            ? categoryCheckedFromDOM
+            : (!filter || (filter.categories && filter.categories.length > 0 && filter.categories.includes(categoryId)) || (!filter.categories && !filter.subcategories && !filter.subclasses));
+        
+        const isActive = selectedFilterCategoryId === categoryId;
+        
+        html += `
+            <div class="filter-category-item ${isActive ? 'active' : ''}" 
+                 onclick="selectFilterCategory('${categoryId}')">
+                <input type="checkbox" class="filter-category-checkbox" 
+                       data-category-id="${categoryId}"
+                       ${categoryChecked ? 'checked' : ''}
+                       onchange="handleCategoryFilterChange('${categoryId}', this.checked, event)"
+                       onclick="event.stopPropagation()">
+                <span class="filter-category-item-name">${escapeHtml(category.icon || '')} ${escapeHtml(category.name)}</span>
+            </div>
+        `;
+    });
+    
+    sidebar.innerHTML = html;
+}
+
+// Select filter category (show details on right)
+async function selectFilterCategory(categoryId) {
+    selectedFilterCategoryId = categoryId;
+    const data = await getData();
+    if (!data || !data.categories) return;
+    
+    // Update sidebar active state
+    renderFilterSidebar(data);
+    
+    // Render details
+    renderFilterDetails(data, categoryId);
+}
+
+// Render filter details (subcategories as tabs, subclasses below)
+async function renderFilterDetails(data, categoryId) {
+    const detailsArea = document.getElementById('filter-details-area');
+    if (!detailsArea) return;
+    
+    if (!categoryId) {
+        detailsArea.innerHTML = `
+            <div class="filter-placeholder">
+                <p>请从左侧选择一个分类</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const category = data.categories.find(cat => cat.id === categoryId);
+    if (!category) return;
+    
+    // Check current checkbox state in DOM (if exists) to preserve user's manual changes
+    const categoryCheckbox = document.querySelector(`.filter-category-checkbox[data-category-id="${categoryId}"]`);
+    const categoryCheckedFromDOM = categoryCheckbox ? categoryCheckbox.checked : null;
+    
+    const filter = getDailyRandomFilter();
+    // Category is checked if:
+    // 1. DOM checkbox exists and is checked (user's current selection takes priority)
+    // 2. OR no filter (default all selected)
+    // 3. OR it's in filter.categories
+    const categoryChecked = categoryCheckedFromDOM !== null 
+        ? categoryCheckedFromDOM 
+        : (!filter || (filter.categories && filter.categories.length > 0 && filter.categories.includes(categoryId)) || (!filter.categories && !filter.subcategories && !filter.subclasses));
+    
+    // Check if category has subcategories
+    if (!category.subcategories || category.subcategories.length === 0) {
+        detailsArea.innerHTML = `
+            <div class="filter-placeholder">
+                <p>此分类下没有子分类</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Get first subcategory as default selected tab (or keep current active tab if exists)
+    let selectedSubcategoryId = category.subcategories[0]?.id;
+    
+    // Try to preserve the currently active tab
+    const currentActiveTab = document.querySelector('.filter-subcategory-tab.active');
+    if (currentActiveTab) {
+        const currentActiveSubcategoryId = currentActiveTab.querySelector('.filter-subcategory-checkbox')?.getAttribute('data-subcategory-id');
+        // Only use it if it belongs to this category
+        if (currentActiveSubcategoryId && category.subcategories.some(sub => sub.id === currentActiveSubcategoryId)) {
+            selectedSubcategoryId = currentActiveSubcategoryId;
+        }
+    }
+    
+    let html = `
+        <div class="filter-subcategory-tabs">
+    `;
+    
+    // Render subcategories as tabs
+    category.subcategories.forEach((subcategory) => {
+        const subcategoryKey = `${categoryId}:${subcategory.id}`;
+        
+        // Check current checkbox state in DOM (if exists) to preserve user's manual changes
+        const existingSubcategoryCheckbox = document.querySelector(
+            `.filter-subcategory-checkbox[data-category-id="${categoryId}"][data-subcategory-id="${subcategory.id}"]`
+        );
+        const subcategoryCheckedFromDOM = existingSubcategoryCheckbox ? existingSubcategoryCheckbox.checked : null;
+        
+        // Subcategory is checked if:
+        // 1. DOM checkbox exists and is checked (user's current selection takes priority)
+        // 2. OR category is checked AND subcategory is not in excludedSubcategories
+        // 3. OR subcategory is specifically in filter.subcategories
+        const isExcluded = filter && filter.excludedSubcategories && filter.excludedSubcategories.includes(subcategoryKey);
+        const subcategoryChecked = subcategoryCheckedFromDOM !== null
+            ? subcategoryCheckedFromDOM
+            : ((categoryChecked && !isExcluded) || (filter && filter.subcategories && filter.subcategories.includes(subcategoryKey)));
+        
+        html += `
+            <div class="filter-subcategory-tab ${selectedSubcategoryId === subcategory.id ? 'active' : ''}" 
+                 onclick="selectFilterSubcategory('${categoryId}', '${subcategory.id}')">
+                <input type="checkbox" class="filter-subcategory-checkbox" 
+                       data-category-id="${categoryId}"
+                       data-subcategory-id="${subcategory.id}"
+                       ${subcategoryChecked ? 'checked' : ''}
+                       onchange="event.stopPropagation(); handleSubcategoryFilterChange('${categoryId}', '${subcategory.id}', this.checked)"
+                       onclick="event.stopPropagation()">
+                <span>${escapeHtml(subcategory.name)}</span>
+            </div>
+        `;
+    });
+    
+    html += `</div>`;
+    
+    // Render subclasses for selected subcategory
+    const selectedSubcategory = category.subcategories.find(sub => sub.id === selectedSubcategoryId);
+    if (selectedSubcategory && selectedSubcategory.subclasses && selectedSubcategory.subclasses.length > 0) {
+        const subcategoryKey = `${categoryId}:${selectedSubcategoryId}`;
+        
+        // Check current checkbox state in DOM
+        const existingSubcategoryCheckbox = document.querySelector(
+            `.filter-subcategory-checkbox[data-category-id="${categoryId}"][data-subcategory-id="${selectedSubcategoryId}"]`
+        );
+        const subcategoryCheckedFromDOM = existingSubcategoryCheckbox ? existingSubcategoryCheckbox.checked : null;
+        
+        const isSubcategoryExcluded = filter && filter.excludedSubcategories && filter.excludedSubcategories.includes(subcategoryKey);
+        const subcategoryChecked = subcategoryCheckedFromDOM !== null
+            ? subcategoryCheckedFromDOM
+            : ((categoryChecked && !isSubcategoryExcluded) || (filter && filter.subcategories && filter.subcategories.includes(subcategoryKey)));
+        
+        html += `<div class="filter-subclasses-container">`;
+        
+        selectedSubcategory.subclasses.forEach(subclass => {
+            const subclassKey = `${categoryId}:${selectedSubcategoryId}:${subclass.id}`;
+            
+            // Check current checkbox state in DOM (if exists) to preserve user's manual changes
+            const existingSubclassCheckbox = document.querySelector(
+                `.filter-subclass-checkbox[data-category-id="${categoryId}"][data-subcategory-id="${selectedSubcategoryId}"][data-subclass-id="${subclass.id}"]`
+            );
+            const subclassCheckedFromDOM = existingSubclassCheckbox ? existingSubclassCheckbox.checked : null;
+            
+            // Subclass is checked if:
+            // 1. DOM checkbox exists and is checked (user's current selection takes priority)
+            // 2. OR category is checked AND not excluded
+            // 3. OR subcategory is checked AND not excluded
+            // 4. OR subclass is specifically in filter.subclasses
+            const isExcluded = filter && filter.excludedSubclasses && filter.excludedSubclasses.includes(subclassKey);
+            const subclassChecked = subclassCheckedFromDOM !== null
+                ? subclassCheckedFromDOM
+                : (((categoryChecked || subcategoryChecked) && !isExcluded && !isSubcategoryExcluded) || (filter && filter.subclasses && filter.subclasses.includes(subclassKey)));
+            
+            html += `
+                <div class="filter-subclass-item">
+                    <input type="checkbox" class="filter-subclass-checkbox" 
+                           data-category-id="${categoryId}"
+                           data-subcategory-id="${selectedSubcategoryId}"
+                           data-subclass-id="${subclass.id}"
+                           ${subclassChecked ? 'checked' : ''}
+                           onchange="handleSubclassFilterChange('${categoryId}', '${selectedSubcategoryId}', '${subclass.id}', this.checked)">
+                    <span class="filter-subclass-item-name">${escapeHtml(subclass.name)}</span>
+                </div>
+            `;
+        });
+        
+        html += `</div>`;
+    } else if (selectedSubcategory) {
+        html += `
+            <div class="filter-placeholder">
+                <p>此子分类下没有更小的分类</p>
+            </div>
+        `;
+    }
+    
+    detailsArea.innerHTML = html;
+}
+
+// Select filter subcategory (switch tab) - only update active state and subclasses, don't re-render tabs
+async function selectFilterSubcategory(categoryId, subcategoryId) {
+    const data = await getData();
+    if (!data || !data.categories) return;
+    
+    const category = data.categories.find(cat => cat.id === categoryId);
+    if (!category) return;
+    
+    // Update tab active states without re-rendering the entire tabs section (just update classes)
+    const tabs = document.querySelectorAll('.filter-subcategory-tab');
+    tabs.forEach(tab => {
+        const tabSubcategoryId = tab.querySelector('.filter-subcategory-checkbox')?.getAttribute('data-subcategory-id');
+        if (tabSubcategoryId === subcategoryId) {
+            tab.classList.add('active');
+        } else {
+            tab.classList.remove('active');
+        }
+    });
+    
+    // Get current checkbox states from DOM to preserve user's manual changes
+    const categoryCheckbox = document.querySelector(`.filter-category-checkbox[data-category-id="${categoryId}"]`);
+    const categoryChecked = categoryCheckbox ? categoryCheckbox.checked : false;
+    
+    const selectedSubcategory = category.subcategories.find(sub => sub.id === subcategoryId);
+    const subclassesContainer = document.querySelector('.filter-subclasses-container');
+    const placeholder = document.querySelector('.filter-placeholder');
+    
+    if (selectedSubcategory && selectedSubcategory.subclasses && selectedSubcategory.subclasses.length > 0) {
+        // Get current subcategory checkbox state
+        const subcategoryCheckbox = document.querySelector(
+            `.filter-subcategory-checkbox[data-category-id="${categoryId}"][data-subcategory-id="${subcategoryId}"]`
+        );
+        const subcategoryChecked = subcategoryCheckbox ? subcategoryCheckbox.checked : false;
+        
+        let html = '';
+        selectedSubcategory.subclasses.forEach(subclass => {
+            // Get current subclass checkbox state from DOM (if exists) to preserve user's manual changes
+            const existingSubclassCheckbox = document.querySelector(
+                `.filter-subclass-checkbox[data-category-id="${categoryId}"][data-subcategory-id="${subcategoryId}"][data-subclass-id="${subclass.id}"]`
+            );
+            
+            // Subclass is checked if:
+            // 1. DOM checkbox exists and is checked (preserve user's manual changes)
+            // 2. OR (category is checked OR subcategory is checked) - inherit from parent
+            const subclassChecked = existingSubclassCheckbox 
+                ? existingSubclassCheckbox.checked 
+                : (categoryChecked || subcategoryChecked);
+            
+            html += `
+                <div class="filter-subclass-item">
+                    <input type="checkbox" class="filter-subclass-checkbox" 
+                           data-category-id="${categoryId}"
+                           data-subcategory-id="${subcategoryId}"
+                           data-subclass-id="${subclass.id}"
+                           ${subclassChecked ? 'checked' : ''}
+                           onchange="handleSubclassFilterChange('${categoryId}', '${subcategoryId}', '${subclass.id}', this.checked)">
+                    <span class="filter-subclass-item-name">${escapeHtml(subclass.name)}</span>
+                </div>
+            `;
+        });
+        
+        // Remove placeholder if exists
+        if (placeholder && placeholder.parentNode) {
+            placeholder.remove();
+        }
+        
+        // Update or create subclasses container (only update content, don't recreate container to avoid layout shift)
+        if (subclassesContainer) {
+            subclassesContainer.innerHTML = html;
+        } else {
+            const detailsArea = document.getElementById('filter-details-area');
+            if (detailsArea) {
+                const container = document.createElement('div');
+                container.className = 'filter-subclasses-container';
+                container.innerHTML = html;
+                // Insert after tabs
+                const tabsContainer = detailsArea.querySelector('.filter-subcategory-tabs');
+                if (tabsContainer) {
+                    tabsContainer.after(container);
+                } else {
+                    detailsArea.appendChild(container);
+                }
+            }
+        }
+    } else if (selectedSubcategory) {
+        // Remove subclasses container if exists
+        if (subclassesContainer && subclassesContainer.parentNode) {
+            subclassesContainer.remove();
+        }
+        
+        // Show placeholder
+        if (!placeholder || !placeholder.parentNode) {
+            const detailsArea = document.getElementById('filter-details-area');
+            if (detailsArea) {
+                const placeholderDiv = document.createElement('div');
+                placeholderDiv.className = 'filter-placeholder';
+                placeholderDiv.innerHTML = '<p>此子分类下没有更小的分类</p>';
+                const tabsContainer = detailsArea.querySelector('.filter-subcategory-tabs');
+                if (tabsContainer) {
+                    tabsContainer.after(placeholderDiv);
+                } else {
+                    detailsArea.appendChild(placeholderDiv);
+                }
+            }
+        }
+    }
+}
+
+// Handle category filter change
+function handleCategoryFilterChange(categoryId, checked, event) {
+    // Don't prevent default - let the checkbox update normally
+    // Just stop propagation to prevent triggering category selection
+    if (event) {
+        event.stopPropagation();
+    }
+    
+    // Update all subcategories and subclasses under this category
+    // When checked, automatically check all subcategories and subclasses (but don't disable them)
+    // When unchecked, automatically uncheck all subcategories and subclasses
+    const subcategoryCheckboxes = document.querySelectorAll(`.filter-subcategory-checkbox[data-category-id="${categoryId}"]`);
+    subcategoryCheckboxes.forEach(checkbox => {
+        checkbox.checked = checked;
+    });
+    
+    const subclassCheckboxes = document.querySelectorAll(`.filter-subclass-checkbox[data-category-id="${categoryId}"]`);
+    subclassCheckboxes.forEach(checkbox => {
+        checkbox.checked = checked;
+    });
+    
+    // Refresh the details area to reflect changes (but preserve the active tab)
+    if (selectedFilterCategoryId === categoryId) {
+        const data = cachedData;
+        if (data) {
+            // Get current active subcategory before re-rendering
+            const activeTab = document.querySelector('.filter-subcategory-tab.active');
+            let activeSubcategoryId = null;
+            if (activeTab) {
+                activeSubcategoryId = activeTab.querySelector('.filter-subcategory-checkbox')?.getAttribute('data-subcategory-id');
+            }
+            
+            // Re-render details - this will update all checkbox states based on current DOM state
+            renderFilterDetails(data, categoryId);
+            
+            // Restore active tab if it existed
+            if (activeSubcategoryId) {
+                // Wait a bit for DOM to update, then restore active state
+                setTimeout(() => {
+                    selectFilterSubcategory(categoryId, activeSubcategoryId);
+                }, 10);
+            }
+        }
+    }
+    
+    // Don't re-render sidebar here - it would reset the checkbox state
+    // The sidebar will be updated when the user clicks on the category item or when the modal is opened
+}
+
+// Handle subcategory filter change
+function handleSubcategoryFilterChange(categoryId, subcategoryId, checked) {
+    // Update all subclasses under this subcategory
+    // When checked, automatically check all subclasses
+    // When unchecked, automatically uncheck all subclasses
+    const subclassCheckboxes = document.querySelectorAll(
+        `.filter-subclass-checkbox[data-category-id="${categoryId}"][data-subcategory-id="${subcategoryId}"]`
+    );
+    subclassCheckboxes.forEach(checkbox => {
+        checkbox.checked = checked;
+    });
+    
+    // If this is the currently displayed subcategory, update the visible subclasses
+    if (selectedFilterCategoryId === categoryId) {
+        const activeTab = document.querySelector('.filter-subcategory-tab.active');
+        if (activeTab) {
+            const activeSubcategoryId = activeTab.querySelector('.filter-subcategory-checkbox')?.getAttribute('data-subcategory-id');
+            if (activeSubcategoryId === subcategoryId) {
+                // Update visible subclasses without re-rendering tabs
+                const data = cachedData;
+                if (data) {
+                    selectFilterSubcategory(categoryId, subcategoryId);
+                }
+            }
+        }
+    }
+}
+
+// Handle subclass filter change
+function handleSubclassFilterChange(categoryId, subcategoryId, subclassId, checked) {
+    // Note: Don't affect parent category or subcategory, or sibling subclasses
+    // User can manually uncheck a subclass even if parent is checked
+    // This allows fine-grained control
+}
+
+// Select all filters
+function selectAllFilters() {
+    // Check all category checkboxes
+    document.querySelectorAll('.filter-category-checkbox').forEach(checkbox => {
+        checkbox.checked = true;
+        const categoryId = checkbox.getAttribute('data-category-id');
+        // This will automatically check all subcategories and subclasses
+        handleCategoryFilterChange(categoryId, true);
+    });
+    
+    // Refresh details if a category is selected
+    if (selectedFilterCategoryId) {
+        const data = cachedData;
+        if (data) {
+            renderFilterDetails(data, selectedFilterCategoryId);
+        }
+    }
+}
+
+// Deselect all filters
+function deselectAllFilters() {
+    // Uncheck all category checkboxes
+    document.querySelectorAll('.filter-category-checkbox').forEach(checkbox => {
+        checkbox.checked = false;
+        const categoryId = checkbox.getAttribute('data-category-id');
+        // This will automatically uncheck all subcategories and subclasses
+        handleCategoryFilterChange(categoryId, false);
+    });
+    
+    // Also uncheck any remaining subcategories and subclasses
+    document.querySelectorAll('.filter-subcategory-checkbox, .filter-subclass-checkbox').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    
+    // Refresh details if a category is selected
+    if (selectedFilterCategoryId) {
+        const data = cachedData;
+        if (data) {
+            renderFilterDetails(data, selectedFilterCategoryId);
+        }
+    }
+}
+
+// Apply filter
+async function applyFilter() {
+    const categories = [];
+    const subcategories = [];
+    const subclasses = [];
+    const excludedSubcategories = [];
+    const excludedSubclasses = [];
+    
+    // Get all categories for reference
+    const data = await getData();
+    const allCategories = data.categories.filter(cat => cat.id !== 'daily-random' && cat.id !== 'favorites');
+    
+    // Collect checked categories
+    document.querySelectorAll('.filter-category-checkbox:checked').forEach(checkbox => {
+        categories.push(checkbox.getAttribute('data-category-id'));
+    });
+    
+    // For each checked category, find unchecked subcategories (exclusions)
+    categories.forEach(categoryId => {
+        const category = allCategories.find(cat => cat.id === categoryId);
+        if (!category || !category.subcategories) return;
+        
+        category.subcategories.forEach(subcategory => {
+            const subcategoryCheckbox = document.querySelector(
+                `.filter-subcategory-checkbox[data-category-id="${categoryId}"][data-subcategory-id="${subcategory.id}"]`
+            );
+            const subcategoryKey = `${categoryId}:${subcategory.id}`;
+            
+            if (subcategoryCheckbox && !subcategoryCheckbox.checked) {
+                // Category is checked but subcategory is not - this is an exclusion
+                excludedSubcategories.push(subcategoryKey);
+                
+                // Also exclude all subclasses under this subcategory
+                if (subcategory.subclasses) {
+                    subcategory.subclasses.forEach(subclass => {
+                        excludedSubclasses.push(`${categoryId}:${subcategory.id}:${subclass.id}`);
+                    });
+                }
+            } else if (subcategoryCheckbox && subcategoryCheckbox.checked && subcategory.subclasses) {
+                // Subcategory is checked, check for unchecked subclasses (exclusions)
+                subcategory.subclasses.forEach(subclass => {
+                    const subclassCheckbox = document.querySelector(
+                        `.filter-subclass-checkbox[data-category-id="${categoryId}"][data-subcategory-id="${subcategory.id}"][data-subclass-id="${subclass.id}"]`
+                    );
+                    if (subclassCheckbox && !subclassCheckbox.checked) {
+                        excludedSubclasses.push(`${categoryId}:${subcategory.id}:${subclass.id}`);
+                    }
+                });
+            }
+        });
+    });
+    
+    // Collect checked subcategories (only if their parent category is not checked)
+    document.querySelectorAll('.filter-subcategory-checkbox:checked').forEach(checkbox => {
+        const categoryId = checkbox.getAttribute('data-category-id');
+        const subcategoryId = checkbox.getAttribute('data-subcategory-id');
+        const categoryChecked = categories.includes(categoryId);
+        
+        // Only add if parent category is not checked (to avoid redundancy)
+        if (!categoryChecked) {
+            subcategories.push(`${categoryId}:${subcategoryId}`);
+        }
+    });
+    
+    // Collect checked subclasses (only if their parent subcategory is not checked)
+    document.querySelectorAll('.filter-subclass-checkbox:checked').forEach(checkbox => {
+        const categoryId = checkbox.getAttribute('data-category-id');
+        const subcategoryId = checkbox.getAttribute('data-subcategory-id');
+        const subclassId = checkbox.getAttribute('data-subclass-id');
+        const categoryChecked = categories.includes(categoryId);
+        const subcategoryKey = `${categoryId}:${subcategoryId}`;
+        const subcategoryChecked = subcategories.includes(subcategoryKey) || categoryChecked;
+        
+        // Only add if parent subcategory is not checked (to avoid redundancy)
+        if (!subcategoryChecked) {
+            subclasses.push(`${categoryId}:${subcategoryId}:${subclassId}`);
+        }
+    });
+    
+    const allCategoryIds = allCategories.map(cat => cat.id);
+    const allSelected = allCategoryIds.length > 0 && allCategoryIds.every(catId => categories.includes(catId));
+    
+    // If all categories are selected and no exclusions, don't save filter (show all)
+    if (allSelected && subcategories.length === 0 && subclasses.length === 0 && excludedSubcategories.length === 0 && excludedSubclasses.length === 0) {
+        saveDailyRandomFilter(null); // null means no filter (show all)
+    } else {
+        const filter = {
+            categories: categories,
+            subcategories: subcategories,
+            subclasses: subclasses,
+            excludedSubcategories: excludedSubcategories,
+            excludedSubclasses: excludedSubclasses
+        };
+        saveDailyRandomFilter(filter);
+    }
+    
+    // Hide modal
+    hideFilterModal();
+    
+    // Refresh Daily Random view
+    if (currentCategoryId === 'daily-random') {
+        selectCategory('daily-random');
     }
 }
