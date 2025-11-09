@@ -904,8 +904,8 @@ body {
 
 /* Filter Modal Styles */
 .filter-modal-content {
-    max-width: 900px;
-    width: 90vw;
+    max-width: 1200px;
+    width: 95vw;
     max-height: 80vh;
 }
 
@@ -953,7 +953,7 @@ body {
 }
 
 .filter-categories-sidebar {
-    width: 200px;
+    width: 220px;
     flex-shrink: 0;
     border-right: 1px solid var(--border-color);
     overflow-y: auto;
@@ -1014,10 +1014,11 @@ body {
     margin-bottom: 16px;
     padding-bottom: 12px;
     border-bottom: 2px solid var(--border-color);
-    overflow-x: auto;
     flex-wrap: wrap;
-    /* Prevent layout shift */
+    /* Prevent layout shift - maintain consistent height */
     min-height: 40px;
+    /* Reserve space for potential second row to prevent jumping */
+    align-content: flex-start;
 }
 
 .filter-subcategory-tab {
@@ -1036,6 +1037,8 @@ body {
     /* Prevent layout shift when active state changes */
     box-sizing: border-box;
     flex-shrink: 0;
+    /* Ensure consistent sizing to prevent layout shifts */
+    min-width: fit-content;
 }
 
 .filter-subcategory-tab:hover:not(.active) {
