@@ -32,6 +32,9 @@ let expandedSubclasses = new Set();
 let showAllCategory = false; // Show all items for current category
 let showAllSubcategory = false; // Show all items for current subcategory
 let showAllSubclass = false; // Show all items for current subclass
+let rawFilmsSectionPanelOutsideClickHandler = null;
+let rawFilmsSectionDraggedItem = null;
+let rawFilmsSectionPanelShouldOpen = false;
 
 // Favorites management (using localStorage)
 const FAVORITES_KEY = 'video_portal_favorites';
@@ -44,6 +47,9 @@ const DELETED_ITEMS_KEY = 'video_portal_deleted_items';
 const DAILY_RANDOM_FILTER_KEY = 'video_portal_daily_random_filter';
 const FAVORITES_FILTER_KEY = 'video_portal_favorites_filter';
 const RAW_FILMS_CONTENT_KEY = 'video_portal_raw_films_content';
+const RAW_FILMS_RATINGS_KEY = 'video_portal_raw_films_ratings';
+const RAW_FILMS_SORT_MODE_KEY = 'video_portal_raw_films_sort_mode';
+const RAW_FILMS_SECTION_ORDER_KEY = 'video_portal_raw_films_section_order';
 
 function getFavorites() {
     try {
@@ -1782,7 +1788,7 @@ function updateShowAllButton() {
         if (data && data.categories) {
             const category = data.categories.find(cat => cat.id === currentCategoryId);
             // Show checkbox if category exists OR if it's favorites (which is not in data.json)
-            if (category || currentCategoryId === 'favorites') {
+            if ((category && !category.isTextOnly) || currentCategoryId === 'favorites') {
                 showAllCheckbox.style.display = 'inline-block';
                 showAllLabel.style.display = 'inline-block';
                 // Sync checkbox with current state (don't change it, just update display)
@@ -2645,6 +2651,9 @@ function exportLocalStorage() {
                 dailyRandomFilter: localStorage.getItem(DAILY_RANDOM_FILTER_KEY),
                 favoritesFilter: localStorage.getItem(FAVORITES_FILTER_KEY),
                 rawFilmsContent: localStorage.getItem(RAW_FILMS_CONTENT_KEY),
+                rawFilmsRatings: localStorage.getItem(RAW_FILMS_RATINGS_KEY),
+                rawFilmsSortMode: localStorage.getItem(RAW_FILMS_SORT_MODE_KEY),
+                rawFilmsSectionOrder: localStorage.getItem(RAW_FILMS_SECTION_ORDER_KEY),
                 sidebarCollapsed: localStorage.getItem('sidebar_collapsed'),
                 // Get all subcategory orders
                 subcategoryOrders: {}
@@ -2701,7 +2710,7 @@ function importLocalStorage(event) {
             }
             
             // Confirm import
-            const confirmMessage = `确定要导入设置吗？\n\n这将覆盖当前的：\n- 排序设置\n- 收藏/置顶\n- 用户添加的项目\n- 筛选设置\n\n导入后页面将自动刷新。`;
+            const confirmMessage = `确定要导入设置吗？\n\n这将覆盖当前的：\n- 排序设置\n- 收藏/置顶\n- 用户添加的项目\n- 筛选设置\n- 原片分类内容、评分与分组顺序\n\n导入后页面将自动刷新。`;
             if (!confirm(confirmMessage)) {
                 event.target.value = ''; // Reset file input
                 return;
@@ -2733,7 +2742,32 @@ function importLocalStorage(event) {
                 localStorage.setItem('sidebar_collapsed', importData.data.sidebarCollapsed);
             }
             if (importData.data.rawFilmsContent !== null && importData.data.rawFilmsContent !== undefined) {
-                localStorage.setItem(RAW_FILMS_CONTENT_KEY, importData.data.rawFilmsContent);
+                if (importData.data.rawFilmsContent === 'null' || importData.data.rawFilmsContent === null) {
+                    localStorage.removeItem(RAW_FILMS_CONTENT_KEY);
+                } else {
+                    localStorage.setItem(RAW_FILMS_CONTENT_KEY, importData.data.rawFilmsContent);
+                }
+            }
+            if (importData.data.rawFilmsRatings !== null && importData.data.rawFilmsRatings !== undefined) {
+                if (importData.data.rawFilmsRatings === 'null' || importData.data.rawFilmsRatings === null) {
+                    localStorage.removeItem(RAW_FILMS_RATINGS_KEY);
+                } else {
+                    localStorage.setItem(RAW_FILMS_RATINGS_KEY, importData.data.rawFilmsRatings);
+                }
+            }
+            if (importData.data.rawFilmsSortMode !== null && importData.data.rawFilmsSortMode !== undefined) {
+                if (importData.data.rawFilmsSortMode === 'null' || importData.data.rawFilmsSortMode === null) {
+                    localStorage.removeItem(RAW_FILMS_SORT_MODE_KEY);
+                } else {
+                    localStorage.setItem(RAW_FILMS_SORT_MODE_KEY, importData.data.rawFilmsSortMode);
+                }
+            }
+            if (importData.data.rawFilmsSectionOrder !== null && importData.data.rawFilmsSectionOrder !== undefined) {
+                if (importData.data.rawFilmsSectionOrder === 'null' || importData.data.rawFilmsSectionOrder === null) {
+                    localStorage.removeItem(RAW_FILMS_SECTION_ORDER_KEY);
+                } else {
+                    localStorage.setItem(RAW_FILMS_SECTION_ORDER_KEY, importData.data.rawFilmsSectionOrder);
+                }
             }
             if (importData.data.favoritesFilter !== null && importData.data.favoritesFilter !== undefined) {
                 if (importData.data.favoritesFilter === 'null' || importData.data.favoritesFilter === null) {
@@ -3043,69 +3077,477 @@ function saveRawFilmsContent(content) {
     }
 }
 
-// Simple markdown renderer (supports # headers and basic formatting)
-function renderMarkdown(text) {
-    if (!text) return '';
-    
-    let html = '';
-    const lines = text.split('\n');
-    let inCodeBlock = false;
-    let codeBlockContent = '';
-    
-    lines.forEach((line, index) => {
-        // Handle code blocks
-        if (line.trim().startsWith('```')) {
-            if (inCodeBlock) {
-                // End code block
-                html += `<pre><code>${escapeHtml(codeBlockContent)}</code></pre>\n`;
-                codeBlockContent = '';
-                inCodeBlock = false;
-            } else {
-                // Start code block
-                inCodeBlock = true;
-            }
-            return;
-        }
-        
-        if (inCodeBlock) {
-            codeBlockContent += line + '\n';
-            return;
-        }
-        
-        // Headers
-        if (line.trim().startsWith('# ')) {
-            html += `<h1 class="markdown-h1">${escapeHtml(line.trim().substring(2))}</h1>\n`;
-        } else if (line.trim().startsWith('## ')) {
-            html += `<h2 class="markdown-h2">${escapeHtml(line.trim().substring(3))}</h2>\n`;
-        } else if (line.trim().startsWith('### ')) {
-            html += `<h3 class="markdown-h3">${escapeHtml(line.trim().substring(4))}</h3>\n`;
-        } else if (line.trim().startsWith('#### ')) {
-            html += `<h4 class="markdown-h4">${escapeHtml(line.trim().substring(5))}</h4>\n`;
-        } else if (line.trim().startsWith('##### ')) {
-            html += `<h5 class="markdown-h5">${escapeHtml(line.trim().substring(6))}</h5>\n`;
-        } else if (line.trim().startsWith('###### ')) {
-            html += `<h6 class="markdown-h6">${escapeHtml(line.trim().substring(7))}</h6>\n`;
-        } else if (line.trim() === '') {
-            // Empty line - add spacing
-            html += '<div class="markdown-spacer"></div>\n';
+// Get raw films ratings from localStorage
+function getRawFilmsRatings() {
+    try {
+        const stored = localStorage.getItem(RAW_FILMS_RATINGS_KEY);
+        return stored ? JSON.parse(stored) : {};
+    } catch (e) {
+        console.error('Error loading raw films ratings:', e);
+        return {};
+    }
+}
+
+// Save raw films ratings to localStorage
+function saveRawFilmsRatings(ratings) {
+    try {
+        if (ratings && Object.keys(ratings).length > 0) {
+            localStorage.setItem(RAW_FILMS_RATINGS_KEY, JSON.stringify(ratings));
         } else {
-            // Regular text - preserve line breaks
-            html += `<p class="markdown-p">${escapeHtml(line)}</p>\n`;
+            localStorage.removeItem(RAW_FILMS_RATINGS_KEY);
         }
+    } catch (e) {
+        console.error('Error saving raw films ratings:', e);
+    }
+}
+
+// Get raw films sort mode
+function getRawFilmsSortMode() {
+    try {
+        const mode = localStorage.getItem(RAW_FILMS_SORT_MODE_KEY);
+        if (mode === 'rating-desc' || mode === 'rating-asc') {
+            return mode;
+        }
+        return 'none';
+    } catch (e) {
+        console.error('Error loading raw films sort mode:', e);
+        return 'none';
+    }
+}
+
+// Save raw films sort mode
+function saveRawFilmsSortMode(mode) {
+    try {
+        if (mode === 'none') {
+            localStorage.removeItem(RAW_FILMS_SORT_MODE_KEY);
+        } else {
+            localStorage.setItem(RAW_FILMS_SORT_MODE_KEY, mode);
+        }
+    } catch (e) {
+        console.error('Error saving raw films sort mode:', e);
+    }
+}
+
+function getRawFilmsSectionOrder() {
+    try {
+        const stored = localStorage.getItem(RAW_FILMS_SECTION_ORDER_KEY);
+        return stored ? JSON.parse(stored) : [];
+    } catch (e) {
+        console.error('Error loading raw films section order:', e);
+        return [];
+    }
+}
+
+function saveRawFilmsSectionOrder(order) {
+    try {
+        if (order && order.length > 0) {
+            localStorage.setItem(RAW_FILMS_SECTION_ORDER_KEY, JSON.stringify(order));
+        } else {
+            localStorage.removeItem(RAW_FILMS_SECTION_ORDER_KEY);
+        }
+    } catch (e) {
+        console.error('Error saving raw films section order:', e);
+    }
+}
+
+// Parse raw films markdown into structured data
+function parseRawFilmsStructure(content) {
+    const root = {
+        level: 0,
+        title: null,
+        films: [],
+        children: [],
+        path: '',
+        order: 0
+    };
+    
+    const stack = [root];
+    let order = 0;
+    let nodeOrderCounter = 0;
+    
+    if (!content) {
+        return root;
+    }
+    
+    const lines = content.split('\n');
+    lines.forEach(line => {
+        const trimmed = line.trim();
+        
+        if (trimmed === '') {
+            // Ignore empty lines (spacing handled via CSS)
+            return;
+        }
+        
+        const headerMatch = trimmed.match(/^(#{1,6})\s+(.*)$/);
+        if (headerMatch) {
+            const level = Math.min(headerMatch[1].length, 6);
+            const title = headerMatch[2].trim();
+            
+            // Adjust stack to current level
+            while (stack.length > level) {
+                stack.pop();
+            }
+            
+            const parent = stack[stack.length - 1] || root;
+            const node = {
+                level,
+                title,
+                films: [],
+                children: [],
+                order: nodeOrderCounter++,
+                path: parent.path ? `${parent.path} > ${title}` : title
+            };
+            parent.children.push(node);
+            stack.push(node);
+            return;
+        }
+        
+        // Treat as a film entry
+        const currentNode = stack[stack.length - 1] || root;
+        const currentPath = currentNode.path || 'ROOT';
+        const key = `${currentPath}::${trimmed}`;
+        
+        currentNode.films.push({
+            type: 'film',
+            text: trimmed,
+            key,
+            order: order++
+        });
     });
     
-    // Close any open code block
-    if (inCodeBlock && codeBlockContent) {
-        html += `<pre><code>${escapeHtml(codeBlockContent)}</code></pre>\n`;
+    return root;
+}
+
+// Render structured raw films data into HTML
+function renderRawFilmsStructure(structure, ratings, sortMode, orderedTopSections) {
+    let html = '';
+    
+    if (structure.films && structure.films.length > 0) {
+        html += renderRawFilmList(structure.films, ratings, sortMode);
+    }
+    
+    const children = orderedTopSections || structure.children || [];
+    children.forEach(child => {
+        html += renderRawFilmNode(child, ratings, sortMode);
+    });
+    
+    return html;
+}
+
+function renderRawFilmNode(node, ratings, sortMode) {
+    const headingLevel = Math.min(node.level, 6);
+    let html = `<h${headingLevel} class="markdown-h${headingLevel}">${escapeHtml(node.title || '')}</h${headingLevel}>`;
+    
+    if (node.films && node.films.length > 0) {
+        html += renderRawFilmList(node.films, ratings, sortMode);
+    }
+    
+    if (node.children) {
+        node.children.forEach(child => {
+            html += renderRawFilmNode(child, ratings, sortMode);
+        });
     }
     
     return html;
+}
+
+function renderRawFilmList(films, ratings, sortMode) {
+    if (!films || films.length === 0) return '';
+    
+    const sortedFilms = sortRawFilmEntries(films, ratings, sortMode);
+    let html = '<div class="raw-films-list">';
+    
+    sortedFilms.forEach(film => {
+        const rating = getRawFilmRatingValue(ratings, film.key);
+        html += renderRawFilmItem(film, rating);
+    });
+    
+    html += '</div>';
+    return html;
+}
+
+function sortRawFilmEntries(films, ratings, sortMode) {
+    const sorted = films.slice();
+    if (sortMode === 'none') {
+        sorted.sort((a, b) => a.order - b.order);
+        return sorted;
+    }
+    
+    sorted.sort((a, b) => {
+        const ratingA = getRawFilmRatingValue(ratings, a.key);
+        const ratingB = getRawFilmRatingValue(ratings, b.key);
+        
+        if (sortMode === 'rating-desc') {
+            const normalizedA = ratingA || -0.5; // Unrated goes to the end
+            const normalizedB = ratingB || -0.5;
+            if (normalizedB !== normalizedA) {
+                return normalizedB - normalizedA;
+            }
+        } else if (sortMode === 'rating-asc') {
+            const normalizedA = ratingA || 6; // Unrated goes to the end
+            const normalizedB = ratingB || 6;
+            if (normalizedA !== normalizedB) {
+                return normalizedA - normalizedB;
+            }
+        }
+        
+        // Tie-breaker: original order
+        return a.order - b.order;
+    });
+    
+    return sorted;
+}
+
+function getRawFilmRatingValue(ratings, key) {
+    if (!ratings || !key) return 0;
+    const value = ratings[key];
+    if (value === undefined || value === null) return 0;
+    const numeric = Number(value);
+    return Number.isFinite(numeric) ? numeric : 0;
+}
+
+function getRawFilmsSectionKey(section) {
+    if (!section) return '';
+    if (section.path && section.path.length > 0) {
+        return section.path;
+    }
+    const title = section.title || '未命名';
+    const order = section.order ?? 0;
+    return `${title}#${order}`;
+}
+
+function orderTopLevelSections(children, orderList) {
+    if (!children || children.length === 0) return [];
+    const orderMap = new Map();
+    if (orderList && Array.isArray(orderList)) {
+        orderList.forEach((key, index) => {
+            if (typeof key === 'string') {
+                orderMap.set(key, index);
+            }
+        });
+    }
+    
+    return children.slice().sort((a, b) => {
+        const aKey = getRawFilmsSectionKey(a);
+        const bKey = getRawFilmsSectionKey(b);
+        const aOrder = orderMap.has(aKey) ? orderMap.get(aKey) : Number.MAX_SAFE_INTEGER;
+        const bOrder = orderMap.has(bKey) ? orderMap.get(bKey) : Number.MAX_SAFE_INTEGER;
+        if (aOrder !== bOrder) {
+            return aOrder - bOrder;
+        }
+        return (a.order ?? 0) - (b.order ?? 0);
+    });
+}
+
+function buildRawFilmsSectionPanelHtml(sections) {
+    if (!sections || sections.length === 0) {
+        return '<p class="raw-films-section-empty">暂无一级标题</p>';
+    }
+    
+    let html = '<div class="raw-films-section-list">';
+    sections.forEach(section => {
+        const key = getRawFilmsSectionKey(section);
+        const encodedKey = encodeURIComponent(key);
+        html += `
+            <div class="raw-films-section-item" draggable="true" data-section-key="${encodedKey}">
+                <span class="raw-films-section-handle">☰</span>
+                <span class="raw-films-section-title">${escapeHtml(section.title || '未命名')}</span>
+            </div>
+        `;
+    });
+    html += '</div>';
+    return html;
+}
+
+function initRawFilmsSectionDragAndDrop() {
+    const panel = document.getElementById('raw-films-section-order-panel');
+    if (!panel) return;
+    
+    const list = panel.querySelector('.raw-films-section-list');
+    if (!list) return;
+    
+    if (!panel.dataset.clickBound) {
+        panel.addEventListener('click', event => event.stopPropagation());
+        panel.dataset.clickBound = 'true';
+    }
+    
+    list.querySelectorAll('.raw-films-section-item').forEach(item => {
+        item.addEventListener('dragstart', handleRawFilmsSectionDragStart);
+        item.addEventListener('dragover', handleRawFilmsSectionDragOver);
+        item.addEventListener('dragleave', handleRawFilmsSectionDragLeave);
+        item.addEventListener('drop', handleRawFilmsSectionDrop);
+        item.addEventListener('dragend', handleRawFilmsSectionDragEnd);
+    });
+}
+
+function handleRawFilmsSectionDragStart(event) {
+    rawFilmsSectionDraggedItem = event.currentTarget;
+    event.currentTarget.classList.add('dragging');
+    if (event.dataTransfer) {
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/plain', '');
+    }
+}
+
+function handleRawFilmsSectionDragOver(event) {
+    event.preventDefault();
+    const target = event.currentTarget;
+    if (!rawFilmsSectionDraggedItem || target === rawFilmsSectionDraggedItem) return;
+    
+    const list = target.parentNode;
+    if (list) {
+        list.querySelectorAll('.raw-films-section-item').forEach(item => {
+            if (item !== target) {
+                item.classList.remove('drag-over-top', 'drag-over-bottom');
+            }
+        });
+    }
+    
+    const rect = target.getBoundingClientRect();
+    const offset = (event.clientY - rect.top) / rect.height;
+    target.classList.toggle('drag-over-bottom', offset > 0.5);
+    target.classList.toggle('drag-over-top', offset <= 0.5);
+}
+
+function handleRawFilmsSectionDragLeave(event) {
+    event.currentTarget.classList.remove('drag-over-top', 'drag-over-bottom');
+}
+
+function handleRawFilmsSectionDrop(event) {
+    event.preventDefault();
+    const target = event.currentTarget;
+    if (!rawFilmsSectionDraggedItem || target === rawFilmsSectionDraggedItem) return;
+    
+    const list = target.parentNode;
+    const rect = target.getBoundingClientRect();
+    const offset = (event.clientY - rect.top) / rect.height;
+    
+    target.classList.remove('drag-over-top', 'drag-over-bottom');
+    if (offset > 0.5) {
+        list.insertBefore(rawFilmsSectionDraggedItem, target.nextSibling);
+    } else {
+        list.insertBefore(rawFilmsSectionDraggedItem, target);
+    }
+    
+    const newOrder = getRawFilmsSectionOrderFromDom(list);
+    saveRawFilmsSectionOrder(newOrder);
+    if (rawFilmsSectionDraggedItem) {
+        rawFilmsSectionDraggedItem.classList.remove('dragging');
+    }
+    rawFilmsSectionDraggedItem = null;
+    rawFilmsSectionPanelShouldOpen = true;
+    renderRawFilmsContent();
+}
+
+function handleRawFilmsSectionDragEnd(event) {
+    event.currentTarget.classList.remove('dragging');
+    const items = document.querySelectorAll('.raw-films-section-item');
+    items.forEach(item => item.classList.remove('drag-over-top', 'drag-over-bottom'));
+    rawFilmsSectionDraggedItem = null;
+}
+
+function getRawFilmsSectionOrderFromDom(listElement) {
+    if (!listElement) return [];
+    const items = listElement.querySelectorAll('.raw-films-section-item');
+    const order = [];
+    items.forEach(item => {
+        const encodedKey = item.getAttribute('data-section-key') || '';
+        const key = decodeURIComponent(encodedKey);
+        if (key) {
+            order.push(key);
+        }
+    });
+    return order;
+}
+
+function toggleRawFilmsSectionPanel(event) {
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+    const panel = document.getElementById('raw-films-section-order-panel');
+    if (!panel) return;
+    
+    if (panel.classList.contains('open')) {
+        closeRawFilmsSectionPanel();
+    } else {
+        openRawFilmsSectionPanel();
+    }
+}
+
+function openRawFilmsSectionPanel() {
+    const panel = document.getElementById('raw-films-section-order-panel');
+    if (!panel) return;
+    panel.classList.add('open');
+    
+    if (!rawFilmsSectionPanelOutsideClickHandler) {
+        rawFilmsSectionPanelOutsideClickHandler = function(ev) {
+            const panelEl = document.getElementById('raw-films-section-order-panel');
+            const buttonEl = document.getElementById('raw-films-section-order-btn');
+            if (!panelEl) return;
+            if (panelEl.contains(ev.target) || (buttonEl && buttonEl.contains(ev.target))) {
+                return;
+            }
+            closeRawFilmsSectionPanel();
+        };
+        setTimeout(() => {
+            document.addEventListener('click', rawFilmsSectionPanelOutsideClickHandler);
+        }, 0);
+    }
+}
+
+function closeRawFilmsSectionPanel() {
+    const panel = document.getElementById('raw-films-section-order-panel');
+    if (panel) {
+        panel.classList.remove('open');
+    }
+    if (rawFilmsSectionPanelOutsideClickHandler) {
+        document.removeEventListener('click', rawFilmsSectionPanelOutsideClickHandler);
+        rawFilmsSectionPanelOutsideClickHandler = null;
+    }
+    rawFilmsSectionPanelShouldOpen = false;
+}
+function renderRawFilmItem(film, rating) {
+    const encodedKey = encodeURIComponent(film.key);
+    let starsHtml = '';
+    
+    for (let i = 1; i <= 10; i++) {
+        const active = rating >= i ? 'active' : '';
+        starsHtml += `<button type="button" class="raw-film-star ${active}" onclick="handleRawFilmRating(event, '${encodedKey}', ${i})" title="${i} 星">★</button>`;
+    }
+    
+    const clearClass = rating ? 'raw-film-clear visible' : 'raw-film-clear';
+    
+    return `
+        <div class="raw-film-item">
+            <span class="raw-film-name">${escapeHtml(film.text)}</span>
+            <div class="raw-film-stars" role="radiogroup" aria-label="评分">
+                ${starsHtml}
+                <button type="button" class="${clearClass}" onclick="handleRawFilmRating(event, '${encodedKey}', 0)" title="清除评分">×</button>
+            </div>
+        </div>
+    `;
 }
 
 // Render raw films content
 function renderRawFilmsContent() {
     const contentBody = document.getElementById('content-body');
     const content = getRawFilmsContent();
+    const ratings = getRawFilmsRatings();
+    const sortMode = getRawFilmsSortMode();
+    const structure = parseRawFilmsStructure(content);
+    const sectionOrder = getRawFilmsSectionOrder();
+    const orderedTopSections = orderTopLevelSections(structure.children || [], sectionOrder);
+    const sectionPanelHtml = buildRawFilmsSectionPanelHtml(orderedTopSections);
+    const listHtml = content
+        ? renderRawFilmsStructure(structure, ratings, sortMode, orderedTopSections)
+        : '<p class="empty-state">暂无内容，点击"编辑"开始添加</p>';
+    
+    // Reset outside click handler when re-rendering
+    if (rawFilmsSectionPanelOutsideClickHandler) {
+        document.removeEventListener('click', rawFilmsSectionPanelOutsideClickHandler);
+        rawFilmsSectionPanelOutsideClickHandler = null;
+    }
     
     const html = `
         <div class="raw-films-container">
@@ -3120,14 +3562,49 @@ function renderRawFilmsContent() {
                     📤 导入
                 </button>
                 <input type="file" id="import-raw-films-input" accept=".txt,.md" style="display: none;" onchange="importRawFilmsContent(event)">
+                <div class="raw-films-toolbar-spacer"></div>
+                <div class="raw-films-section-order-wrapper">
+                    <button class="btn-section-order" id="raw-films-section-order-btn" onclick="toggleRawFilmsSectionPanel(event)">
+                        分组顺序 ▾
+                    </button>
+                    <div class="raw-films-section-panel" id="raw-films-section-order-panel">
+                        <div class="raw-films-section-panel-header">
+                            <span>拖拽调整一级标题顺序</span>
+                            <button type="button" class="raw-films-section-close" onclick="closeRawFilmsSectionPanel()">×</button>
+                        </div>
+                        <div class="raw-films-section-panel-body">
+                            ${sectionPanelHtml}
+                        </div>
+                    </div>
+                </div>
+                <div class="raw-films-sort-group">
+                    <label for="raw-films-sort-select">排序：</label>
+                    <select id="raw-films-sort-select" onchange="handleRawFilmsSortChange(event)">
+                        <option value="none">按输入顺序</option>
+                        <option value="rating-desc">评分高 → 低</option>
+                        <option value="rating-asc">评分低 → 高</option>
+                    </select>
+                </div>
             </div>
             <div class="raw-films-content markdown-content">
-                ${content ? renderMarkdown(content) : '<p class="empty-state">暂无内容，点击"编辑"开始添加</p>'}
+                ${listHtml}
             </div>
         </div>
     `;
     
     contentBody.innerHTML = html;
+    
+    const sortSelect = document.getElementById('raw-films-sort-select');
+    if (sortSelect) {
+        sortSelect.value = sortMode;
+    }
+    
+    initRawFilmsSectionDragAndDrop();
+    
+    if (rawFilmsSectionPanelShouldOpen) {
+        rawFilmsSectionPanelShouldOpen = false;
+        openRawFilmsSectionPanel();
+    }
 }
 
 // Show edit modal for raw films
@@ -3199,4 +3676,40 @@ function importRawFilmsContent(event) {
     
     // Reset input
     event.target.value = '';
+}
+
+// Handle rating click
+function handleRawFilmRating(event, encodedKey, value) {
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+    
+    const key = decodeURIComponent(encodedKey);
+    const ratings = getRawFilmsRatings();
+    const current = getRawFilmRatingValue(ratings, key);
+    
+    if (value === 0 || current === value) {
+        delete ratings[key];
+    } else {
+        ratings[key] = value;
+    }
+    
+    saveRawFilmsRatings(ratings);
+    const panel = document.getElementById('raw-films-section-order-panel');
+    if (panel && panel.classList.contains('open')) {
+        rawFilmsSectionPanelShouldOpen = true;
+    }
+    renderRawFilmsContent();
+}
+
+// Handle sort change
+function handleRawFilmsSortChange(event) {
+    const mode = event?.target?.value || 'none';
+    saveRawFilmsSortMode(mode);
+    const panel = document.getElementById('raw-films-section-order-panel');
+    if (panel && panel.classList.contains('open')) {
+        rawFilmsSectionPanelShouldOpen = true;
+    }
+    renderRawFilmsContent();
 }
