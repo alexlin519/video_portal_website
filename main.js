@@ -42,6 +42,8 @@ const FILTER_CATEGORY_ORDER_KEY = 'video_portal_filter_category_order';
 const USER_ADDED_ITEMS_KEY = 'video_portal_user_added_items';
 const DELETED_ITEMS_KEY = 'video_portal_deleted_items';
 const DAILY_RANDOM_FILTER_KEY = 'video_portal_daily_random_filter';
+const FAVORITES_FILTER_KEY = 'video_portal_favorites_filter';
+const RAW_FILMS_CONTENT_KEY = 'video_portal_raw_films_content';
 
 function getFavorites() {
     try {
@@ -439,7 +441,6 @@ async function renderSidebar() {
     // Add Favorites category first (if it doesn't exist in data)
     const hasFavorites = data.categories.some(cat => cat.id === 'favorites');
     if (!hasFavorites) {
-        const favoritesCount = countItems({ id: 'favorites' }, data);
         const isFavoritesActive = currentCategoryId === 'favorites' && !currentSubcategoryId;
         
         html += `
@@ -451,14 +452,12 @@ async function renderSidebar() {
                         <span class="category-icon">⭐</span>
                         <span class="category-name">收藏</span>
                     </div>
-                    <span class="category-count">${favoritesCount}</span>
                 </div>
             </div>
         `;
     }
 
     sortedCategories.forEach(category => {
-        const itemCount = countItems(category, data);
         const hasSubcategories = category.subcategories && category.subcategories.length > 0;
         const isExpanded = expandedCategories.has(category.id);
         const isActive = currentCategoryId === category.id && !currentSubcategoryId;
@@ -479,7 +478,6 @@ async function renderSidebar() {
                         <span class="category-icon">${category.icon || '📁'}</span>
                         <span class="category-name">${escapeHtml(category.name)}</span>
                     </div>
-                    <span class="category-count">${itemCount}</span>
                 </div>`;
 
         // Subcategories
@@ -501,7 +499,6 @@ async function renderSidebar() {
             });
             
             sortedSubcategories.forEach(subcategory => {
-                const subCount = countSubcategoryItems(subcategory);
                 const hasSubclasses = subcategory.subclasses && subcategory.subclasses.length > 0;
                 const subcategoryKey = `${category.id}-${subcategory.id}`;
                 const isSubExpanded = expandedSubcategories.has(subcategoryKey);
@@ -521,20 +518,17 @@ async function renderSidebar() {
                                 ` : ''}
                                 <span class="subcategory-name">${escapeHtml(subcategory.name)}</span>
                             </div>
-                            <span class="subcategory-count">${subCount}</span>
                         </div>
                         
                         ${hasSubclasses ? `
                             <div class="subclasses ${isSubExpanded ? 'expanded' : 'collapsed'}">
                                 ${subcategory.subclasses.map(subclass => {
-                                    const subclassCount = countSubclassItems(subclass);
                                     const isSubclassActive = currentSubclassId === subclass.id;
                                     return `
                                         <div class="subclass" data-subclass-id="${subclass.id}">
                                             <div class="subclass-header ${isSubclassActive ? 'active' : ''}" 
                                                  onclick="selectSubclass('${category.id}', '${subcategory.id}', '${subclass.id}')">
                                                 <span class="subclass-name">${escapeHtml(subclass.name)}</span>
-                                                <span class="subclass-count">${subclassCount}</span>
                                             </div>
                                         </div>
                                     `;
@@ -739,22 +733,52 @@ function getDailyRandomFilter() {
 // Save daily random filter settings
 function saveDailyRandomFilter(filter) {
     try {
-        localStorage.setItem(DAILY_RANDOM_FILTER_KEY, JSON.stringify(filter));
-                            } catch (e) {
+        if (filter === null) {
+            // Remove the key if filter is null (means show all)
+            localStorage.removeItem(DAILY_RANDOM_FILTER_KEY);
+                    } else {
+            localStorage.setItem(DAILY_RANDOM_FILTER_KEY, JSON.stringify(filter));
+        }
+    } catch (e) {
         console.error('Error saving daily random filter:', e);
+    }
+}
+
+// Get favorites filter settings (defaults to null = show all)
+function getFavoritesFilter() {
+    try {
+        const filter = localStorage.getItem(FAVORITES_FILTER_KEY);
+        return filter ? JSON.parse(filter) : null; // null means no filter (show all)
+                            } catch (e) {
+        console.error('Error loading favorites filter:', e);
+        return null;
+    }
+}
+
+// Save favorites filter settings
+function saveFavoritesFilter(filter) {
+    try {
+        if (filter === null) {
+            // Remove the key if filter is null (means show all)
+            localStorage.removeItem(FAVORITES_FILTER_KEY);
+                } else {
+            localStorage.setItem(FAVORITES_FILTER_KEY, JSON.stringify(filter));
+        }
+    } catch (e) {
+        console.error('Error saving favorites filter:', e);
     }
 }
 
 // Check if category should be included based on filter
 function isCategoryIncluded(categoryId, filter) {
-    if (!filter) return true; // No filter means include all
+    if (!filter || Object.keys(filter).length === 0) return true; // No filter or empty filter means include all
     if (!filter.categories) return true; // No categories in filter means include all
     return filter.categories.includes(categoryId);
 }
 
 // Check if subcategory should be included based on filter
 function isSubcategoryIncluded(categoryId, subcategoryId, filter) {
-    if (!filter) return true; // No filter means include all
+    if (!filter || Object.keys(filter).length === 0) return true; // No filter or empty filter means include all
     const key = `${categoryId}:${subcategoryId}`;
     
     // Check if explicitly excluded
@@ -777,7 +801,7 @@ function isSubcategoryIncluded(categoryId, subcategoryId, filter) {
 
 // Check if subclass should be included based on filter
 function isSubclassIncluded(categoryId, subcategoryId, subclassId, filter) {
-    if (!filter) return true; // No filter means include all
+    if (!filter || Object.keys(filter).length === 0) return true; // No filter or empty filter means include all
     const key = `${categoryId}:${subcategoryId}:${subclassId}`;
     const subcategoryKey = `${categoryId}:${subcategoryId}`;
     
@@ -809,12 +833,22 @@ function isSubclassIncluded(categoryId, subcategoryId, subclassId, filter) {
     return false;
 }
 
-// Collect all items from all categories (for Daily Random)
+// Collect all items from all categories (for Daily Random and Favorites)
 // Uses overwrite approach: faster O(n+m) instead of O(n*m)
-function collectAllItems(data) {
+// filter: optional filter object, if null uses daily random filter
+function collectAllItems(data, filter = undefined) {
     const deletedItems = getDeletedItems();
     const userAddedItems = getUserAddedItems();
-    const filter = getDailyRandomFilter();
+    // Use provided filter, or fall back to daily random filter if not provided (undefined)
+    // If filter is null or empty object {}, treat as no filter (show all)
+    // This allows favorites to show all items when favoritesFilter is null
+    if (filter === undefined) {
+        // No filter provided, use daily random filter (for backward compatibility)
+        filter = getDailyRandomFilter();
+    } else if (filter === null || (typeof filter === 'object' && Object.keys(filter).length === 0)) {
+        // Explicitly no filter (null or empty object), show all items
+        filter = null;
+    }
     
     // Step 1: Create a Map to store items by ID (for fast lookup and overwrite)
     const itemsMap = new Map();
@@ -845,28 +879,48 @@ function collectAllItems(data) {
                 });
             }
             
-            // Add all subcategories and their items
+            // Add subcategories and their items (check if subcategory is included)
             if (category.subcategories) {
                 category.subcategories.forEach(sub => {
-                    if (sub.items) {
-                        sub.items.forEach(item => {
-                            addItemToMap(item, `${category.name} - ${sub.name}`, `${category.id}:${sub.id}`);
-                        });
-                    }
+                    const subcategoryIncluded = isSubcategoryIncluded(category.id, sub.id, filter);
                     
-                    // Add all subclasses and their items
-                    if (sub.subclasses) {
-                        sub.subclasses.forEach(subclass => {
-                            if (subclass.items) {
-                                subclass.items.forEach(item => {
-                                    addItemToMap(item, `${category.name} - ${sub.name} - ${subclass.name}`, `${category.id}:${sub.id}:${subclass.id}`);
-                                });
-                            }
-                        });
-                    }
-                });
+                    if (subcategoryIncluded) {
+                        // Add items directly in subcategory
+                        if (sub.items) {
+                            sub.items.forEach(item => {
+                                addItemToMap(item, `${category.name} - ${sub.name}`, `${category.id}:${sub.id}`);
+                            });
+                        }
+                        
+                        // Add subclasses and their items (check if subclass is included)
+                        if (sub.subclasses) {
+                            sub.subclasses.forEach(subclass => {
+                                const subclassIncluded = isSubclassIncluded(category.id, sub.id, subclass.id, filter);
+                                
+                                if (subclassIncluded && subclass.items) {
+                                    subclass.items.forEach(item => {
+                                        addItemToMap(item, `${category.name} - ${sub.name} - ${subclass.name}`, `${category.id}:${sub.id}:${subclass.id}`);
+                                    });
+                                }
+                            });
                     }
                 } else {
+                        // Subcategory is excluded, but check if any subclasses are specifically included
+                        if (sub.subclasses) {
+                            sub.subclasses.forEach(subclass => {
+                                const subclassIncluded = isSubclassIncluded(category.id, sub.id, subclass.id, filter);
+                                
+                                if (subclassIncluded && subclass.items) {
+                                    subclass.items.forEach(item => {
+                                        addItemToMap(item, `${category.name} - ${sub.name} - ${subclass.name}`, `${category.id}:${sub.id}:${subclass.id}`);
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        } else {
             // Category not included, but check if any subcategories are specifically included
             if (category.subcategories) {
                 category.subcategories.forEach(sub => {
@@ -891,7 +945,7 @@ function collectAllItems(data) {
                                 }
                             });
                         }
-                    } else {
+            } else {
                         // Subcategory not included, but check if any subclasses are specifically included
                         if (sub.subclasses) {
                             sub.subclasses.forEach(subclass => {
@@ -916,35 +970,59 @@ function collectAllItems(data) {
     // Step 3: Overwrite with userAddedItems (edits and new items)
     Object.keys(userAddedItems).forEach(locationKey => {
         userAddedItems[locationKey].forEach(item => {
-            const existingItem = itemsMap.get(item.id);
+            // Parse locationKey to check if it should be included in filter
+            const parts = locationKey.split(':');
+            const categoryId = parts[0];
+            const subcategoryId = parts.length > 1 ? parts[1] : null;
+            const subclassId = parts.length > 2 ? parts[2] : null;
             
-            // Get source from existing item or parse from locationKey
-            let source = existingItem?.source;
-            if (!source) {
-                // Parse source from locationKey (e.g., "category:subcategory:subclass")
-                const parts = locationKey.split(':');
-                const cat = data.categories.find(c => c.id === parts[0]);
-                if (cat) {
-                    if (parts.length === 1) {
-                        source = cat.name;
-                    } else if (parts.length === 2) {
-                        const sub = cat.subcategories?.find(s => s.id === parts[1]);
-                        source = sub ? `${cat.name} - ${sub.name}` : cat.name;
-                    } else if (parts.length === 3) {
-                        const sub = cat.subcategories?.find(s => s.id === parts[1]);
-                        const subclass = sub?.subclasses?.find(sc => sc.id === parts[2]);
-                        source = subclass ? `${cat.name} - ${sub.name} - ${subclass.name}` : (sub ? `${cat.name} - ${sub.name}` : cat.name);
-                    }
+            // Check if this location should be included based on filter
+            // If filter is null, include all (no filter)
+            let shouldInclude = true;
+            if (filter !== null) {
+                if (subclassId) {
+                    // Check subclass filter
+                    shouldInclude = isSubclassIncluded(categoryId, subcategoryId, subclassId, filter);
+                } else if (subcategoryId) {
+                    // Check subcategory filter
+                    shouldInclude = isSubcategoryIncluded(categoryId, subcategoryId, filter);
+                } else {
+                    // Check category filter
+                    shouldInclude = isCategoryIncluded(categoryId, filter);
                 }
             }
             
-            // Overwrite existing item or add new item
-            itemsMap.set(item.id, {
-                ...item,
-                name: item.name || item.text || '未命名',
-                source: source || '未知来源',
-                locationKey: locationKey
-            });
+            // Only add/overwrite if location is included in filter (or no filter)
+            if (shouldInclude) {
+                const existingItem = itemsMap.get(item.id);
+                
+                // Get source from existing item or parse from locationKey
+                let source = existingItem?.source;
+                if (!source) {
+                    // Parse source from locationKey (e.g., "category:subcategory:subclass")
+                    const cat = data.categories.find(c => c.id === categoryId);
+                    if (cat) {
+                        if (parts.length === 1) {
+                            source = cat.name;
+                        } else if (parts.length === 2) {
+                            const sub = cat.subcategories?.find(s => s.id === subcategoryId);
+                            source = sub ? `${cat.name} - ${sub.name}` : cat.name;
+                        } else if (parts.length === 3) {
+                            const sub = cat.subcategories?.find(s => s.id === subcategoryId);
+                            const subclass = sub?.subclasses?.find(sc => sc.id === subclassId);
+                            source = subclass ? `${cat.name} - ${sub.name} - ${subclass.name}` : (sub ? `${cat.name} - ${sub.name}` : cat.name);
+                        }
+                    }
+                }
+                
+                // Overwrite existing item or add new item
+                itemsMap.set(item.id, {
+                    ...item,
+                    name: item.name || item.text || '未命名',
+                    source: source || '未知来源',
+                    locationKey: locationKey
+                });
+            }
         });
     });
     
@@ -965,7 +1043,7 @@ function getItemsWithPinning(items) {
     items.forEach(item => {
         if (item.pinned === true) {
             pinned.push(item);
-            } else {
+                } else {
             unpinned.push(item);
         }
     });
@@ -1007,7 +1085,16 @@ async function selectCategory(categoryId) {
     // Handle favorites category (not in data.json)
     if (categoryId === 'favorites') {
         const favorites = getFavorites();
-        const allItems = collectAllItems(data);
+        // Use favorites filter (independent from daily random filter)
+        // For favorites, we need to collect ALL items first, then apply favorites filter
+        // This ensures that items in favorites are always shown, regardless of filter
+        const favoritesFilter = getFavoritesFilter();
+        
+        // If favorites filter is null (default all), collect all items without filter
+        // Otherwise, collect items with favorites filter
+        const allItems = favoritesFilter === null 
+            ? collectAllItems(data, {})  // Empty filter object means show all
+            : collectAllItems(data, favoritesFilter);
         
         // Filter items that are in favorites
         let items = allItems.filter(item => favorites.includes(item.id));
@@ -1044,6 +1131,19 @@ async function selectCategory(categoryId) {
     const category = data.categories.find(cat => cat.id === categoryId);
     if (!category) return;
 
+    // Handle raw films category (text-only markdown viewer)
+    if (category.isTextOnly && categoryId === 'raw-films') {
+        renderRawFilmsContent();
+        renderSidebar();
+        updateContentHeader(category.name, category.icon);
+        document.getElementById('refresh-btn').style.display = 'none';
+        document.getElementById('add-new-btn').style.display = 'none';
+        document.getElementById('filter-btn').style.display = 'none';
+        document.getElementById('show-all-label').style.display = 'none';
+        updateShowAllButton();
+        return;
+    }
+
     let items = [];
     const deletedItems = getDeletedItems();
     
@@ -1065,7 +1165,7 @@ async function selectCategory(categoryId) {
             
             if (isPinnedFromStorage) {
                 pinned.push({...item, pinned: true}); // Mark as pinned
-                } else {
+                        } else {
                 unpinned.push(item);
             }
         });
@@ -1817,9 +1917,23 @@ async function showFilterModal() {
     
     selectedFilterCategoryId = null;
     
-    // Render filter sidebar and details
-    renderFilterSidebar(data);
-    renderFilterDetails(data, null);
+    // Determine which filter to use based on current category
+    const isFavorites = currentCategoryId === 'favorites';
+    
+    // Clear the filter sidebar and details area completely to avoid using wrong filter's state
+    // This ensures we always read from the correct filter, not from DOM state
+    const sidebar = document.getElementById('filter-categories-sidebar');
+    const detailsArea = document.getElementById('filter-details-area');
+    if (sidebar) {
+        sidebar.innerHTML = '';
+    }
+    if (detailsArea) {
+        detailsArea.innerHTML = '';
+    }
+    
+    // Render filter sidebar and details (will use appropriate filter)
+    renderFilterSidebar(data, isFavorites);
+    renderFilterDetails(data, null, isFavorites);
     
     modal.style.display = 'flex';
 }
@@ -1833,11 +1947,13 @@ function hideFilterModal() {
 }
 
 // Render filter sidebar (categories list)
-async function renderFilterSidebar(data) {
+// isFavorites: true if this is for favorites filter, false for daily random filter
+async function renderFilterSidebar(data, isFavorites = false) {
     const sidebar = document.getElementById('filter-categories-sidebar');
     if (!sidebar) return;
     
-    const filter = getDailyRandomFilter();
+    // Use appropriate filter based on context
+    const filter = isFavorites ? getFavoritesFilter() : getDailyRandomFilter();
     let categories = data.categories.filter(cat => cat.id !== 'daily-random' && cat.id !== 'favorites');
     
     // Get saved filter category order from localStorage
@@ -1908,15 +2024,19 @@ async function selectFilterCategory(categoryId) {
     const data = await getData();
     if (!data || !data.categories) return;
     
+    // Determine which filter to use based on current category
+    const isFavorites = currentCategoryId === 'favorites';
+    
     // Update sidebar active state
-    renderFilterSidebar(data);
+    renderFilterSidebar(data, isFavorites);
     
     // Render details
-    renderFilterDetails(data, categoryId);
+    renderFilterDetails(data, categoryId, isFavorites);
 }
 
 // Render filter details (subcategories as tabs, subclasses below)
-async function renderFilterDetails(data, categoryId) {
+// isFavorites: true if this is for favorites filter, false for daily random filter
+async function renderFilterDetails(data, categoryId, isFavorites = false) {
     const detailsArea = document.getElementById('filter-details-area');
     if (!detailsArea) return;
     
@@ -1936,10 +2056,11 @@ async function renderFilterDetails(data, categoryId) {
     const categoryCheckbox = document.querySelector(`.filter-category-checkbox[data-category-id="${categoryId}"]`);
     const categoryCheckedFromDOM = categoryCheckbox ? categoryCheckbox.checked : null;
     
-    const filter = getDailyRandomFilter();
+    // Use appropriate filter based on context
+    const filter = isFavorites ? getFavoritesFilter() : getDailyRandomFilter();
     // Category is checked if:
     // 1. DOM checkbox exists and is checked (user's current selection takes priority)
-    // 2. OR no filter (default all selected)
+    // 2. OR no filter (default all selected) - for favorites, default to all selected
     // 3. OR it's in filter.categories
     const categoryChecked = categoryCheckedFromDOM !== null 
         ? categoryCheckedFromDOM 
@@ -2209,8 +2330,11 @@ function handleCategoryFilterChange(categoryId, checked, event) {
                 activeSubcategoryId = activeTab.querySelector('.filter-subcategory-checkbox')?.getAttribute('data-subcategory-id');
             }
             
+            // Determine which filter to use based on current category
+            const isFavorites = currentCategoryId === 'favorites';
+            
             // Re-render details - this will update all checkbox states based on current DOM state
-            renderFilterDetails(data, categoryId);
+            renderFilterDetails(data, categoryId, isFavorites);
             
             // Restore active tab if it existed
             if (activeSubcategoryId) {
@@ -2275,7 +2399,8 @@ function selectAllFilters() {
     if (selectedFilterCategoryId) {
         const data = cachedData;
         if (data) {
-            renderFilterDetails(data, selectedFilterCategoryId);
+            const isFavorites = currentCategoryId === 'favorites';
+            renderFilterDetails(data, selectedFilterCategoryId, isFavorites);
         }
     }
 }
@@ -2299,7 +2424,8 @@ function deselectAllFilters() {
     if (selectedFilterCategoryId) {
         const data = cachedData;
         if (data) {
-            renderFilterDetails(data, selectedFilterCategoryId);
+            const isFavorites = currentCategoryId === 'favorites';
+            renderFilterDetails(data, selectedFilterCategoryId, isFavorites);
         }
     }
 }
@@ -2386,9 +2512,17 @@ async function applyFilter() {
     const allCategoryIds = allCategories.map(cat => cat.id);
     const allSelected = allCategoryIds.length > 0 && allCategoryIds.every(catId => categories.includes(catId));
     
+    // Determine which filter to save based on current category
+    const isFavorites = currentCategoryId === 'favorites';
+    
     // If all categories are selected and no exclusions, don't save filter (show all)
     if (allSelected && subcategories.length === 0 && subclasses.length === 0 && excludedSubcategories.length === 0 && excludedSubclasses.length === 0) {
-        saveDailyRandomFilter(null); // null means no filter (show all)
+        // null means no filter (show all)
+        if (isFavorites) {
+            saveFavoritesFilter(null);
+        } else {
+            saveDailyRandomFilter(null);
+        }
     } else {
         const filter = {
             categories: categories,
@@ -2397,15 +2531,21 @@ async function applyFilter() {
             excludedSubcategories: excludedSubcategories,
             excludedSubclasses: excludedSubclasses
         };
-        saveDailyRandomFilter(filter);
+        if (isFavorites) {
+            saveFavoritesFilter(filter);
+        } else {
+            saveDailyRandomFilter(filter);
+        }
     }
     
     // Hide modal
     hideFilterModal();
     
-    // Refresh Daily Random view
+    // Refresh current view
     if (currentCategoryId === 'daily-random') {
         selectCategory('daily-random');
+    } else if (currentCategoryId === 'favorites') {
+        selectCategory('favorites');
     }
 }
 
@@ -2503,6 +2643,8 @@ function exportLocalStorage() {
                 userAddedItems: localStorage.getItem(USER_ADDED_ITEMS_KEY),
                 deletedItems: localStorage.getItem(DELETED_ITEMS_KEY),
                 dailyRandomFilter: localStorage.getItem(DAILY_RANDOM_FILTER_KEY),
+                favoritesFilter: localStorage.getItem(FAVORITES_FILTER_KEY),
+                rawFilmsContent: localStorage.getItem(RAW_FILMS_CONTENT_KEY),
                 sidebarCollapsed: localStorage.getItem('sidebar_collapsed'),
                 // Get all subcategory orders
                 subcategoryOrders: {}
@@ -2589,6 +2731,16 @@ function importLocalStorage(event) {
             }
             if (importData.data.sidebarCollapsed !== null && importData.data.sidebarCollapsed !== undefined) {
                 localStorage.setItem('sidebar_collapsed', importData.data.sidebarCollapsed);
+            }
+            if (importData.data.rawFilmsContent !== null && importData.data.rawFilmsContent !== undefined) {
+                localStorage.setItem(RAW_FILMS_CONTENT_KEY, importData.data.rawFilmsContent);
+            }
+            if (importData.data.favoritesFilter !== null && importData.data.favoritesFilter !== undefined) {
+                if (importData.data.favoritesFilter === 'null' || importData.data.favoritesFilter === null) {
+                    localStorage.removeItem(FAVORITES_FILTER_KEY);
+                } else {
+                    localStorage.setItem(FAVORITES_FILTER_KEY, importData.data.favoritesFilter);
+                }
             }
             
             // Import subcategory orders
@@ -2865,4 +3017,186 @@ async function exportMergedDataJson() {
         console.error('生成合并文件失败:', error);
         alert('❌ 生成合并文件失败：' + error.message + '\n\n请查看控制台获取详细信息');
     }
+}
+
+// ============================================
+// RAW FILMS (原片分类) - Text-only Markdown Viewer
+// ============================================
+
+// Get raw films content from localStorage
+function getRawFilmsContent() {
+    try {
+        const content = localStorage.getItem(RAW_FILMS_CONTENT_KEY);
+        return content || '';
+    } catch (e) {
+        console.error('Error loading raw films content:', e);
+        return '';
+    }
+}
+
+// Save raw films content to localStorage
+function saveRawFilmsContent(content) {
+    try {
+        localStorage.setItem(RAW_FILMS_CONTENT_KEY, content);
+    } catch (e) {
+        console.error('Error saving raw films content:', e);
+    }
+}
+
+// Simple markdown renderer (supports # headers and basic formatting)
+function renderMarkdown(text) {
+    if (!text) return '';
+    
+    let html = '';
+    const lines = text.split('\n');
+    let inCodeBlock = false;
+    let codeBlockContent = '';
+    
+    lines.forEach((line, index) => {
+        // Handle code blocks
+        if (line.trim().startsWith('```')) {
+            if (inCodeBlock) {
+                // End code block
+                html += `<pre><code>${escapeHtml(codeBlockContent)}</code></pre>\n`;
+                codeBlockContent = '';
+                inCodeBlock = false;
+            } else {
+                // Start code block
+                inCodeBlock = true;
+            }
+            return;
+        }
+        
+        if (inCodeBlock) {
+            codeBlockContent += line + '\n';
+            return;
+        }
+        
+        // Headers
+        if (line.trim().startsWith('# ')) {
+            html += `<h1 class="markdown-h1">${escapeHtml(line.trim().substring(2))}</h1>\n`;
+        } else if (line.trim().startsWith('## ')) {
+            html += `<h2 class="markdown-h2">${escapeHtml(line.trim().substring(3))}</h2>\n`;
+        } else if (line.trim().startsWith('### ')) {
+            html += `<h3 class="markdown-h3">${escapeHtml(line.trim().substring(4))}</h3>\n`;
+        } else if (line.trim().startsWith('#### ')) {
+            html += `<h4 class="markdown-h4">${escapeHtml(line.trim().substring(5))}</h4>\n`;
+        } else if (line.trim().startsWith('##### ')) {
+            html += `<h5 class="markdown-h5">${escapeHtml(line.trim().substring(6))}</h5>\n`;
+        } else if (line.trim().startsWith('###### ')) {
+            html += `<h6 class="markdown-h6">${escapeHtml(line.trim().substring(7))}</h6>\n`;
+        } else if (line.trim() === '') {
+            // Empty line - add spacing
+            html += '<div class="markdown-spacer"></div>\n';
+        } else {
+            // Regular text - preserve line breaks
+            html += `<p class="markdown-p">${escapeHtml(line)}</p>\n`;
+        }
+    });
+    
+    // Close any open code block
+    if (inCodeBlock && codeBlockContent) {
+        html += `<pre><code>${escapeHtml(codeBlockContent)}</code></pre>\n`;
+    }
+    
+    return html;
+}
+
+// Render raw films content
+function renderRawFilmsContent() {
+    const contentBody = document.getElementById('content-body');
+    const content = getRawFilmsContent();
+    
+    const html = `
+        <div class="raw-films-container">
+            <div class="raw-films-toolbar">
+                <button class="btn-edit-raw-films" onclick="showRawFilmsEditModal()" title="编辑内容">
+                    ✎ 编辑
+                </button>
+                <button class="btn-export-raw-films" onclick="exportRawFilmsContent()" title="导出内容">
+                    📥 导出
+                </button>
+                <button class="btn-import-raw-films" onclick="document.getElementById('import-raw-films-input').click()" title="导入内容">
+                    📤 导入
+                </button>
+                <input type="file" id="import-raw-films-input" accept=".txt,.md" style="display: none;" onchange="importRawFilmsContent(event)">
+            </div>
+            <div class="raw-films-content markdown-content">
+                ${content ? renderMarkdown(content) : '<p class="empty-state">暂无内容，点击"编辑"开始添加</p>'}
+            </div>
+        </div>
+    `;
+    
+    contentBody.innerHTML = html;
+}
+
+// Show edit modal for raw films
+function showRawFilmsEditModal() {
+    const modal = document.getElementById('raw-films-edit-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        const textarea = document.getElementById('raw-films-textarea');
+        if (textarea) {
+            textarea.value = getRawFilmsContent();
+            textarea.focus();
+        }
+    }
+}
+
+// Hide edit modal
+function hideRawFilmsEditModal() {
+    const modal = document.getElementById('raw-films-edit-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Save raw films content
+function saveRawFilms() {
+    const textarea = document.getElementById('raw-films-textarea');
+    if (!textarea) return;
+    
+    const content = textarea.value;
+    saveRawFilmsContent(content);
+    hideRawFilmsEditModal();
+    renderRawFilmsContent();
+}
+
+// Export raw films content
+function exportRawFilmsContent() {
+    const content = getRawFilmsContent();
+    if (!content) {
+        alert('暂无内容可导出');
+        return;
+    }
+    
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `原片分类_${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// Import raw films content
+function importRawFilmsContent(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const content = e.target.result;
+        if (confirm('确定要导入此文件吗？当前内容将被替换。')) {
+            saveRawFilmsContent(content);
+            renderRawFilmsContent();
+            alert('导入成功！');
+        }
+    };
+    reader.readAsText(file, 'UTF-8');
+    
+    // Reset input
+    event.target.value = '';
 }

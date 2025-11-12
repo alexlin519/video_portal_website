@@ -120,6 +120,35 @@
         </div>
     </div>
 
+    <!-- Raw Films Edit Modal -->
+    <div id="raw-films-edit-modal" class="modal" style="display: none;">
+        <div class="modal-content raw-films-modal-content">
+            <div class="modal-header">
+                <h3>编辑原片分类</h3>
+                <button class="modal-close" onclick="hideRawFilmsEditModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="raw-films-textarea">内容 (支持 Markdown，使用 # 创建标题):</label>
+                    <textarea id="raw-films-textarea" placeholder="# 分类标题&#10;&#10;电影名1&#10;电影名2&#10;&#10;## 另一个分类&#10;&#10;电影名3" rows="20" style="font-family: monospace; white-space: pre-wrap;"></textarea>
+                </div>
+                <div class="form-hint">
+                    <p>💡 提示：</p>
+                    <ul>
+                        <li>使用 <code>#</code> 创建一级标题</li>
+                        <li>使用 <code>##</code> 创建二级标题</li>
+                        <li>使用 <code>###</code> 创建三级标题</li>
+                        <li>普通文本会自动显示为段落</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="hideRawFilmsEditModal()">取消</button>
+                <button class="btn-confirm" onclick="saveRawFilms()">保存</button>
+            </div>
+        </div>
+    </div>
+
     <script src="main.js"></script>
     <script>
         // 页面加载时初始化

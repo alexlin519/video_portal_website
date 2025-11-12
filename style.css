@@ -1205,3 +1205,188 @@ body {
     color: var(--text-color);
     flex: 1;
 }
+
+/* ============================================
+   Raw Films (原片分类) Styles
+   ============================================ */
+
+.raw-films-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--card-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.raw-films-toolbar {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--sidebar-bg);
+    flex-shrink: 0;
+}
+
+.btn-edit-raw-films,
+.btn-export-raw-films,
+.btn-import-raw-films {
+    padding: 8px 16px;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.btn-edit-raw-films:hover,
+.btn-export-raw-films:hover,
+.btn-import-raw-films:hover {
+    background: #0b5ed7;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.raw-films-content {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    background: var(--card-color);
+}
+
+.markdown-content {
+    line-height: 1.8;
+    color: var(--text-color);
+}
+
+.markdown-h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 32px 0 16px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.markdown-h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 24px 0 12px 0;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.markdown-h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 20px 0 10px 0;
+    color: var(--text-color);
+}
+
+.markdown-h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 16px 0 8px 0;
+    color: var(--text-color);
+}
+
+.markdown-h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 12px 0 6px 0;
+    color: var(--text-color);
+}
+
+.markdown-h6 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 10px 0 5px 0;
+    color: var(--text-muted);
+}
+
+.markdown-p {
+    margin: 8px 0;
+    line-height: 1.8;
+    color: var(--text-color);
+}
+
+.markdown-spacer {
+    height: 8px;
+}
+
+.markdown-content pre {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    overflow-x: auto;
+    margin: 16px 0;
+}
+
+.markdown-content code {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.9rem;
+    background: var(--bg-color);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.markdown-content pre code {
+    background: transparent;
+    padding: 0;
+}
+
+.raw-films-modal-content {
+    max-width: 800px;
+    width: 90vw;
+    max-height: 85vh;
+}
+
+.raw-films-modal-content textarea {
+    width: 100%;
+    min-height: 400px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    resize: vertical;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.form-hint {
+    margin-top: 16px;
+    padding: 12px;
+    background: var(--bg-color);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.form-hint p {
+    margin: 0 0 8px 0;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.form-hint ul {
+    margin: 8px 0 0 0;
+    padding-left: 20px;
+}
+
+.form-hint li {
+    margin: 4px 0;
+}
+
+.form-hint code {
+    background: var(--card-color);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.85rem;
+}

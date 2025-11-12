@@ -402,6 +402,14 @@
       "icon": "📚",
       "maxItems": 50,
       "items": []
+    },
+    {
+      "id": "raw-films",
+      "name": "原片分类",
+      "icon": "🎬",
+      "maxItems": 0,
+      "isTextOnly": true,
+      "items": []
     }
   ]
 }
