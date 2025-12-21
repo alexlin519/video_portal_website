@@ -1253,7 +1253,7 @@ body {
 
 .raw-films-content {
     flex: 1;
-    padding: 24px;
+    padding: 16px;
     overflow-y: auto;
     background: var(--card-color);
 }
@@ -1429,8 +1429,8 @@ body {
 .raw-films-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-top: 8px;
+    gap: 4px;
+    margin-top: 4px;
 }
 
 .raw-film-item {
@@ -1438,7 +1438,7 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 12px 16px;
+    padding: 8px 12px;
     background: var(--card-color);
     border-radius: var(--radius-sm);
     box-shadow: var(--shadow-sm);
@@ -1511,15 +1511,15 @@ body {
 }
 
 .markdown-content {
-    line-height: 1.8;
+    line-height: 1.5;
     color: var(--text-color);
 }
 
 .markdown-h1 {
     font-size: 2rem;
     font-weight: 700;
-    margin: 32px 0 16px 0;
-    padding-bottom: 8px;
+    margin: 20px 0 10px 0;
+    padding-bottom: 6px;
     border-bottom: 2px solid var(--border-color);
     color: var(--text-color);
 }
@@ -1527,8 +1527,8 @@ body {
 .markdown-h2 {
     font-size: 1.5rem;
     font-weight: 600;
-    margin: 24px 0 12px 0;
-    padding-bottom: 6px;
+    margin: 16px 0 8px 0;
+    padding-bottom: 4px;
     border-bottom: 1px solid var(--border-color);
     color: var(--text-color);
 }
@@ -1536,39 +1536,39 @@ body {
 .markdown-h3 {
     font-size: 1.25rem;
     font-weight: 600;
-    margin: 20px 0 10px 0;
+    margin: 12px 0 6px 0;
     color: var(--text-color);
 }
 
 .markdown-h4 {
     font-size: 1.1rem;
     font-weight: 600;
-    margin: 16px 0 8px 0;
+    margin: 10px 0 5px 0;
     color: var(--text-color);
 }
 
 .markdown-h5 {
     font-size: 1rem;
     font-weight: 600;
-    margin: 12px 0 6px 0;
+    margin: 8px 0 4px 0;
     color: var(--text-color);
 }
 
 .markdown-h6 {
     font-size: 0.9rem;
     font-weight: 600;
-    margin: 10px 0 5px 0;
+    margin: 6px 0 3px 0;
     color: var(--text-muted);
 }
 
 .markdown-p {
-    margin: 8px 0;
-    line-height: 1.8;
+    margin: 4px 0;
+    line-height: 1.5;
     color: var(--text-color);
 }
 
 .markdown-spacer {
-    height: 8px;
+    height: 4px;
 }
 
 .markdown-content pre {
