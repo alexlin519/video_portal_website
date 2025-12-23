@@ -1171,7 +1171,7 @@ async function selectCategory(categoryId) {
             
             if (isPinnedFromStorage) {
                 pinned.push({...item, pinned: true}); // Mark as pinned
-                        } else {
+    } else {
                 unpinned.push(item);
             }
         });
@@ -1751,7 +1751,7 @@ async function addNewItem() {
         // Edit existing item
         const itemId = parseInt(modal.getAttribute('data-item-id'));
         updateItemInLocation(itemId, name, url, text);
-    } else {
+                    } else {
         // Add new item
         addItemToLocation(currentCategoryId, currentSubcategoryId, currentSubclassId, name, url, text);
     }
@@ -2846,7 +2846,7 @@ async function exportMergedDataJson() {
                                 url: userItem.url,
                                 text: userItem.text || ''
                             };
-    } else {
+            } else {
                             // Add new item (only if ID is positive, negative IDs are user-added and shouldn't be in data.json)
                             if (userItem.id > 0) {
                                 category.items.push({
@@ -2917,7 +2917,7 @@ async function exportMergedDataJson() {
                                                 url: userItem.url,
                                                 text: userItem.text || ''
                                             };
-                                        } else {
+                } else {
                                             // Add new item (only if ID is positive)
                                             if (userItem.id > 0) {
                                                 subclass.items.push({
@@ -3093,7 +3093,7 @@ function saveRawFilmsRatings(ratings) {
     try {
         if (ratings && Object.keys(ratings).length > 0) {
             localStorage.setItem(RAW_FILMS_RATINGS_KEY, JSON.stringify(ratings));
-        } else {
+                            } else {
             localStorage.removeItem(RAW_FILMS_RATINGS_KEY);
         }
     } catch (e) {
@@ -3120,7 +3120,7 @@ function saveRawFilmsSortMode(mode) {
     try {
         if (mode === 'none') {
             localStorage.removeItem(RAW_FILMS_SORT_MODE_KEY);
-        } else {
+                        } else {
             localStorage.setItem(RAW_FILMS_SORT_MODE_KEY, mode);
         }
     } catch (e) {
@@ -3352,8 +3352,8 @@ function buildRawFilmsSectionPanelHtml(sections) {
             <div class="raw-films-section-item" draggable="true" data-section-key="${encodedKey}">
                 <span class="raw-films-section-handle">☰</span>
                 <span class="raw-films-section-title">${escapeHtml(section.title || '未命名')}</span>
-            </div>
-        `;
+                </div>
+            `;
     });
     html += '</div>';
     return html;

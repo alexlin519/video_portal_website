@@ -25,10 +25,10 @@
                 </button>
                 <button class="import-btn" onclick="document.getElementById('import-file-input').click()" title="导入设置">
                     📤 导入
-                </button>
+            </button>
                 <button class="merge-btn" onclick="exportMergedDataJson()" title="生成合并后的 data.json">
                     💾 保存到 data.json
-                </button>
+            </button>
                 <input type="file" id="import-file-input" accept=".json" style="display: none;" onchange="importLocalStorage(event)">
             </div>
         </aside>
@@ -45,13 +45,13 @@
                     </label>
                     <button class="filter-btn" id="filter-btn" style="display: none;" onclick="showFilterModal()" title="筛选">
                         🔍 Filter
-                    </button>
+            </button>
                     <button class="add-new-btn" id="add-new-btn" style="display: none;" onclick="showAddNewModal()">
                         + 新增
-                    </button>
+            </button>
                     <button class="refresh-btn" id="refresh-btn" style="display: none;" onclick="refreshCurrentCategory()">
                         Random
-                    </button>
+            </button>
                 </div>
             </div>
             <div class="content-body" id="content-body">
@@ -59,7 +59,7 @@
                     <p>请从左侧选择一个分类开始浏览</p>
                 </div>
             </div>
-        </main>
+    </main>
     </div>
 
     <!-- Add/Edit Item Modal -->
