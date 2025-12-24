@@ -1207,14 +1207,17 @@ async function selectCategory(categoryId) {
         // Get user-added items for this category
         const userAddedItems = getItemsForLocation(categoryId);
         
+        // Filter out deleted items from user-added items
+        const userAddedItemsNotDeleted = userAddedItems.filter(item => !deletedItems.includes(item.id));
+        
         // Get user-added item IDs to filter out from baseItems (edited items should replace original)
-        const userAddedItemIds = new Set(userAddedItems.map(item => item.id));
+        const userAddedItemIds = new Set(userAddedItemsNotDeleted.map(item => item.id));
         
         // Filter out base items that have been edited (exist in userAddedItems with same ID)
         const baseItemsNotEdited = baseItems.filter(item => !userAddedItemIds.has(item.id));
         
-        // Merge: base items (not edited) + user-added items (including edited items)
-        items = [...baseItemsNotEdited, ...userAddedItems];
+        // Merge: base items (not edited) + user-added items (including edited items, but not deleted)
+        items = [...baseItemsNotEdited, ...userAddedItemsNotDeleted];
         
         // Separate pinned and unpinned items (from both data.json and localStorage)
         const pins = getPins();
@@ -1340,19 +1343,22 @@ async function selectSubcategory(categoryId, subcategoryId) {
     // Get user-added items for this subcategory
     const userAddedItemsList = getItemsForLocation(categoryId, subcategoryId);
     
+    // Filter out deleted items from user-added items
+    const userAddedItemsNotDeleted = userAddedItemsList.filter(item => !deletedItems.includes(item.id));
+    
     // Get user-added item IDs to filter out from base items (edited items should replace original)
-    const userAddedItemIds = new Set(userAddedItemsList.map(item => item.id));
+    const userAddedItemIds = new Set(userAddedItemsNotDeleted.map(item => item.id));
     
     // Filter out base items that have been edited (exist in userAddedItems with same ID)
     items = items.filter(item => !userAddedItemIds.has(item.id));
     
     // Ensure user-added items have name for display (backwards compatibility)
-    const userAddedItemsWithName = userAddedItemsList.map(item => ({
+    const userAddedItemsWithName = userAddedItemsNotDeleted.map(item => ({
         ...item,
         name: item.name || item.text || '未命名'
     }));
     
-    // Merge: base items (not edited) + user-added items (including edited items)
+    // Merge: base items (not edited) + user-added items (including edited items, but not deleted)
     items = [...items, ...userAddedItemsWithName];
     
     // Separate pinned and unpinned items (from both data.json and localStorage)
@@ -1473,13 +1479,16 @@ async function selectSubclass(categoryId, subcategoryId, subclassId) {
     // Get user-added items for this subclass (new items, not modifications)
     const userAddedItemsList = getItemsForLocation(categoryId, subcategoryId, subclassId);
     
+    // Filter out deleted items from user-added items
+    const userAddedItemsNotDeleted = userAddedItemsList.filter(item => !deletedItems.includes(item.id));
+    
     // Filter out items that are modifications (they're already in items)
     const originalItemIds = new Set();
     if (subclass.items) {
         subclass.items.forEach(item => originalItemIds.add(item.id));
     }
     
-    const newUserAddedItems = userAddedItemsList.filter(userItem => !originalItemIds.has(userItem.id));
+    const newUserAddedItems = userAddedItemsNotDeleted.filter(userItem => !originalItemIds.has(userItem.id));
     
     // Ensure user-added items have name for display (backwards compatibility)
     const userAddedItemsWithName = newUserAddedItems.map(item => ({
