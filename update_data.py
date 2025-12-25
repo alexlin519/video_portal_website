@@ -94,14 +94,14 @@ def parse_csv_with_multiline(csv_file):
                 i += 1
         
         # Add last field
-        if field or len(row) < 6:
+        if field or len(row) < 5:
             row.append(field)
         
-        # Ensure we have 6 columns
-        while len(row) < 6:
+        # Ensure we have 5 columns (link, category, class, subclass, text)
+        while len(row) < 5:
             row.append('')
         
-        rows.append(row[:6])
+        rows.append(row[:5])
     
     return rows
 
@@ -139,6 +139,10 @@ def convert_csv_to_json(csv_file):
     # Parse CSV
     data = parse_csv_with_multiline(csv_file)
     
+    # Skip header row (first row)
+    if len(data) > 0:
+        data = data[1:]
+    
     # Now convert to JSON structure
     categories = {}
     item_id = 1
@@ -147,9 +151,8 @@ def convert_csv_to_json(csv_file):
         link = row[0].strip() if len(row) > 0 and row[0] else ''
         category = row[1].strip() if len(row) > 1 and row[1] else ''
         class_name = row[2].strip() if len(row) > 2 and row[2] else ''
-        source = row[3].strip() if len(row) > 3 and row[3] else ''
-        subclass = row[4].strip() if len(row) > 4 and row[4] else ''
-        text = row[5] if len(row) > 5 and row[5] else ''  # Don't strip - preserve line breaks
+        subclass = row[3].strip() if len(row) > 3 and row[3] else ''
+        text = row[4] if len(row) > 4 and row[4] else ''  # Don't strip - preserve line breaks
         
         # Skip if no link or category
         if not link or not category:
@@ -188,11 +191,12 @@ def convert_csv_to_json(csv_file):
             }
         
         # Create item
+        # Use text as name (will show on button, preserving line breaks)
         item = {
             'id': item_id,
-            'name': text.replace('\n', ' '),  # Name should be single line for display
+            'name': text,  # Name shows on button - preserve line breaks as requested
             'url': link,
-            'text': text  # Text preserves line breaks
+            'text': text  # Text also preserves line breaks
         }
         item_id += 1
         

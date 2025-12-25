@@ -9,52 +9,115 @@
       "items": []
     },
     {
-      "id": "category",
-      "name": "category",
-      "icon": "📁",
-      "maxItems": 50,
-      "items": [],
-      "subcategories": [
-        {
-          "id": "category-class",
-          "name": "class",
-          "maxItems": 50,
-          "items": [],
-          "subclasses": [
-            {
-              "id": "category-class-subclass",
-              "name": "subclass",
-              "maxItems": 50,
-              "items": [
-                {
-                  "id": 1,
-                  "name": "text",
-                  "url": "﻿link",
-                  "text": "text"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
       "id": "hehe",
       "name": "hehe",
       "icon": "📁",
       "maxItems": 50,
-      "items": [],
+      "items": [
+        {
+          "id": 8,
+          "name": "中指通",
+          "url": "https://www.youtube.com/@%E4%B8%AD%E6%8C%87%E9%80%9A/videos",
+          "text": "中指通"
+        },
+        {
+          "id": 77,
+          "name": "台媒",
+          "url": "https://www.youtube.com/@CTWANT/videos",
+          "text": "台媒"
+        },
+        {
+          "id": 395,
+          "name": "王宇德-心理解析",
+          "url": "https://space.bilibili.com/22314958/upload/video",
+          "text": "王宇德-心理解析"
+        }
+      ],
       "subcategories": [
         {
-          "id": "hehe-两性",
-          "name": "两性",
+          "id": "hehe-技巧",
+          "name": "技巧",
           "maxItems": 50,
           "items": [
             {
-              "id": 9,
-              "name": "中指通",
-              "url": "https://www.youtube.com/@%E4%B8%AD%E6%8C%87%E9%80%9A/videos",
-              "text": "中指通"
+              "id": 51,
+              "name": "7年前\n泡学",
+              "url": "https://www.youtube.com/@pua7194/videos",
+              "text": "7年前\n泡学"
+            },
+            {
+              "id": 236,
+              "name": "推拉\n泡学",
+              "url": "https://space.bilibili.com/3546390804301889/upload/video",
+              "text": "推拉\n泡学"
+            },
+            {
+              "id": 261,
+              "name": "实战!",
+              "url": "https://www.youtube.com/@%E5%BC%95%E9%A0%98%E7%A4%BE%E4%BA%A4KYOKOY/videos",
+              "text": "实战!"
+            },
+            {
+              "id": 350,
+              "name": "大迎本人",
+              "url": "https://space.bilibili.com/3546390804301889/upload/video",
+              "text": "大迎本人"
+            },
+            {
+              "id": 353,
+              "name": "蕉叔 & Linda!!!!!!!!!!!!",
+              "url": "https://www.youtube.com/@UncleJ-Linda/videos",
+              "text": "蕉叔 & Linda!!!!!!!!!!!!"
+            }
+          ]
+        },
+        {
+          "id": "hehe-攻略",
+          "name": "攻略",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 37,
+              "name": "小黃Tim-Huang",
+              "url": "https://www.youtube.com/@Tim-Huang91/videos",
+              "text": "小黃Tim-Huang"
+            },
+            {
+              "id": 354,
+              "name": "小葛格東遊記",
+              "url": "https://www.youtube.com/@xggdyj2020/videos",
+              "text": "小葛格東遊記"
+            },
+            {
+              "id": 355,
+              "name": "阿诚很爱玩",
+              "url": "https://www.youtube.com/@%E9%98%BF%E8%AF%9A%E5%BE%88%E7%88%B1%E7%8E%A9/videos",
+              "text": "阿诚很爱玩"
+            }
+          ]
+        },
+        {
+          "id": "hehe-科普",
+          "name": "科普",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 262,
+              "name": "sm 王竹子",
+              "url": "https://www.youtube.com/@%E7%8E%8B%E7%AB%B9%E5%AD%90/videos",
+              "text": "sm 王竹子"
+            },
+            {
+              "id": 351,
+              "name": "嵩馥性健康",
+              "url": "https://www.youtube.com/@sungful6/videos",
+              "text": "嵩馥性健康"
+            },
+            {
+              "id": 352,
+              "name": "英文 性教育",
+              "url": "https://www.youtube.com/playlist?list=PL8dPuuaLjXtMweg6Yx9MHP01n_yUyaf9H",
+              "text": "英文 性教育"
             }
           ]
         },
@@ -64,16 +127,22 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 11,
+              "id": 10,
               "name": "伊織萌",
               "url": "https://www.youtube.com/@Iorimoe-tanoshi",
               "text": "伊織萌"
             },
             {
-              "id": 27,
+              "id": 26,
               "name": "표은지Eunji",
               "url": "https://www.youtube.com/@Eunjipyo",
               "text": "표은지Eunji"
+            },
+            {
+              "id": 54,
+              "name": "권은비 KWON EUNBI",
+              "url": "https://www.youtube.com/@KWONEUNBI/videos",
+              "text": "권은비 KWON EUNBI"
             }
           ]
         }
@@ -90,6 +159,345 @@
           "name": "类火柴人可爱画风",
           "url": "https://www.youtube.com/@SCP/videos",
           "text": "类火柴人可爱画风"
+        },
+        {
+          "id": 109,
+          "name": "克系电影",
+          "url": "https://space.bilibili.com/396689329",
+          "text": "克系电影"
+        },
+        {
+          "id": 171,
+          "name": "scp 介绍\n画面精良电影",
+          "url": "https://www.youtube.com/playlist?list=PL_YoTN8gmON5cu-SN8YkGjvmELqMSaz6W",
+          "text": "scp 介绍\n画面精良电影"
+        },
+        {
+          "id": 172,
+          "name": "哆啦A梦怪谈\n合集",
+          "url": "https://space.bilibili.com/446375727/lists?sid=4251950",
+          "text": "哆啦A梦怪谈\n合集"
+        },
+        {
+          "id": 218,
+          "name": "知乎文章",
+          "url": "https://www.zhihu.com/people/askua2004-33/answers/by_votes",
+          "text": "知乎文章"
+        },
+        {
+          "id": 219,
+          "name": "scp介绍\n3-10min",
+          "url": "https://www.youtube.com/@ting4877/videos",
+          "text": "scp介绍\n3-10min"
+        },
+        {
+          "id": 392,
+          "name": "scp 官网\n最popular的文章",
+          "url": "https://scp-wiki-cn.wikidot.com/top-rated-pages",
+          "text": "scp 官网\n最popular的文章"
+        }
+      ]
+    },
+    {
+      "id": "专注音乐-视频当背景版",
+      "name": "专注音乐/视频当背景版",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [
+        {
+          "id": 63,
+          "name": "高质量写实动漫",
+          "url": "https://space.bilibili.com/25971006",
+          "text": "高质量写实动漫"
+        },
+        {
+          "id": 193,
+          "name": "贪婪你的存在",
+          "url": "https://space.bilibili.com/3461581568477680",
+          "text": "贪婪你的存在"
+        },
+        {
+          "id": 194,
+          "name": "宫崎骏 音乐",
+          "url": "https://space.bilibili.com/3493140602292760",
+          "text": "宫崎骏 音乐"
+        },
+        {
+          "id": 397,
+          "name": "燕云十六声 场景音乐\n白噪音",
+          "url": "https://www.bilibili.com/video/BV1c1QVY3EFN/?vd_source=15173c99aced81f348af55708bc963e3",
+          "text": "燕云十六声 场景音乐\n白噪音"
+        },
+        {
+          "id": 400,
+          "name": "燕云十六声 场景音乐\n白噪音",
+          "url": "https://space.bilibili.com/1306128/upload/video",
+          "text": "燕云十六声 场景音乐\n白噪音"
+        },
+        {
+          "id": 401,
+          "name": "国风",
+          "url": "https://space.bilibili.com/446910/upload/video",
+          "text": "国风"
+        },
+        {
+          "id": 402,
+          "name": "场景白噪音",
+          "url": "https://www.youtube.com/@AmbientRenders/videos",
+          "text": "场景白噪音"
+        }
+      ],
+      "subcategories": [
+        {
+          "id": "专注音乐-视频当背景版-挂机",
+          "name": "挂机",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 398,
+              "name": "哈粉宾馆",
+              "url": "https://hf.bobba.cn/h5",
+              "text": "哈粉宾馆"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "专注音乐-视频当背景版-挂机-渲染",
+              "name": "渲染",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 399,
+                  "name": "3d渲染大赛",
+                  "url": "https://www.youtube.com/@pwnisher/videos",
+                  "text": "3d渲染大赛"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "专注音乐-视频当背景版-画质",
+          "name": "画质",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 42,
+              "name": "4k 自然风景",
+              "url": "https://www.youtube.com/@RelaxationFilm",
+              "text": "4k 自然风景"
+            },
+            {
+              "id": 44,
+              "name": "4k 城市",
+              "url": "https://www.youtube.com/@4kfilmsbyadnan/videos",
+              "text": "4k 城市"
+            },
+            {
+              "id": 91,
+              "name": "vlog\n女生 电影感",
+              "url": "https://www.youtube.com/@LifeOfRiza/videos",
+              "text": "vlog\n女生 电影感"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "体育赛事",
+      "name": "体育赛事",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [
+        {
+          "id": 39,
+          "name": "桌上足球",
+          "url": "https://www.youtube.com/@modernfoos/videos",
+          "text": "桌上足球"
+        },
+        {
+          "id": 306,
+          "name": "世界追逐赛\n15min",
+          "url": "https://www.youtube.com/@WorldChaseTag/videos",
+          "text": "世界追逐赛\n15min"
+        }
+      ],
+      "subcategories": [
+        {
+          "id": "体育赛事-射击",
+          "name": "射击",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 324,
+              "name": "Silo 仿真\n精良制作 狙神",
+              "url": "https://www.youtube.com/@SiloEntertainment/videos",
+              "text": "Silo 仿真\n精良制作 狙神"
+            },
+            {
+              "id": 325,
+              "name": "MOS Airsoft\n室内",
+              "url": "https://www.youtube.com/@mosairsoftofficial/videos",
+              "text": "MOS Airsoft\n室内"
+            }
+          ]
+        },
+        {
+          "id": "体育赛事-格斗",
+          "name": "格斗",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 307,
+              "name": "炮叔读拳",
+              "url": "https://www.youtube.com/@Cannon-50s/videos",
+              "text": "炮叔读拳"
+            },
+            {
+              "id": 310,
+              "name": "GROMDA格鲁姆达\n裸拳",
+              "url": "https://space.bilibili.com/1125242358/lists/4417950?type=season",
+              "text": "GROMDA格鲁姆达\n裸拳"
+            },
+            {
+              "id": 311,
+              "name": "硬核格斗\n地下黑拳",
+              "url": "https://space.bilibili.com/1125242358/lists/5153767?type=season",
+              "text": "硬核格斗\n地下黑拳"
+            },
+            {
+              "id": 312,
+              "name": "街头业余格斗",
+              "url": "https://www.bilibili.com/video/BV1md4y1J7cW/?vd_source=15173c99aced81f348af55708bc963e3",
+              "text": "街头业余格斗"
+            },
+            {
+              "id": 313,
+              "name": "韩国夜叉格斗\n在不同场地",
+              "url": "https://space.bilibili.com/1125242358/lists/1377095?type=season",
+              "text": "韩国夜叉格斗\n在不同场地"
+            },
+            {
+              "id": 314,
+              "name": "街头纯业余对战",
+              "url": "https://www.youtube.com/@KarenGoBrrr1/videos",
+              "text": "街头纯业余对战"
+            },
+            {
+              "id": 315,
+              "name": "GLORY Kickboxing\n官方",
+              "url": "https://www.youtube.com/@glory/videos",
+              "text": "GLORY Kickboxing\n官方"
+            },
+            {
+              "id": 319,
+              "name": "Ultimate MMA\n官方 7min",
+              "url": "https://www.youtube.com/@UltimateMMA/videos",
+              "text": "Ultimate MMA\n官方 7min"
+            }
+          ]
+        },
+        {
+          "id": "体育赛事-足球",
+          "name": "足球",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 305,
+              "name": "梅西 解说\n4k 30min",
+              "url": "https://www.youtube.com/@dancomps2631/videos",
+              "text": "梅西 解说\n4k 30min"
+            },
+            {
+              "id": 316,
+              "name": "世锦赛类\n中文解说",
+              "url": "https://space.bilibili.com/1665228366/lists/2941973?type=series",
+              "text": "世锦赛类\n中文解说"
+            },
+            {
+              "id": 318,
+              "name": "阿联酋官方\n8min",
+              "url": "https://www.youtube.com/@thefacup/videos",
+              "text": "阿联酋官方\n8min"
+            },
+            {
+              "id": 320,
+              "name": "OUMLILTV\n最新比赛!!! 20mins",
+              "url": "https://www.youtube.com/@OUMLILTVHD/videos",
+              "text": "OUMLILTV\n最新比赛!!! 20mins"
+            },
+            {
+              "id": 321,
+              "name": "比赛\n剪辑了",
+              "url": "https://www.youtube.com/@JF-HD/videos",
+              "text": "比赛\n剪辑了"
+            },
+            {
+              "id": 322,
+              "name": "经典10场",
+              "url": "https://www.youtube.com/watch?v=3KLl8xC1o3w&list=PLQ_voP4Q3cfcfhAGFPfbOex8dt8WwBshy&index=1",
+              "text": "经典10场"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "信息源",
+      "name": "信息源",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [
+        {
+          "id": 89,
+          "name": "Youtube精选\n短, 1min - 20min",
+          "url": "https://space.bilibili.com/487511093",
+          "text": "Youtube精选\n短, 1min - 20min"
+        },
+        {
+          "id": 90,
+          "name": "Youtube精选\n长, 1hr",
+          "url": "https://space.bilibili.com/1457219856",
+          "text": "Youtube精选\n长, 1hr"
+        },
+        {
+          "id": 92,
+          "name": "15min 优质\n外国信息源",
+          "url": "https://space.bilibili.com/256724889",
+          "text": "15min 优质\n外国信息源"
+        },
+        {
+          "id": 93,
+          "name": "ins todo!!",
+          "url": "https://www.instagram.com/alexlin496/saved/todo/18041582176536495/",
+          "text": "ins todo!!"
+        },
+        {
+          "id": 94,
+          "name": "杂\n黑纹白斑马\n赛博普罗米修斯",
+          "url": "https://space.bilibili.com/1263732318",
+          "text": "杂\n黑纹白斑马\n赛博普罗米修斯"
+        },
+        {
+          "id": 107,
+          "name": "实用 重要\n自我提升",
+          "url": "https://space.bilibili.com/230983435",
+          "text": "实用 重要\n自我提升"
+        }
+      ],
+      "subcategories": [
+        {
+          "id": "信息源-画质",
+          "name": "画质",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 132,
+              "name": "影视飓风 2",
+              "url": "https://www.youtube.com/@mediastorm6801/videos",
+              "text": "影视飓风 2"
+            }
+          ]
         }
       ]
     },
@@ -100,23 +508,1117 @@
       "maxItems": 50,
       "items": [
         {
-          "id": 2,
-          "name": "饱饱追剧 短剧整合",
+          "id": 1,
+          "name": "饱饱追剧\n短剧整合",
           "url": "https://www.youtube.com/@HMBB8888/videos",
           "text": "饱饱追剧\n短剧整合"
+        },
+        {
+          "id": 222,
+          "name": "基和皮尔\n15min",
+          "url": "https://www.youtube.com/@KeyAndPeele/videos",
+          "text": "基和皮尔\n15min"
+        },
+        {
+          "id": 385,
+          "name": "AlanBecker\n火柴人",
+          "url": "https://space.bilibili.com/519253600",
+          "text": "AlanBecker\n火柴人"
         }
       ],
       "subcategories": [
+        {
+          "id": "影视-san",
+          "name": "san",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 143,
+              "name": "血肉画风",
+              "url": "https://jaime-r.newgrounds.com/",
+              "text": "血肉画风"
+            },
+            {
+              "id": 144,
+              "name": "Frame Order 中文",
+              "url": "https://space.bilibili.com/3546923095034253",
+              "text": "Frame Order 中文"
+            },
+            {
+              "id": 145,
+              "name": "Frame Order\n官方",
+              "url": "https://www.youtube.com/@frameorder/videos",
+              "text": "Frame Order\n官方"
+            }
+          ]
+        },
+        {
+          "id": "影视-定格动画",
+          "name": "定格动画",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 146,
+              "name": "装修 建造",
+              "url": "https://www.instagram.com/vfuho_",
+              "text": "装修 建造"
+            },
+            {
+              "id": 152,
+              "name": "乐高 现代战争",
+              "url": "https://www.youtube.com/@LCMhistory/videos",
+              "text": "乐高 现代战争"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "影视-定格动画-机器鸡",
+              "name": "机器鸡",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 33,
+                  "name": "各类合订本",
+                  "url": "https://www.youtube.com/@bobafett22005/videos",
+                  "text": "各类合订本"
+                },
+                {
+                  "id": 78,
+                  "name": "最全合集",
+                  "url": "https://space.bilibili.com/263190927/upload/video",
+                  "text": "最全合集"
+                },
+                {
+                  "id": 79,
+                  "name": "ins 个人",
+                  "url": "https://www.instagram.com/robotchicken/",
+                  "text": "ins 个人"
+                },
+                {
+                  "id": 80,
+                  "name": "合集 短",
+                  "url": "https://space.bilibili.com/483759141",
+                  "text": "合集 短"
+                }
+              ]
+            }
+          ]
+        },
         {
           "id": "影视-恐怖猎奇",
           "name": "恐怖猎奇",
           "maxItems": 50,
           "items": [
             {
-              "id": 20,
-              "name": "黑白漫画解说",
-              "url": "https://www.youtube.com/@tree2793/videos",
-              "text": "黑白漫画解说"
+              "id": 41,
+              "name": "掉san画风 二次元",
+              "url": "https://www.youtube.com/@DungeonSoup",
+              "text": "掉san画风 二次元"
+            }
+          ]
+        },
+        {
+          "id": "影视-战锤",
+          "name": "战锤",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 370,
+              "name": "文档百科 所有",
+              "url": "https://space.bilibili.com/243701962/upload/opus",
+              "text": "文档百科 所有"
+            },
+            {
+              "id": 371,
+              "name": "文档百科",
+              "url": "https://www.bilibili.com/read/readlist/rl315062",
+              "text": "文档百科"
+            },
+            {
+              "id": 389,
+              "name": "达奇上校",
+              "url": "https://www.youtube.com/@DaQiShangXiao/videos",
+              "text": "达奇上校"
+            }
+          ]
+        },
+        {
+          "id": "影视-抽象",
+          "name": "抽象",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 142,
+              "name": "goat on a stick",
+              "url": "https://www.youtube.com/@Goat-on-a-Stick/videos",
+              "text": "goat on a stick"
+            }
+          ]
+        },
+        {
+          "id": "影视-格斗",
+          "name": "格斗",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 215,
+              "name": "神奇的老皮 武打片\n特效赞 要素多",
+              "url": "https://space.bilibili.com/3380239/upload/video",
+              "text": "神奇的老皮 武打片\n特效赞 要素多"
+            },
+            {
+              "id": 216,
+              "name": "手绘格斗\n漫威类",
+              "url": "https://www.youtube.com/@zimautanimation/videos",
+              "text": "手绘格斗\n漫威类"
+            },
+            {
+              "id": 217,
+              "name": "可爱火柴人画风",
+              "url": "https://www.youtube.com/@FabianoCruzAnimations/videos",
+              "text": "可爱火柴人画风"
+            },
+            {
+              "id": 220,
+              "name": "纤细火柴人",
+              "url": "https://www.youtube.com/@Lento2138/videos",
+              "text": "纤细火柴人"
+            },
+            {
+              "id": 308,
+              "name": "电影武大解说\n8min",
+              "url": "https://space.bilibili.com/222074908",
+              "text": "电影武大解说\n8min"
+            },
+            {
+              "id": 309,
+              "name": "影视逐帧分析",
+              "url": "https://space.bilibili.com/3461568046041659/upload/video",
+              "text": "影视逐帧分析"
+            },
+            {
+              "id": 369,
+              "name": "half sword\n牛",
+              "url": "https://www.youtube.com/@LFD-gorecreator/videos",
+              "text": "half sword\n牛"
+            },
+            {
+              "id": 387,
+              "name": "Dojo\n制作高质量",
+              "url": "https://www.youtube.com/@hyunsdojo/videos",
+              "text": "Dojo\n制作高质量"
+            }
+          ]
+        },
+        {
+          "id": "影视-电影",
+          "name": "电影",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 66,
+              "name": "《艾爾登法環》電影版",
+              "url": "https://www.youtube.com/watch?v=OinC_Mrn5Rc",
+              "text": "《艾爾登法環》電影版"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "影视-电影-原片",
+              "name": "原片",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 150,
+                  "name": "东方不战 自制!\n丧尸/怪谈",
+                  "url": "https://space.bilibili.com/328726691",
+                  "text": "东方不战 自制!\n丧尸/怪谈"
+                }
+              ]
+            },
+            {
+              "id": "影视-电影-原片+解析",
+              "name": "原片+解析",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 153,
+                  "name": "经典电影(都好看!)\n右边有详细分类",
+                  "url": "https://www.bilibili.com/video/BV1dT2FB6Eha/?vd_source=15173c99aced81f348af55708bc963e3",
+                  "text": "经典电影(都好看!)\n右边有详细分类"
+                },
+                {
+                  "id": 340,
+                  "name": "木鱼水心!!!!\n最完美!",
+                  "url": "https://space.bilibili.com/927587/upload/video",
+                  "text": "木鱼水心!!!!\n最完美!"
+                },
+                {
+                  "id": 341,
+                  "name": "觉醒年代\n木鱼水心下架版",
+                  "url": "https://www.bilibili.com/video/BV1jz4y1F7TE?vd_source=15173c99aced81f348af55708bc963e3&p=2",
+                  "text": "觉醒年代\n木鱼水心下架版"
+                },
+                {
+                  "id": 343,
+                  "name": "郭云神奇\n深刻",
+                  "url": "https://space.bilibili.com/37781521/upload/video",
+                  "text": "郭云神奇\n深刻"
+                }
+              ]
+            },
+            {
+              "id": "影视-电影-解说",
+              "name": "解说",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 151,
+                  "name": "惊悚哥的粉丝窝\n15min 悬疑惊悚",
+                  "url": "https://www.youtube.com/@JSG009/videos",
+                  "text": "惊悚哥的粉丝窝\n15min 悬疑惊悚"
+                },
+                {
+                  "id": 156,
+                  "name": "万字拆解 详细解说",
+                  "url": "https://space.bilibili.com/942755/lists/210614?type=season",
+                  "text": "万字拆解 详细解说"
+                },
+                {
+                  "id": 213,
+                  "name": "宇哥侃故事\n15min 杂",
+                  "url": "https://www.youtube.com/@yuge/videos",
+                  "text": "宇哥侃故事\n15min 杂"
+                },
+                {
+                  "id": 348,
+                  "name": "影评人毛尖\n7min",
+                  "url": "https://space.bilibili.com/3546393683691534/upload/video",
+                  "text": "影评人毛尖\n7min"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "影视-画质",
+          "name": "画质",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 43,
+              "name": "8k 城市",
+              "url": "https://www.youtube.com/@8KWorld/videos",
+              "text": "8k 城市"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "影视-画质-战锤-/-其他游戏动画",
+              "name": "战锤 / 其他游戏动画",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 40,
+                  "name": "4k 剧情",
+                  "url": "https://www.youtube.com/@4K%E6%9E%81%E9%99%90%E7%94%BB%E8%B4%A8/videos",
+                  "text": "4k 剧情"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "影视-直播",
+          "name": "直播",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 366,
+              "name": "瑞克和莫蒂",
+              "url": "https://live.bilibili.com/31781125?broadcast_type=0&is_room_feed=1&live_from=86002",
+              "text": "瑞克和莫蒂"
+            }
+          ]
+        },
+        {
+          "id": "影视-短视频",
+          "name": "短视频",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 149,
+              "name": "MythicalWater",
+              "url": "https://www.youtube.com/@MythicalWater/videos",
+              "text": "MythicalWater"
+            },
+            {
+              "id": 154,
+              "name": "怪兽怪物\n剪切",
+              "url": "https://space.bilibili.com/473637293/lists/25719?type=season",
+              "text": "怪兽怪物\n剪切"
+            },
+            {
+              "id": 155,
+              "name": "科幻机甲\n剪切",
+              "url": "https://space.bilibili.com/473637293/lists/156015?type=season",
+              "text": "科幻机甲\n剪切"
+            },
+            {
+              "id": 214,
+              "name": "有声小说\n无限流 假如系列",
+              "url": "https://space.bilibili.com/1674399649/lists/486483?type=season",
+              "text": "有声小说\n无限流 假如系列"
+            },
+            {
+              "id": 227,
+              "name": "经典翻拍\n好看小姐姐",
+              "url": "https://space.bilibili.com/499391331/upload/video",
+              "text": "经典翻拍\n好看小姐姐"
+            },
+            {
+              "id": 245,
+              "name": "cg 特效",
+              "url": "https://www.youtube.com/@SoKrispyMedia/videos",
+              "text": "cg 特效"
+            },
+            {
+              "id": 329,
+              "name": "特效",
+              "url": "https://space.bilibili.com/3066511/upload/video",
+              "text": "特效"
+            },
+            {
+              "id": 391,
+              "name": "非人哉动画",
+              "url": "https://space.bilibili.com/32741563/lists/9302?type=season",
+              "text": "非人哉动画"
+            }
+          ]
+        },
+        {
+          "id": "影视-美漫",
+          "name": "美漫",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 147,
+              "name": "恶搞之家\n龙三条",
+              "url": "https://space.bilibili.com/5024187",
+              "text": "恶搞之家\n龙三条"
+            },
+            {
+              "id": 148,
+              "name": "恶搞之家\n派豆龍",
+              "url": "https://space.bilibili.com/6511839",
+              "text": "恶搞之家\n派豆龍"
+            },
+            {
+              "id": 367,
+              "name": "瑞克和莫蒂\n30min",
+              "url": "https://space.bilibili.com/403048415",
+              "text": "瑞克和莫蒂\n30min"
+            }
+          ]
+        },
+        {
+          "id": "影视-自制",
+          "name": "自制",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 221,
+              "name": "导演小策\n15min",
+              "url": "https://space.bilibili.com/81824112",
+              "text": "导演小策\n15min"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "影视-自制-mc",
+              "name": "mc",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 383,
+                  "name": "罗总啊_a",
+                  "url": "https://space.bilibili.com/2123399911/upload/video",
+                  "text": "罗总啊_a"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "影视-长剧情游戏",
+          "name": "长剧情游戏",
+          "maxItems": 50,
+          "items": [],
+          "subclasses": [
+            {
+              "id": "影视-长剧情游戏-感人",
+              "name": "感人",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 61,
+                  "name": "去月球 to the moon",
+                  "url": "https://www.bilibili.com/video/BV1kx411E7b8/?vd_source=15173c99aced81f348af55708bc963e3",
+                  "text": "去月球 to the moon"
+                },
+                {
+                  "id": 69,
+                  "name": "《Finding Paradise》寻找天堂",
+                  "url": "https://www.bilibili.com/video/BV14s411N7hx/?vd_source=15173c99aced81f348af55708bc963e3",
+                  "text": "《Finding Paradise》寻找天堂"
+                },
+                {
+                  "id": 70,
+                  "name": "《影子工厂》《Impostor Factory》",
+                  "url": "https://www.bilibili.com/video/BV1xT4y1f7zz/?vd_source=15173c99aced81f348af55708bc963e3",
+                  "text": "《影子工厂》《Impostor Factory》"
+                }
+              ]
+            },
+            {
+              "id": "影视-长剧情游戏-文艺",
+              "name": "文艺",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 212,
+                  "name": "极乐迪斯科",
+                  "url": "https://www.youtube.com/playlist?list=PLk-60n42fPJ2s6YXTSjrdbGkUaDkwsAQz",
+                  "text": "极乐迪斯科"
+                }
+              ]
+            },
+            {
+              "id": "影视-长剧情游戏-画质",
+              "name": "画质",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 259,
+                  "name": "燕云十六声",
+                  "url": "https://www.youtube.com/playlist?list=PLgH3pEzY-BDgEUrwyG51ZJm4X6hKAmcsc",
+                  "text": "燕云十六声"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "悠闲轻松",
+      "name": "悠闲轻松",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [
+        {
+          "id": 126,
+          "name": "Drew Dirksen",
+          "url": "https://www.youtube.com/DrewDirksen/videos",
+          "text": "Drew Dirksen"
+        },
+        {
+          "id": 131,
+          "name": "人工智能虚拟主播\n牛肉大人",
+          "url": "https://www.youtube.com/@Neurosama/videos",
+          "text": "人工智能虚拟主播\n牛肉大人"
+        },
+        {
+          "id": 133,
+          "name": "牛肉大人\n搬运/切片",
+          "url": "https://space.bilibili.com/3546729368520811",
+          "text": "牛肉大人\n搬运/切片"
+        },
+        {
+          "id": 138,
+          "name": "李如儒也是李蠕蠕",
+          "url": "https://space.bilibili.com/474853499/upload/video",
+          "text": "李如儒也是李蠕蠕"
+        },
+        {
+          "id": 228,
+          "name": "娱乐圈\n有趣",
+          "url": "https://www.youtube.com/@%E9%96%92%E5%A8%9B%E8%A8%98/videos",
+          "text": "娱乐圈\n有趣"
+        },
+        {
+          "id": 246,
+          "name": "电影特效解说",
+          "url": "https://www.youtube.com/@FameFocus/videos",
+          "text": "电影特效解说"
+        },
+        {
+          "id": 247,
+          "name": "生态箱 大箱子\n专业",
+          "url": "https://www.youtube.com/@SerpaDesign/videos",
+          "text": "生态箱 大箱子\n专业"
+        },
+        {
+          "id": 248,
+          "name": "生态箱\n蚂蚁 专业",
+          "url": "https://www.youtube.com/@AntsCanada/videos",
+          "text": "生态箱\n蚂蚁 专业"
+        },
+        {
+          "id": 277,
+          "name": "王左导演\n城市摄影 5min",
+          "url": "https://space.bilibili.com/492303353/upload/video",
+          "text": "王左导演\n城市摄影 5min"
+        },
+        {
+          "id": 280,
+          "name": "电器维修\n实例",
+          "url": "https://space.bilibili.com/488034462/upload/video",
+          "text": "电器维修\n实例"
+        },
+        {
+          "id": 333,
+          "name": "FactoFusion\n魔术揭秘 15-20min",
+          "url": "https://www.youtube.com/@FactoFusion/videos",
+          "text": "FactoFusion\n魔术揭秘 15-20min"
+        },
+        {
+          "id": 336,
+          "name": "Magician's Got Talent\n原版",
+          "url": "https://www.youtube.com/@MagiciansGotTalent/videos",
+          "text": "Magician's Got Talent\n原版"
+        },
+        {
+          "id": 368,
+          "name": "牧羊的瓦格纳\n脑洞科普+绘画",
+          "url": "https://space.bilibili.com/434773406",
+          "text": "牧羊的瓦格纳\n脑洞科普+绘画"
+        },
+        {
+          "id": 381,
+          "name": "视觉特效\n有趣渲染",
+          "url": "https://www.youtube.com/@CorridorCrew/videos",
+          "text": "视觉特效\n有趣渲染"
+        }
+      ],
+      "subcategories": [
+        {
+          "id": "悠闲轻松-ai",
+          "name": "AI",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 253,
+              "name": "山海经\n神话纪录片",
+              "url": "https://space.bilibili.com/524359386/lists/3689471?type=season",
+              "text": "山海经\n神话纪录片"
+            },
+            {
+              "id": 257,
+              "name": "格斗厮杀",
+              "url": "https://www.youtube.com/@npcragdolls/videos",
+              "text": "格斗厮杀"
+            },
+            {
+              "id": 258,
+              "name": "b2studios\n3d",
+              "url": "https://www.youtube.com/@b2stud/videos",
+              "text": "b2studios\n3d"
+            },
+            {
+              "id": 271,
+              "name": "创世纪\n模拟",
+              "url": "https://space.bilibili.com/34409595/lists/1415378?type=season",
+              "text": "创世纪\n模拟"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "悠闲轻松-ai-训练",
+              "name": "训练",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 36,
+                  "name": "Pezzza's Work\n物理模拟类",
+                  "url": "https://www.youtube.com/@PezzzasWork/videos",
+                  "text": "Pezzza's Work\n物理模拟类"
+                },
+                {
+                  "id": 255,
+                  "name": "Primer\n可爱史莱姆",
+                  "url": "https://www.youtube.com/@PrimerBlobs/videos",
+                  "text": "Primer\n可爱史莱姆"
+                },
+                {
+                  "id": 256,
+                  "name": "AI Warehouse\n橘色方块",
+                  "url": "https://www.youtube.com/@aiwarehousehttps://www.youtube.com/@aiwarehouse/videos",
+                  "text": "AI Warehouse\n橘色方块"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "悠闲轻松-厨艺",
+          "name": "厨艺",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 75,
+              "name": "米其林\n厨艺知识",
+              "url": "https://www.youtube.com/@CadenceGao/videos",
+              "text": "米其林\n厨艺知识"
+            },
+            {
+              "id": 196,
+              "name": "Tiger 烹饪科学\n10min左右",
+              "url": "https://space.bilibili.com/12383027",
+              "text": "Tiger 烹饪科学\n10min左右"
+            }
+          ]
+        },
+        {
+          "id": "悠闲轻松-吃播",
+          "name": "吃播",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 74,
+              "name": "牛排🥩",
+              "url": "https://www.youtube.com/@Alex%E7%BE%8E%E9%A3%9F%E5%AE%B6/videos",
+              "text": "牛排🥩"
+            }
+          ]
+        },
+        {
+          "id": "悠闲轻松-微恐",
+          "name": "微恐",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 238,
+              "name": "三更研究所!",
+              "url": "https://www.youtube.com/@LiLMoengen/videos",
+              "text": "三更研究所!"
+            },
+            {
+              "id": 239,
+              "name": "海龟汤 11个",
+              "url": "https://space.bilibili.com/216025/lists/2011685?type=season",
+              "text": "海龟汤 11个"
+            },
+            {
+              "id": 240,
+              "name": "许二木 海龟汤\ns1 s2 s3 全收录",
+              "url": "https://www.bilibili.com/video/BV1dPxazcEZD/?vd_source=15173c99aced81f348af55708bc963e3",
+              "text": "许二木 海龟汤\ns1 s2 s3 全收录"
+            },
+            {
+              "id": 276,
+              "name": "案件解说\n详细",
+              "url": "https://space.bilibili.com/297670584",
+              "text": "案件解说\n详细"
+            },
+            {
+              "id": 326,
+              "name": "脑洞乌托邦",
+              "url": "https://www.youtube.com/@NDWTB/videos",
+              "text": "脑洞乌托邦"
+            }
+          ]
+        },
+        {
+          "id": "悠闲轻松-抽象",
+          "name": "抽象",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 76,
+              "name": "小芃路子野\n3d 格斗 孙悟空",
+              "url": "https://space.bilibili.com/57214324",
+              "text": "小芃路子野\n3d 格斗 孙悟空"
+            },
+            {
+              "id": 82,
+              "name": "三十六贱笑\n热梗",
+              "url": "https://space.bilibili.com/90361813/upload/video",
+              "text": "三十六贱笑\n热梗"
+            },
+            {
+              "id": 84,
+              "name": "逗比的雀巢",
+              "url": "https://space.bilibili.com/5294454",
+              "text": "逗比的雀巢"
+            },
+            {
+              "id": 252,
+              "name": "演讲",
+              "url": "https://space.bilibili.com/481393564/upload/video",
+              "text": "演讲"
+            },
+            {
+              "id": 254,
+              "name": "图灵的猫\nai 整活",
+              "url": "https://space.bilibili.com/371846699/upload/video",
+              "text": "图灵的猫\nai 整活"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "悠闲轻松-抽象-mc",
+              "name": "mc",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 388,
+                  "name": "敲萌豹风党",
+                  "url": "https://space.bilibili.com/20669779/upload/video",
+                  "text": "敲萌豹风党"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "悠闲轻松-推理",
+          "name": "推理",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 274,
+              "name": "变种象棋\n5min",
+              "url": "https://www.bilibili.com/video/BV1tY411G7Ur?vd_source=15173c99aced81f348af55708bc963e3",
+              "text": "变种象棋\n5min"
+            },
+            {
+              "id": 331,
+              "name": "GM的秘密基地",
+              "url": "https://space.bilibili.com/73415355/upload/video",
+              "text": "GM的秘密基地"
+            }
+          ]
+        },
+        {
+          "id": "悠闲轻松-文艺",
+          "name": "文艺",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 363,
+              "name": "李火元的赵",
+              "url": "https://www.douyin.com/user/MS4wLjABAAAADqXqrpSjGuLvaEB_ardmwN3NHO7QuFXu_Rj2sDoz7E0",
+              "text": "李火元的赵"
+            },
+            {
+              "id": 390,
+              "name": "冷少段子哥",
+              "url": "https://space.bilibili.com/484259104/upload/video",
+              "text": "冷少段子哥"
+            }
+          ]
+        },
+        {
+          "id": "悠闲轻松-欢乐",
+          "name": "欢乐",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 136,
+              "name": "搞笑玩游戏\n5-10min",
+              "url": "https://space.bilibili.com/3546376524794441",
+              "text": "搞笑玩游戏\n5-10min"
+            },
+            {
+              "id": 241,
+              "name": "鬼屋",
+              "url": "https://www.youtube.com/@spookshow17/videos",
+              "text": "鬼屋"
+            },
+            {
+              "id": 242,
+              "name": "全国青少年中式\n台球挑战赛",
+              "url": "https://www.bilibili.com/video/BV1GEd6YEELt/?vd_source=15173c99aced81f348af55708bc963e3",
+              "text": "全国青少年中式\n台球挑战赛"
+            },
+            {
+              "id": 244,
+              "name": "Stokes Twins",
+              "url": "https://www.youtube.com/@StokesTwins/videos",
+              "text": "Stokes Twins"
+            },
+            {
+              "id": 268,
+              "name": "咸鱼超闲余\n造桥 杂",
+              "url": "https://space.bilibili.com/25334643/upload/video",
+              "text": "咸鱼超闲余\n造桥 杂"
+            },
+            {
+              "id": 282,
+              "name": "Family Feud+黑人主持人\n家庭问答综艺",
+              "url": "https://www.youtube.com/@familyfeud/videos",
+              "text": "Family Feud+黑人主持人\n家庭问答综艺"
+            }
+          ]
+        },
+        {
+          "id": "悠闲轻松-测评",
+          "name": "测评",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 6,
+              "name": "大狸子切切里\n科技测评",
+              "url": "https://www.youtube.com/@cherry_official/videos",
+              "text": "大狸子切切里\n科技测评"
+            },
+            {
+              "id": 38,
+              "name": "小宁子\n科技设备 + 游戏",
+              "url": "https://www.youtube.com/@xnzxnz/videos",
+              "text": "小宁子\n科技设备 + 游戏"
+            },
+            {
+              "id": 344,
+              "name": "科技产品测评",
+              "url": "https://space.bilibili.com/471303350/upload/video",
+              "text": "科技产品测评"
+            }
+          ]
+        },
+        {
+          "id": "悠闲轻松-电子榨菜",
+          "name": "电子榨菜",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 128,
+              "name": "没啥用科技",
+              "url": "https://space.bilibili.com/174902557/upload/video",
+              "text": "没啥用科技"
+            },
+            {
+              "id": 129,
+              "name": "修牛蹄",
+              "url": "https://www.youtube.com/@NatetheHoofGuy/videos",
+              "text": "修牛蹄"
+            },
+            {
+              "id": 130,
+              "name": "修牛蹄2",
+              "url": "https://www.youtube.com/@TheHoofGP/videos",
+              "text": "修牛蹄2"
+            },
+            {
+              "id": 135,
+              "name": "定格动画 食物",
+              "url": "https://www.youtube.com/@ilikehome/videos",
+              "text": "定格动画 食物"
+            },
+            {
+              "id": 278,
+              "name": "荒野求生类\n大合集",
+              "url": "https://www.youtube.com/@huangyejieshuo/videos",
+              "text": "荒野求生类\n大合集"
+            },
+            {
+              "id": 386,
+              "name": "火柴人闯关",
+              "url": "https://www.youtube.com/@anredanimations3119/videos",
+              "text": "火柴人闯关"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "悠闲轻松-电子榨菜-乐高大赛",
+              "name": "乐高大赛",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 334,
+                  "name": "乐高大赛\n澳版 熟肉",
+                  "url": "https://www.bilibili.com/video/BV16v411K7o7/?vd_source=15173c99aced81f348af55708bc963e3",
+                  "text": "乐高大赛\n澳版 熟肉"
+                },
+                {
+                  "id": 335,
+                  "name": "乐高大赛\n美版 第二季 熟肉",
+                  "url": "https://www.bilibili.com/video/BV1Ah411e7SN/?vd_source=15173c99aced81f348af55708bc963e3",
+                  "text": "乐高大赛\n美版 第二季 熟肉"
+                },
+                {
+                  "id": 337,
+                  "name": "乐高大赛 剪切10min\n美版 第四季",
+                  "url": "https://space.bilibili.com/1703217163/lists/2747368?type=season",
+                  "text": "乐高大赛 剪切10min\n美版 第四季"
+                },
+                {
+                  "id": 338,
+                  "name": "乐高大赛 剪切10min\n美版 第三季",
+                  "url": "https://space.bilibili.com/1703217163/lists/1095654?type=season",
+                  "text": "乐高大赛 剪切10min\n美版 第三季"
+                },
+                {
+                  "id": 339,
+                  "name": "乐高大赛 剪切10min\n美版 第一季",
+                  "url": "https://space.bilibili.com/1703217163/lists/349493?type=season",
+                  "text": "乐高大赛 剪切10min\n美版 第一季"
+                }
+              ]
+            },
+            {
+              "id": "悠闲轻松-电子榨菜-对战类",
+              "name": "对战类",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 249,
+                  "name": "小人 vs 僵尸\n人物是圆球",
+                  "url": "https://www.youtube.com/@MaxMarble/videos",
+                  "text": "小人 vs 僵尸\n人物是圆球"
+                },
+                {
+                  "id": 250,
+                  "name": "深黑色齿轮\n制作精致 火柴人战争",
+                  "url": "https://space.bilibili.com/617693524",
+                  "text": "深黑色齿轮\n制作精致 火柴人战争"
+                },
+                {
+                  "id": 251,
+                  "name": "Z-Arcade",
+                  "url": "https://space.bilibili.com/3546742681241635",
+                  "text": "Z-Arcade"
+                }
+              ]
+            },
+            {
+              "id": "悠闲轻松-电子榨菜-电子斗蛐蛐",
+              "name": "电子斗蛐蛐",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 191,
+                  "name": "肥格Fager\n魂类",
+                  "url": "https://space.bilibili.com/99827844/upload/video",
+                  "text": "肥格Fager\n魂类"
+                },
+                {
+                  "id": 263,
+                  "name": "泰拉瑞亚\n怪兽",
+                  "url": "https://space.bilibili.com/35462590/lists/619483?type=season",
+                  "text": "泰拉瑞亚\n怪兽"
+                },
+                {
+                  "id": 264,
+                  "name": "国王保卫战 兵种对战\n造梦西游",
+                  "url": "https://space.bilibili.com/3546692095838209/upload/video",
+                  "text": "国王保卫战 兵种对战\n造梦西游"
+                },
+                {
+                  "id": 265,
+                  "name": "艾尔登法环",
+                  "url": "https://www.youtube.com/@EldenRingFights/videos",
+                  "text": "艾尔登法环"
+                },
+                {
+                  "id": 281,
+                  "name": "艾尔登法环 2",
+                  "url": "https://www.youtube.com/@BjornTheBear/videos",
+                  "text": "艾尔登法环 2"
+                },
+                {
+                  "id": 292,
+                  "name": "tabs",
+                  "url": "https://www.youtube.com/@BATTLESEVERYDAY/videos",
+                  "text": "tabs"
+                },
+                {
+                  "id": 317,
+                  "name": "tabs 2",
+                  "url": "https://www.youtube.com/@tabseveryday/videos",
+                  "text": "tabs 2"
+                }
+              ]
+            },
+            {
+              "id": "悠闲轻松-电子榨菜-躲猫猫",
+              "name": "躲猫猫",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 64,
+                  "name": "躲猫猫 搬运切片",
+                  "url": "https://space.bilibili.com/1543323047/upload/video",
+                  "text": "躲猫猫 搬运切片"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "悠闲轻松-画质",
+          "name": "画质",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 85,
+              "name": "影视飓风",
+              "url": "https://www.youtube.com/@mediastorm6801/videos",
+              "text": "影视飓风"
+            },
+            {
+              "id": 275,
+              "name": "探索世界的\n摄影up",
+              "url": "https://www.youtube.com/@linksphotograph/videos",
+              "text": "探索世界的\n摄影up"
+            }
+          ]
+        },
+        {
+          "id": "悠闲轻松-米米米",
+          "name": "米米米",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 139,
+              "name": "欣小萌",
+              "url": "https://space.bilibili.com/8366990/upload/video",
+              "text": "欣小萌"
+            }
+          ]
+        },
+        {
+          "id": "悠闲轻松-综艺",
+          "name": "综艺",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 127,
+              "name": "综艺\n游戏进入现实",
+              "url": "https://space.bilibili.com/3546738879105651",
+              "text": "综艺\n游戏进入现实"
+            },
+            {
+              "id": 229,
+              "name": "外国人在中国\n有趣",
+              "url": "https://www.youtube.com/@Ychinamedia/videos",
+              "text": "外国人在中国\n有趣"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "悠闲轻松-综艺-mc",
+              "name": "mc",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 384,
+                  "name": "祝余_咕",
+                  "url": "https://space.bilibili.com/508402302/upload/video",
+                  "text": "祝余_咕"
+                }
+              ]
             }
           ]
         }
@@ -129,10 +1631,82 @@
       "maxItems": 50,
       "items": [
         {
-          "id": 5,
-          "name": "阿路的精神時光屋 40min一款",
+          "id": 4,
+          "name": "阿路的精神時光屋\n40min一款",
           "url": "https://www.youtube.com/@rusiru87time/videos",
           "text": "阿路的精神時光屋\n40min一款"
+        },
+        {
+          "id": 87,
+          "name": "阿姆西\n1hr左右",
+          "url": "https://www.youtube.com/@amuxi/videos",
+          "text": "阿姆西\n1hr左右"
+        },
+        {
+          "id": 169,
+          "name": "辣椒不辣斯基\n5min",
+          "url": "https://space.bilibili.com/509034027",
+          "text": "辣椒不辣斯基\n5min"
+        },
+        {
+          "id": 170,
+          "name": "舍长 精良!\n40min-1hr",
+          "url": "https://space.bilibili.com/70666/upload/video",
+          "text": "舍长 精良!\n40min-1hr"
+        },
+        {
+          "id": 205,
+          "name": "新游试玩 45min\n土豆兄弟实况+新东西",
+          "url": "https://space.bilibili.com/39846961/upload/video",
+          "text": "新游试玩 45min\n土豆兄弟实况+新东西"
+        },
+        {
+          "id": 209,
+          "name": "抽风Crazy\n搞笑抽象 40min",
+          "url": "https://space.bilibili.com/2728123/upload/video",
+          "text": "抽风Crazy\n搞笑抽象 40min"
+        },
+        {
+          "id": 210,
+          "name": "威尔森林\n肉鸽 新游戏排行 半年更",
+          "url": "https://space.bilibili.com/343691960",
+          "text": "威尔森林\n肉鸽 新游戏排行 半年更"
+        },
+        {
+          "id": 233,
+          "name": "苏安安 女生\n种田类",
+          "url": "https://space.bilibili.com/9463690",
+          "text": "苏安安 女生\n种田类"
+        },
+        {
+          "id": 289,
+          "name": "宝可梦\n5min",
+          "url": "https://space.bilibili.com/506603445/upload/video",
+          "text": "宝可梦\n5min"
+        },
+        {
+          "id": 290,
+          "name": "以撒 mod试玩\n45min",
+          "url": "https://space.bilibili.com/2671708/lists/3384444?type=season",
+          "text": "以撒 mod试玩\n45min"
+        },
+        {
+          "id": 291,
+          "name": "在下夜骑\n以撒 mod试玩",
+          "url": "https://space.bilibili.com/23463156/upload/video",
+          "text": "在下夜骑\n以撒 mod试玩"
+        },
+        {
+          "id": 293,
+          "name": "悟克拉\n以撒mod 最新 5min",
+          "url": "https://space.bilibili.com/421795065",
+          "text": "悟克拉\n以撒mod 最新 5min"
+        },
+        {
+          "id": 361,
+          "name": "vr Beardo Benjo",
+          "url": "https://www.youtube.com/@BeardoBenjo/videos",
+          "text": "vr Beardo Benjo"
         }
       ],
       "subcategories": [
@@ -142,10 +1716,47 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 10,
+              "id": 9,
               "name": "神戳戳的苏神",
               "url": "https://www.youtube.com/@shenchuochuo/videos",
               "text": "神戳戳的苏神"
+            },
+            {
+              "id": 287,
+              "name": "坏小孩角落",
+              "url": "https://www.youtube.com/@badboycorner/videos",
+              "text": "坏小孩角落"
+            }
+          ]
+        },
+        {
+          "id": "新游试玩-杂",
+          "name": "杂",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 120,
+              "name": "弗兰力\n30-40min",
+              "url": "https://space.bilibili.com/25151282/upload/video",
+              "text": "弗兰力\n30-40min"
+            },
+            {
+              "id": 123,
+              "name": "逆风笑\n30min",
+              "url": "https://space.bilibili.com/2019740/upload/video",
+              "text": "逆风笑\n30min"
+            },
+            {
+              "id": 208,
+              "name": "你的隔壁老盲\n40min-1hr",
+              "url": "https://space.bilibili.com/433523663/upload/video",
+              "text": "你的隔壁老盲\n40min-1hr"
+            },
+            {
+              "id": 211,
+              "name": "独立游戏蜥蜴君\n15min",
+              "url": "https://www.youtube.com/@%E7%8B%AC%E7%AB%8B%E6%B8%B8%E6%88%8F%E8%9C%A5%E8%9C%B4%E5%90%9B/videos",
+              "text": "独立游戏蜥蜴君\n15min"
             }
           ]
         }
@@ -156,24 +1767,114 @@
       "name": "有益",
       "icon": "📁",
       "maxItems": 50,
-      "items": [],
+      "items": [
+        {
+          "id": 100,
+          "name": "3b1b\nb站双语",
+          "url": "https://space.bilibili.com/88461692",
+          "text": "3b1b\nb站双语"
+        },
+        {
+          "id": 198,
+          "name": "实用 重要\n自我提升",
+          "url": "https://space.bilibili.com/230983435",
+          "text": "实用 重要\n自我提升"
+        },
+        {
+          "id": 230,
+          "name": "eric 长安万年",
+          "url": "https://www.youtube.com/@eric10000/videos",
+          "text": "eric 长安万年"
+        },
+        {
+          "id": 365,
+          "name": "正道的光\n德州扑克",
+          "url": "https://space.bilibili.com/3546886745098549",
+          "text": "正道的光\n德州扑克"
+        }
+      ],
       "subcategories": [
+        {
+          "id": "有益-ai",
+          "name": "AI",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 34,
+              "name": "资讯+ 教程",
+              "url": "https://www.youtube.com/@panscischool/videos",
+              "text": "资讯+ 教程"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "有益-ai-课程",
+              "name": "课程",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 35,
+                  "name": "李宏毅",
+                  "url": "https://www.youtube.com/@HungyiLeeNTU/videos",
+                  "text": "李宏毅"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "有益-厨艺",
+          "name": "厨艺",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 103,
+              "name": "Tiger 烹饪科学\n10min左右",
+              "url": "https://space.bilibili.com/12383027",
+              "text": "Tiger 烹饪科学\n10min左右"
+            },
+            {
+              "id": 195,
+              "name": "米其林\n厨艺知识",
+              "url": "https://www.youtube.com/@CadenceGao/videos",
+              "text": "米其林\n厨艺知识"
+            },
+            {
+              "id": 197,
+              "name": "杨光建厨师\n烹饪技巧",
+              "url": "https://space.bilibili.com/21950148",
+              "text": "杨光建厨师\n烹饪技巧"
+            }
+          ]
+        },
         {
           "id": "有益-国标",
           "name": "国标",
           "maxItems": 50,
           "items": [
             {
-              "id": 13,
+              "id": 12,
               "name": "中国国标搬运",
               "url": "https://www.youtube.com/@StarDanceShop/videos",
               "text": "中国国标搬运"
             },
             {
-              "id": 26,
-              "name": "拉丁 couple 创意多变basic",
+              "id": 25,
+              "name": "拉丁 couple\n创意多变basic",
               "url": "https://www.youtube.com/@DanceInsanity/videos",
-              "text": "拉丁 couple \n 创意多变basic"
+              "text": "拉丁 couple\n创意多变basic"
+            },
+            {
+              "id": 49,
+              "name": "中国国标搬运2",
+              "url": "https://www.youtube.com/@DanceTech-Learn-Review",
+              "text": "中国国标搬运2"
+            },
+            {
+              "id": 50,
+              "name": "Richard Booth\n比赛标准routine",
+              "url": "https://www.youtube.com/@rlboothco/videos",
+              "text": "Richard Booth\n比赛标准routine"
             }
           ],
           "subclasses": [
@@ -183,13 +1884,13 @@
               "maxItems": 50,
               "items": [
                 {
-                  "id": 18,
+                  "id": 17,
                   "name": "国标 欧洲老头",
                   "url": "https://www.youtube.com/@EgilsSmagris",
                   "text": "国标 欧洲老头"
                 },
                 {
-                  "id": 19,
+                  "id": 18,
                   "name": "国标 拉丁 专业赛事",
                   "url": "https://www.youtube.com/@DanceToday/videos",
                   "text": "国标 拉丁 专业赛事"
@@ -204,16 +1905,207 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 17,
-              "name": "手工老头",
-              "url": "https://www.youtube.com/@tested/videos",
-              "text": "手工老头"
-            },
-            {
-              "id": 21,
+              "id": 20,
               "name": "diy project + 实验",
               "url": "https://www.youtube.com/@TheKingofRandom/videos",
               "text": "diy project + 实验"
+            },
+            {
+              "id": 224,
+              "name": "手工耿",
+              "url": "https://space.bilibili.com/280793434/upload/video",
+              "text": "手工耿"
+            },
+            {
+              "id": 225,
+              "name": "电器维修\n实例",
+              "url": "https://space.bilibili.com/488034462/upload/video",
+              "text": "电器维修\n实例"
+            },
+            {
+              "id": 323,
+              "name": "MarkRober\n有趣",
+              "url": "https://www.youtube.com/@MarkRober/videos",
+              "text": "MarkRober\n有趣"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "有益-工科-机械",
+              "name": "机械",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 16,
+                  "name": "手工老头",
+                  "url": "https://www.youtube.com/@tested/videos",
+                  "text": "手工老头"
+                },
+                {
+                  "id": 60,
+                  "name": "乐高",
+                  "url": "https://www.youtube.com/@BrickTechnology/videos",
+                  "text": "乐高"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "有益-摄影",
+          "name": "摄影",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 234,
+              "name": "摄影技巧",
+              "url": "https://space.bilibili.com/475429757",
+              "text": "摄影技巧"
+            },
+            {
+              "id": 279,
+              "name": "蓝日西\n摄影点评",
+              "url": "https://www.youtube.com/@LanRiXi/videos",
+              "text": "蓝日西\n摄影点评"
+            },
+            {
+              "id": 332,
+              "name": "六斤libra\n摄影教学 福建",
+              "url": "https://space.bilibili.com/391242293",
+              "text": "六斤libra\n摄影教学 福建"
+            }
+          ]
+        },
+        {
+          "id": "有益-文科",
+          "name": "文科",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 102,
+              "name": "思维实验室",
+              "url": "https://space.bilibili.com/14583962",
+              "text": "思维实验室"
+            },
+            {
+              "id": 243,
+              "name": "外交会议解说",
+              "url": "https://space.bilibili.com/546189/upload/video",
+              "text": "外交会议解说"
+            },
+            {
+              "id": 346,
+              "name": "地球知识局\n人文+地理+设计",
+              "url": "https://space.bilibili.com/100785033/upload/video",
+              "text": "地球知识局\n人文+地理+设计"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "有益-文科-历史",
+              "name": "历史",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 189,
+                  "name": "战争类\n电影剪辑介绍",
+                  "url": "https://space.bilibili.com/17004561",
+                  "text": "战争类\n电影剪辑介绍"
+                },
+                {
+                  "id": 358,
+                  "name": "木鱼水心\n史记",
+                  "url": "https://space.bilibili.com/927587/lists/1827307?type=season",
+                  "text": "木鱼水心\n史记"
+                }
+              ]
+            },
+            {
+              "id": "有益-文科-哲学",
+              "name": "哲学",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 29,
+                  "name": "马来西亚 辩论辩题\n30-50min 左右",
+                  "url": "https://www.youtube.com/@BBKNetwork/videos",
+                  "text": "马来西亚 辩论辩题\n30-50min 左右"
+                },
+                {
+                  "id": 186,
+                  "name": "解释鸿沟 陈家瑛\nBBC纪录片",
+                  "url": "https://www.youtube.com/playlist?list=PLj61SPm9M9LYsWncyD7HxU_PAwyq3ZCSs",
+                  "text": "解释鸿沟 陈家瑛\nBBC纪录片"
+                },
+                {
+                  "id": 187,
+                  "name": "华语辩坛老友赛",
+                  "url": "https://space.bilibili.com/30646569/upload/video",
+                  "text": "华语辩坛老友赛"
+                },
+                {
+                  "id": 188,
+                  "name": "哲理辩合集",
+                  "url": "https://www.bilibili.com/video/BV1vZ421v7Su/?vd_source=15173c99aced81f348af55708bc963e3",
+                  "text": "哲理辩合集"
+                },
+                {
+                  "id": 226,
+                  "name": "深刻 清醒\n好看小姐姐",
+                  "url": "https://space.bilibili.com/482899354",
+                  "text": "深刻 清醒\n好看小姐姐"
+                },
+                {
+                  "id": 231,
+                  "name": "项飙 合集\n1-2hr",
+                  "url": "https://space.bilibili.com/346687210/lists/2619621?type=series",
+                  "text": "项飙 合集\n1-2hr"
+                }
+              ]
+            },
+            {
+              "id": "有益-文科-心理学",
+              "name": "心理学",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 283,
+                  "name": "維思維WeisWay\n弓箭手大作战画风",
+                  "url": "https://www.youtube.com/@WeisWay/videos",
+                  "text": "維思維WeisWay\n弓箭手大作战画风"
+                },
+                {
+                  "id": 349,
+                  "name": "王宇德-心理解析",
+                  "url": "https://space.bilibili.com/22314958/upload/video",
+                  "text": "王宇德-心理解析"
+                }
+              ]
+            },
+            {
+              "id": "有益-文科-社会学",
+              "name": "社会学",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 284,
+                  "name": "章北海",
+                  "url": "https://space.bilibili.com/570064/upload/video",
+                  "text": "章北海"
+                },
+                {
+                  "id": 345,
+                  "name": "半佛仙人",
+                  "url": "https://space.bilibili.com/37663924/upload/video",
+                  "text": "半佛仙人"
+                },
+                {
+                  "id": 359,
+                  "name": "https://space.bilibili.com/1612081513/?spm_id_from=333.788.upinfo.detail.click",
+                  "url": "https://space.bilibili.com/1612081513",
+                  "text": "https://space.bilibili.com/1612081513/?spm_id_from=333.788.upinfo.detail.click"
+                }
+              ]
             }
           ]
         },
@@ -223,23 +2115,98 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 4,
-              "name": "台湾 查理 右派自由",
-              "url": "https://www.youtube.com/@godsteammate/videos",
-              "text": "台湾 查理\n右派自由"
+              "id": 178,
+              "name": "官场",
+              "url": "https://www.youtube.com/@WoYaoDangGuan/videos",
+              "text": "官场"
+            },
+            {
+              "id": 182,
+              "name": "Leonard\n新闻类",
+              "url": "https://www.youtube.com/@leonard2834/videos",
+              "text": "Leonard\n新闻类"
+            },
+            {
+              "id": 184,
+              "name": "新官场",
+              "url": "https://www.youtube.com/@%E6%96%B0%E5%AE%98%E5%9C%BA",
+              "text": "新官场"
+            },
+            {
+              "id": 330,
+              "name": "悉尼奶爸",
+              "url": "https://www.youtube.com/@SydneyDaddy1/videos",
+              "text": "悉尼奶爸"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "有益-时政点评-单口",
+              "name": "单口",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 3,
+                  "name": "台湾 查理\n右派自由",
+                  "url": "https://www.youtube.com/@godsteammate/videos",
+                  "text": "台湾 查理\n右派自由"
+                },
+                {
+                  "id": 183,
+                  "name": "菜场主\n数学",
+                  "url": "https://www.youtube.com/@caichangzhu/videos",
+                  "text": "菜场主\n数学"
+                }
+              ]
             }
           ]
         },
         {
-          "id": "有益-测评",
-          "name": "测评",
+          "id": "有益-权术/勾心斗角",
+          "name": "权术/勾心斗角",
           "maxItems": 50,
           "items": [
             {
-              "id": 7,
-              "name": "大狸子切切里 科技测评",
-              "url": "https://www.youtube.com/@cherry_official/videos",
-              "text": "大狸子切切里\n科技测评"
+              "id": 88,
+              "name": "特朗普职场综艺",
+              "url": "https://www.bilibili.com/video/BV1rY4y1R7p4/?vd_source=15173c99aced81f348af55708bc963e3",
+              "text": "特朗普职场综艺"
+            },
+            {
+              "id": 95,
+              "name": "大明王朝\n全集解析",
+              "url": "https://www.youtube.com/playlist?list=PLG80GYpYYdXPHunXnL6-MWyweYdn-2RVc",
+              "text": "大明王朝\n全集解析"
+            },
+            {
+              "id": 190,
+              "name": "大明王朝",
+              "url": "https://space.bilibili.com/23601576/lists/2441951?type=season",
+              "text": "大明王朝"
+            },
+            {
+              "id": 347,
+              "name": "影视分析\n看人性",
+              "url": "https://space.bilibili.com/392315032/upload/video",
+              "text": "影视分析\n看人性"
+            },
+            {
+              "id": 356,
+              "name": "官场类\n影视",
+              "url": "https://space.bilibili.com/8096990/lists/942877?type=season",
+              "text": "官场类\n影视"
+            },
+            {
+              "id": 357,
+              "name": "渤海小吏\n历史类影视 看人性",
+              "url": "https://space.bilibili.com/504934876/upload/video",
+              "text": "渤海小吏\n历史类影视 看人性"
+            },
+            {
+              "id": 396,
+              "name": "大迎本人",
+              "url": "https://space.bilibili.com/3546390804301889/upload/video",
+              "text": "大迎本人"
             }
           ]
         },
@@ -249,10 +2216,117 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 22,
-              "name": "Numberphile 15min 数学",
-              "url": "https://www.youtube.com/@numberphile/videos",
-              "text": "Numberphile\n15min 数学"
+              "id": 27,
+              "name": "3d 动画! 物理",
+              "url": "https://www.youtube.com/@EugeneKhutoryansky/videos",
+              "text": "3d 动画! 物理"
+            },
+            {
+              "id": 47,
+              "name": "漫士沉思录\n生动的动画 数学、物理、计算机",
+              "url": "https://space.bilibili.com/266765166",
+              "text": "漫士沉思录\n生动的动画 数学、物理、计算机"
+            },
+            {
+              "id": 98,
+              "name": "Reducible\nmachine leanring 紫色可视化",
+              "url": "https://www.youtube.com/@Reducible/videos",
+              "text": "Reducible\nmachine leanring 紫色可视化"
+            },
+            {
+              "id": 99,
+              "name": "停更 精良!\n密码学/图论/概率等",
+              "url": "https://www.youtube.com/@pbsinfiniteseries/playlists",
+              "text": "停更 精良!\n密码学/图论/概率等"
+            },
+            {
+              "id": 106,
+              "name": "江城kaya\n手绘艺术画风",
+              "url": "https://space.bilibili.com/20050011",
+              "text": "江城kaya\n手绘艺术画风"
+            },
+            {
+              "id": 176,
+              "name": "林亦LYi",
+              "url": "https://space.bilibili.com/4401694",
+              "text": "林亦LYi"
+            },
+            {
+              "id": 179,
+              "name": "像素学金融",
+              "url": "https://space.bilibili.com/46405906",
+              "text": "像素学金融"
+            },
+            {
+              "id": 181,
+              "name": "一席\n30min",
+              "url": "https://space.bilibili.com/26079128/upload/video",
+              "text": "一席\n30min"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "有益-理科-学习观",
+              "name": "学习观",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 177,
+                  "name": "YJango",
+                  "url": "https://space.bilibili.com/344849038/dynamic",
+                  "text": "YJango"
+                },
+                {
+                  "id": 180,
+                  "name": "YJango门户网站",
+                  "url": "https://www.modevol.com/",
+                  "text": "YJango门户网站"
+                }
+              ]
+            },
+            {
+              "id": "有益-理科-数学",
+              "name": "数学",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 21,
+                  "name": "Numberphile\n15min 数学",
+                  "url": "https://www.youtube.com/@numberphile/videos",
+                  "text": "Numberphile\n15min 数学"
+                },
+                {
+                  "id": 32,
+                  "name": "3b1b\nyoutube",
+                  "url": "https://www.youtube.com/@3blue1brown/videos",
+                  "text": "3b1b\nyoutube"
+                },
+                {
+                  "id": 52,
+                  "name": "墨尔本莫纳什大学数学教授",
+                  "url": "https://www.youtube.com/@Mathologer/videos",
+                  "text": "墨尔本莫纳什大学数学教授"
+                },
+                {
+                  "id": 96,
+                  "name": "中国 3b1b\nmachine learning 类",
+                  "url": "https://space.bilibili.com/2138402997",
+                  "text": "中国 3b1b\nmachine learning 类"
+                }
+              ]
+            },
+            {
+              "id": "有益-理科-码农",
+              "name": "码农",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 185,
+                  "name": "james 工程师\n单口",
+                  "url": "https://www.youtube.com/@james-kool/videos",
+                  "text": "james 工程师\n单口"
+                }
+              ]
             }
           ]
         },
@@ -262,7 +2336,7 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 16,
+              "id": 15,
               "name": "画风可爱 各类科普",
               "url": "https://www.youtube.com/@kurzgesagt/videos",
               "text": "画风可爱 各类科普"
@@ -272,6 +2346,46 @@
               "name": "短视频 深入浅出!",
               "url": "https://www.youtube.com/@miaodong/videos",
               "text": "短视频 深入浅出!"
+            },
+            {
+              "id": 101,
+              "name": "奇点迫近\n有趣的科普",
+              "url": "https://space.bilibili.com/187869468",
+              "text": "奇点迫近\n有趣的科普"
+            },
+            {
+              "id": 104,
+              "name": "贰鼠 有趣搬运\n1-5min",
+              "url": "https://space.bilibili.com/22245854",
+              "text": "贰鼠 有趣搬运\n1-5min"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "有益-科普-画质",
+              "name": "画质",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 105,
+                  "name": "Veritasium 真理元素",
+                  "url": "https://www.youtube.com/@veritasium/videos",
+                  "text": "Veritasium 真理元素"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "有益-英语",
+          "name": "英语",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 53,
+              "name": "AllXEnglish\n辩论 / 演讲 切片",
+              "url": "https://www.youtube.com/@AllXEnglish/videos",
+              "text": "AllXEnglish\n辩论 / 演讲 切片"
             }
           ]
         },
@@ -281,35 +2395,47 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 12,
-              "name": "The Tonight Show jimmy 都是短的",
+              "id": 11,
+              "name": "The Tonight Show jimmy\n都是短的",
               "url": "https://www.youtube.com/@fallontonight/videos",
               "text": "The Tonight Show jimmy\n都是短的"
             },
             {
-              "id": 14,
+              "id": 13,
               "name": "科技类 10min左右",
               "url": "https://www.youtube.com/@LondonRealTV/videos",
               "text": "科技类 10min左右"
             },
             {
-              "id": 15,
+              "id": 14,
               "name": "大讨论 围圆圈坐一起",
               "url": "https://www.youtube.com/@jubilee/videos",
               "text": "大讨论 围圆圈坐一起"
+            },
+            {
+              "id": 97,
+              "name": "英文评论中国",
+              "url": "https://www.youtube.com/@DanielDumbrill/videos",
+              "text": "英文评论中国"
+            },
+            {
+              "id": 232,
+              "name": "十三邀\n我已经精选了",
+              "url": "https://www.youtube.com/playlist?list=PLWAcybLfPvlLPMHdn2rukaX-FyJDZjlF-",
+              "text": "十三邀\n我已经精选了"
             }
           ]
         },
         {
-          "id": "有益-辩论",
-          "name": "辩论",
+          "id": "有益-韩语",
+          "name": "韩语",
           "maxItems": 50,
           "items": [
             {
-              "id": 29,
-              "name": "马来西亚 辩论辩题 30-50min 左右",
-              "url": "https://www.youtube.com/@BBKNetwork/videos",
-              "text": "马来西亚 辩论辩题\n30-50min 左右"
+              "id": 362,
+              "name": "鬼怪 韩剧",
+              "url": "https://www.bilibili.com/video/BV1nt4y1b7cT/?vd_source=15173c99aced81f348af55708bc963e3",
+              "text": "鬼怪 韩剧"
             }
           ]
         }
@@ -322,35 +2448,309 @@
       "maxItems": 50,
       "items": [
         {
-          "id": 6,
-          "name": "狐狸头🦊 经常开新游新坑",
-          "url": "https://www.youtube.com/@pfytw/videos",
-          "text": "狐狸头🦊\n经常开新游新坑"
+          "id": 137,
+          "name": "植物大战僵尸\n废物版 介绍+实战",
+          "url": "https://space.bilibili.com/3546614316665044",
+          "text": "植物大战僵尸\n废物版 介绍+实战"
         },
         {
-          "id": 8,
-          "name": "喵心GG (啥都有 七日杀类多一些)",
-          "url": "https://www.youtube.com/@miaoxinGG/videos",
-          "text": "喵心GG\n(啥都有 七日杀类多一些)"
+          "id": 270,
+          "name": "父女一起玩\n10min以内",
+          "url": "https://space.bilibili.com/3546556791786051/upload/video",
+          "text": "父女一起玩\n10min以内"
         },
         {
-          "id": 30,
-          "name": "悠闲 + 恐怖(小小梦魇)",
-          "url": "https://www.youtube.com/@AshanKouki/videos",
-          "text": "悠闲 + 恐怖(小小梦魇)"
+          "id": 273,
+          "name": "墨鱼丸\n推理解谜专精的老侦探",
+          "url": "https://space.bilibili.com/1795991448/upload/video",
+          "text": "墨鱼丸\n推理解谜专精的老侦探"
+        },
+        {
+          "id": 285,
+          "name": "植物大战僵尸\n融合版",
+          "url": "https://space.bilibili.com/3546619314178489/upload/video",
+          "text": "植物大战僵尸\n融合版"
         }
       ],
       "subcategories": [
         {
-          "id": "游戏实况-3a",
-          "name": "3a",
+          "id": "游戏实况-mc",
+          "name": "MC",
           "maxItems": 50,
           "items": [
             {
-              "id": 23,
+              "id": 164,
+              "name": "小橙子\n声音好听",
+              "url": "https://space.bilibili.com/35734399/upload/video",
+              "text": "小橙子\n声音好听"
+            },
+            {
+              "id": 372,
+              "name": "吾乃肆玖\n恐怖的多",
+              "url": "https://space.bilibili.com/206085081/upload/video",
+              "text": "吾乃肆玖\n恐怖的多"
+            }
+          ]
+        },
+        {
+          "id": "游戏实况-以撒",
+          "name": "以撒",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 121,
+              "name": "我是谁压实度",
+              "url": "https://space.bilibili.com/28860267/upload/video",
+              "text": "我是谁压实度"
+            },
+            {
+              "id": 158,
+              "name": "高手 玩mod\n没有ide介绍",
+              "url": "https://space.bilibili.com/162941802https://space.bilibili.com/6888296/upload/video",
+              "text": "高手 玩mod\n没有ide介绍"
+            },
+            {
+              "id": 167,
+              "name": "陈哥 最牛\n主页",
+              "url": "https://space.bilibili.com/6639802/upload/video",
+              "text": "陈哥 最牛\n主页"
+            },
+            {
+              "id": 168,
+              "name": "陈哥\n毒种系列",
+              "url": "https://space.bilibili.com/6639802/lists/1748058?type=season",
+              "text": "陈哥\n毒种系列"
+            },
+            {
+              "id": 294,
+              "name": "章鱼部长\n玩mod 人物",
+              "url": "https://space.bilibili.com/162941802/lists/981900?type=season",
+              "text": "章鱼部长\n玩mod 人物"
+            }
+          ]
+        },
+        {
+          "id": "游戏实况-完整",
+          "name": "完整",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 5,
+              "name": "狐狸头🦊\n经常开新游新坑",
+              "url": "https://www.youtube.com/@pfytw/videos",
+              "text": "狐狸头🦊\n经常开新游新坑"
+            },
+            {
+              "id": 22,
               "name": "完美蝙蝠侠",
               "url": "https://www.youtube.com/@StealthyChannel/videos",
               "text": "完美蝙蝠侠"
+            },
+            {
+              "id": 65,
+              "name": "古风/仙侠/武侠\n经常开新游新坑",
+              "url": "https://space.bilibili.com/8012953/upload/video",
+              "text": "古风/仙侠/武侠\n经常开新游新坑"
+            },
+            {
+              "id": 115,
+              "name": "恐怖类 大作\n很多+露脸反应",
+              "url": "https://www.youtube.com/@markiplier/videos",
+              "text": "恐怖类 大作\n很多+露脸反应"
+            },
+            {
+              "id": 122,
+              "name": "老戴在此\n全是大部头!",
+              "url": "https://space.bilibili.com/2142762/lists",
+              "text": "老戴在此\n全是大部头!"
+            },
+            {
+              "id": 159,
+              "name": "僵毁 很多开荒合集\n有趣 背景",
+              "url": "https://space.bilibili.com/384080078",
+              "text": "僵毁 很多开荒合集\n有趣 背景"
+            },
+            {
+              "id": 166,
+              "name": "舍长 杂\n恐怖 / 3a",
+              "url": "https://space.bilibili.com/70666/lists",
+              "text": "舍长 杂\n恐怖 / 3a"
+            },
+            {
+              "id": 207,
+              "name": "scum 人渣",
+              "url": "https://www.youtube.com/@C-gb9sc/videos",
+              "text": "scum 人渣"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "游戏实况-完整-单独合集",
+              "name": "单独合集",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 59,
+                  "name": "饥饿与恐惧\n黑暗世界 断肢系统 绝望",
+                  "url": "https://space.bilibili.com/72261633/lists/937981?type=season",
+                  "text": "饥饿与恐惧\n黑暗世界 断肢系统 绝望"
+                },
+                {
+                  "id": 67,
+                  "name": "饥饿与恐惧2",
+                  "url": "https://space.bilibili.com/72261633/lists/937981?type=season",
+                  "text": "饥饿与恐惧2"
+                },
+                {
+                  "id": 68,
+                  "name": "密教模拟器",
+                  "url": "https://www.bilibili.com/video/BV1e84y1M7dp/?vd_source=15173c99aced81f348af55708bc963e3",
+                  "text": "密教模拟器"
+                },
+                {
+                  "id": 83,
+                  "name": "人和怪兽对战!",
+                  "url": "https://www.youtube.com/@thefrencheagle_fps/videos",
+                  "text": "人和怪兽对战!"
+                },
+                {
+                  "id": 162,
+                  "name": "逃离科塔夫\n11hr",
+                  "url": "https://www.youtube.com/watch?v=eSAriznl_ZM",
+                  "text": "逃离科塔夫\n11hr"
+                },
+                {
+                  "id": 165,
+                  "name": "癫狂动物园",
+                  "url": "https://space.bilibili.com/70666/lists/3942970?type=season",
+                  "text": "癫狂动物园"
+                },
+                {
+                  "id": 269,
+                  "name": "幻兽帕鲁\n全随机 搞笑",
+                  "url": "https://space.bilibili.com/150112256/lists/4591936?type=season",
+                  "text": "幻兽帕鲁\n全随机 搞笑"
+                },
+                {
+                  "id": 288,
+                  "name": "紫色晶石\n像素平面",
+                  "url": "https://www.youtube.com/watch?v=_fSXAyi-I40&list=PLQJ7Rx11kXONWvRdmoLGUhxgJSkVvTuLK&index=22&t=1s",
+                  "text": "紫色晶石\n像素平面"
+                },
+                {
+                  "id": 360,
+                  "name": "DeepSeek玩\n底特律变人",
+                  "url": "https://www.bilibili.com/video/BV1hMNGe9E2d?vd_source=15173c99aced81f348af55708bc963e3",
+                  "text": "DeepSeek玩\n底特律变人"
+                }
+              ]
+            },
+            {
+              "id": "游戏实况-完整-泰拉瑞亚",
+              "name": "泰拉瑞亚",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 58,
+                  "name": "A教授",
+                  "url": "https://www.youtube.com/@Prof.Terraria/videos",
+                  "text": "A教授"
+                }
+              ]
+            },
+            {
+              "id": "游戏实况-完整-画质",
+              "name": "画质",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 160,
+                  "name": "林小天\n末日生存类",
+                  "url": "https://www.youtube.com/@userlinxiaotian/playlists",
+                  "text": "林小天\n末日生存类"
+                },
+                {
+                  "id": 161,
+                  "name": "第三人称射击\n制作精良",
+                  "url": "https://www.youtube.com/@fairTX/videos",
+                  "text": "第三人称射击\n制作精良"
+                }
+              ]
+            },
+            {
+              "id": "游戏实况-完整-美女",
+              "name": "美女",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 62,
+                  "name": "偏剧情向 3a",
+                  "url": "https://www.youtube.com/@Kastaclysm/videos",
+                  "text": "偏剧情向 3a"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "游戏实况-恐怖猎奇",
+          "name": "恐怖猎奇",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 374,
+              "name": "Markiplier\n长发白男",
+              "url": "https://www.youtube.com/@markiplier/videos",
+              "text": "Markiplier\n长发白男"
+            }
+          ]
+        },
+        {
+          "id": "游戏实况-杂",
+          "name": "杂",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 7,
+              "name": "喵心GG\n(啥都有 七日杀类多一些)",
+              "url": "https://www.youtube.com/@miaoxinGG/videos",
+              "text": "喵心GG\n(啥都有 七日杀类多一些)"
+            },
+            {
+              "id": 30,
+              "name": "悠闲 + 恐怖(小小梦魇)",
+              "url": "https://www.youtube.com/@AshanKouki/videos",
+              "text": "悠闲 + 恐怖(小小梦魇)"
+            },
+            {
+              "id": 48,
+              "name": "小熊Yuniko",
+              "url": "https://www.youtube.com/@Yuniko0720VOD/videos",
+              "text": "小熊Yuniko"
+            },
+            {
+              "id": 110,
+              "name": "血腥暴力类",
+              "url": "https://www.youtube.com/@cheru/videos",
+              "text": "血腥暴力类"
+            },
+            {
+              "id": 118,
+              "name": "恐怖类 解说不错\n30min以下",
+              "url": "https://space.bilibili.com/6888296/upload/video",
+              "text": "恐怖类 解说不错\n30min以下"
+            },
+            {
+              "id": 163,
+              "name": "怕上火暴王老菊\n好笑 魂系 3a",
+              "url": "https://space.bilibili.com/423895/upload/video",
+              "text": "怕上火暴王老菊\n好笑 魂系 3a"
+            },
+            {
+              "id": 223,
+              "name": "逍遥散人\n高智商高情商",
+              "url": "https://space.bilibili.com/168598/upload/video",
+              "text": "逍遥散人\n高智商高情商"
             }
           ]
         },
@@ -358,7 +2758,14 @@
           "id": "游戏实况-格斗",
           "name": "格斗",
           "maxItems": 50,
-          "items": [],
+          "items": [
+            {
+              "id": 202,
+              "name": "黑神话 高手\n5min",
+              "url": "https://space.bilibili.com/3493264516712760/upload/video",
+              "text": "黑神话 高手\n5min"
+            }
+          ],
           "subclasses": [
             {
               "id": "游戏实况-格斗-mk",
@@ -366,16 +2773,120 @@
               "maxItems": 50,
               "items": [
                 {
-                  "id": 3,
+                  "id": 2,
                   "name": "super",
                   "url": "https://www.youtube.com/@Superman049",
                   "text": "super"
                 },
                 {
-                  "id": 25,
-                  "name": "SonicFox 电竞高手",
+                  "id": 24,
+                  "name": "SonicFox\n电竞高手",
                   "url": "https://www.youtube.com/@SonicFox5000/videos",
                   "text": "SonicFox\n电竞高手"
+                },
+                {
+                  "id": 111,
+                  "name": "动作解说!!!\n招式名称",
+                  "url": "https://space.bilibili.com/3494350673677173",
+                  "text": "动作解说!!!\n招式名称"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "游戏实况-泰拉瑞亚",
+          "name": "泰拉瑞亚",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 124,
+              "name": "嘿蟹 挑战\n材质包福瑞",
+              "url": "https://space.bilibili.com/606264213/upload/video",
+              "text": "嘿蟹 挑战\n材质包福瑞"
+            },
+            {
+              "id": 206,
+              "name": "克总来了\nmod 开荒",
+              "url": "https://space.bilibili.com/43565879/upload/video",
+              "text": "克总来了\nmod 开荒"
+            }
+          ]
+        },
+        {
+          "id": "游戏实况-火影手游",
+          "name": "火影手游",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 56,
+              "name": "赵小天",
+              "url": "https://space.bilibili.com/50001728/upload/video",
+              "text": "赵小天"
+            }
+          ]
+        },
+        {
+          "id": "游戏实况-画质",
+          "name": "画质",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 71,
+              "name": "Fooster\n恐怖 / 生存 / 多人",
+              "url": "https://www.youtube.com/@thefoosterchannel/videos",
+              "text": "Fooster\n恐怖 / 生存 / 多人"
+            },
+            {
+              "id": 72,
+              "name": "各类切片\n15min- 2hr 不等",
+              "url": "https://www.youtube.com/@ChampsNetwork/videos",
+              "text": "各类切片\n15min- 2hr 不等"
+            },
+            {
+              "id": 125,
+              "name": "各类切片2\n20min",
+              "url": "https://www.youtube.com/@NextGenPlayz1/videos",
+              "text": "各类切片2\n20min"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "游戏实况-画质-3a大作",
+              "name": "3a大作",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 46,
+                  "name": "theRadBrad",
+                  "url": "https://www.youtube.com/@theRadBrad/videos",
+                  "text": "theRadBrad"
+                }
+              ]
+            },
+            {
+              "id": "游戏实况-画质-完整",
+              "name": "完整",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 73,
+                  "name": "Shirrako\n全是 10hr+",
+                  "url": "https://www.youtube.com/@Shirrako/videos",
+                  "text": "Shirrako\n全是 10hr+"
+                }
+              ]
+            },
+            {
+              "id": "游戏实况-画质-生存类",
+              "name": "生存类",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 45,
+                  "name": "PartiallyRoyal",
+                  "url": "https://www.youtube.com/@PartiallyRoyal/videos",
+                  "text": "PartiallyRoyal"
                 }
               ]
             }
@@ -387,10 +2898,471 @@
           "maxItems": 50,
           "items": [
             {
-              "id": 24,
-              "name": "Necros 漫威争锋 蜘蛛侠",
+              "id": 23,
+              "name": "Necros\n漫威争锋 蜘蛛侠",
               "url": "https://www.youtube.com/@NecrosOW/videos",
               "text": "Necros\n漫威争锋 蜘蛛侠"
+            },
+            {
+              "id": 113,
+              "name": "狙击手麦克",
+              "url": "https://www.youtube.com/@MaiKeOfficial/videos",
+              "text": "狙击手麦克"
+            },
+            {
+              "id": 204,
+              "name": "第三人称射击\n制作精良 画质",
+              "url": "https://www.youtube.com/@fairTX/videos",
+              "text": "第三人称射击\n制作精良 画质"
+            },
+            {
+              "id": 260,
+              "name": "狙击精英",
+              "url": "https://www.youtube.com/@MB93/videos",
+              "text": "狙击精英"
+            }
+          ]
+        },
+        {
+          "id": "游戏实况-美女",
+          "name": "美女",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 81,
+              "name": "MissMikkaa",
+              "url": "https://www.youtube.com/@MissMikkaa/videos",
+              "text": "MissMikkaa"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "游戏实况-美女-声控",
+              "name": "声控",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 157,
+                  "name": "一只小尾巴",
+                  "url": "https://space.bilibili.com/3493261563923106",
+                  "text": "一只小尾巴"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "游戏实况-肉鸽",
+          "name": "肉鸽",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 119,
+              "name": "新游试玩+土豆兄弟",
+              "url": "https://space.bilibili.com/39846961/upload/video",
+              "text": "新游试玩+土豆兄弟"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "游戏综合",
+      "name": "游戏综合",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [
+        {
+          "id": 86,
+          "name": "怪物猎人 怪物介绍",
+          "url": "https://www.youtube.com/playlist?list=PL_YoTN8gmON7KxUM26nmYwAoqP95c4Xuh",
+          "text": "怪物猎人 怪物介绍"
+        },
+        {
+          "id": 114,
+          "name": "漫威争锋 实战/资讯\n15mins",
+          "url": "https://www.youtube.com/playlist?list=PLJ02IXNqrY5WTqNeEFhoMkklFoB0L6eR1",
+          "text": "漫威争锋 实战/资讯\n15mins"
+        },
+        {
+          "id": 117,
+          "name": "mk + 漫威争锋\n处决 / 新皮肤",
+          "url": "https://www.youtube.com/@CJRGaming95/videos",
+          "text": "mk + 漫威争锋\n处决 / 新皮肤"
+        },
+        {
+          "id": 141,
+          "name": "氪金",
+          "url": "https://www.youtube.com/@MangoGamesOL/videos",
+          "text": "氪金"
+        },
+        {
+          "id": 192,
+          "name": "以撒 综合\n爽局/冷知识/更新",
+          "url": "https://space.bilibili.com/489525033/upload/video",
+          "text": "以撒 综合\n爽局/冷知识/更新"
+        },
+        {
+          "id": 199,
+          "name": "小贝的游戏食堂\n吃鸡类 好玩活动",
+          "url": "https://www.youtube.com/@XiaoBeiOfficial/videos",
+          "text": "小贝的游戏食堂\n吃鸡类 好玩活动"
+        },
+        {
+          "id": 200,
+          "name": "附魔星\n游戏资讯",
+          "url": "https://space.bilibili.com/28266043/upload/video",
+          "text": "附魔星\n游戏资讯"
+        },
+        {
+          "id": 266,
+          "name": "诡异的妖刀\n泰拉瑞亚 杂",
+          "url": "https://space.bilibili.com/1802064468/upload/video",
+          "text": "诡异的妖刀\n泰拉瑞亚 杂"
+        }
+      ],
+      "subcategories": [
+        {
+          "id": "游戏综合-mod",
+          "name": "mod",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 112,
+              "name": "mk 皮肤mod\n实战演示",
+              "url": "https://space.bilibili.com/346168737https://space.bilibili.com/6888296/upload/video",
+              "text": "mk 皮肤mod\n实战演示"
+            },
+            {
+              "id": 140,
+              "name": "究极风暴\n新 自定义人物",
+              "url": "https://www.youtube.com/@BlackBeetleKing/playlists",
+              "text": "究极风暴\n新 自定义人物"
+            },
+            {
+              "id": 201,
+              "name": "岛主\n泰拉瑞亚mod制作者",
+              "url": "https://space.bilibili.com/2075535/upload/video",
+              "text": "岛主\n泰拉瑞亚mod制作者"
+            }
+          ]
+        },
+        {
+          "id": "游戏综合-僵毁",
+          "name": "僵毁",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 108,
+              "name": "猫鲨\n更新介绍 短视频",
+              "url": "https://space.bilibili.com/121274091/upload/video",
+              "text": "猫鲨\n更新介绍 短视频"
+            }
+          ]
+        },
+        {
+          "id": "游戏综合-整活",
+          "name": "整活",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 134,
+              "name": "gta 5",
+              "url": "https://www.youtube.com/@Treyten./videos",
+              "text": "gta 5"
+            },
+            {
+              "id": 173,
+              "name": "像素类\n杂",
+              "url": "https://space.bilibili.com/19792237https://space.bilibili.com/6888296/upload/video",
+              "text": "像素类\n杂"
+            },
+            {
+              "id": 174,
+              "name": "黑镖客梦回\n杂",
+              "url": "https://space.bilibili.com/10558098https://space.bilibili.com/6888296/upload/video",
+              "text": "黑镖客梦回\n杂"
+            },
+            {
+              "id": 175,
+              "name": "大头贝奇",
+              "url": "https://space.bilibili.com/286508081https://space.bilibili.com/6888296/upload/video",
+              "text": "大头贝奇"
+            },
+            {
+              "id": 203,
+              "name": "黑神话mod",
+              "url": "https://space.bilibili.com/286508081/upload/video",
+              "text": "黑神话mod"
+            },
+            {
+              "id": 267,
+              "name": "乔治的新恐龙\n泰拉瑞亚+元气骑士",
+              "url": "https://space.bilibili.com/97094027/upload/video",
+              "text": "乔治的新恐龙\n泰拉瑞亚+元气骑士"
+            }
+          ],
+          "subclasses": [
+            {
+              "id": "游戏综合-整活-火影手游/究极风暴",
+              "name": "火影手游/究极风暴",
+              "maxItems": 50,
+              "items": [
+                {
+                  "id": 57,
+                  "name": "新技能 / 各类人物xxx场景",
+                  "url": "https://space.bilibili.com/1550137https://space.bilibili.com/6888296/upload/video",
+                  "text": "新技能 / 各类人物xxx场景"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "漫画-小说",
+      "name": "漫画/小说",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [
+        {
+          "id": 272,
+          "name": "汉森白 手绘黑白漫画\n内容是书 / 深刻",
+          "url": "https://space.bilibili.com/98666360",
+          "text": "汉森白 手绘黑白漫画\n内容是书 / 深刻"
+        },
+        {
+          "id": 364,
+          "name": "科幻小说 + 影视拼凑片段",
+          "url": "https://space.bilibili.com/25073738",
+          "text": "科幻小说 + 影视拼凑片段"
+        },
+        {
+          "id": 377,
+          "name": "漫画/ 帖子ins\n码头薯条作者",
+          "url": "https://www.instagram.com/FalseKnees",
+          "text": "漫画/ 帖子ins\n码头薯条作者"
+        },
+        {
+          "id": 380,
+          "name": "dc 有声漫画!\n蝙蝠侠原声",
+          "url": "https://www.youtube.com/playlist?list=PLCljL5eh076SHlGRKZSEms_DuuPdk82qC",
+          "text": "dc 有声漫画!\n蝙蝠侠原声"
+        }
+      ],
+      "subcategories": [
+        {
+          "id": "漫画-小说-互动小说",
+          "name": "互动小说",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 286,
+              "name": "打泥泥",
+              "url": "https://space.bilibili.com/357229416",
+              "text": "打泥泥"
+            },
+            {
+              "id": 393,
+              "name": "钢皇の游戏王国",
+              "url": "https://space.bilibili.com/5570974",
+              "text": "钢皇の游戏王国"
+            }
+          ]
+        },
+        {
+          "id": "漫画-小说-动态",
+          "name": "动态",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 55,
+              "name": "大冰动态漫\n停更",
+              "url": "https://space.bilibili.com/381678450",
+              "text": "大冰动态漫\n停更"
+            }
+          ]
+        },
+        {
+          "id": "漫画-小说-恐怖猎奇",
+          "name": "恐怖猎奇",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 19,
+              "name": "黑白漫画解说",
+              "url": "https://www.youtube.com/@tree2793/videos",
+              "text": "黑白漫画解说"
+            }
+          ]
+        },
+        {
+          "id": "漫画-小说-解说",
+          "name": "解说",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 373,
+              "name": "漫画解说\n杂",
+              "url": "https://www.youtube.com/@MangaDolitte/videos",
+              "text": "漫画解说\n杂"
+            },
+            {
+              "id": 375,
+              "name": "清风大诗兄\n港漫",
+              "url": "https://space.bilibili.com/46669041/lists",
+              "text": "清风大诗兄\n港漫"
+            },
+            {
+              "id": 376,
+              "name": "恐怖漫画\n伊藤润二+其他",
+              "url": "https://space.bilibili.com/9769766/upload/video",
+              "text": "恐怖漫画\n伊藤润二+其他"
+            },
+            {
+              "id": 378,
+              "name": "漫威\n精良",
+              "url": "https://www.youtube.com/@manweishuoshuren/videos",
+              "text": "漫威\n精良"
+            },
+            {
+              "id": 379,
+              "name": "伊藤润二",
+              "url": "https://www.youtube.com/@liyu7242/videos",
+              "text": "伊藤润二"
+            },
+            {
+              "id": 382,
+              "name": "各类美漫\n详细追更! 好",
+              "url": "https://space.bilibili.com/3810668/upload/video",
+              "text": "各类美漫\n详细追更! 好"
+            },
+            {
+              "id": 394,
+              "name": "莫千回\n给类漫画",
+              "url": "https://www.youtube.com/@moqianhui/playlists",
+              "text": "莫千回\n给类漫画"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "音乐区",
+      "name": "音乐区",
+      "icon": "📁",
+      "maxItems": 50,
+      "items": [
+        {
+          "id": 116,
+          "name": "jason 老湿\n教学+演唱 + 鉴赏",
+          "url": "https://space.bilibili.com/540564177/upload/video",
+          "text": "jason 老湿\n教学+演唱 + 鉴赏"
+        },
+        {
+          "id": 299,
+          "name": "黄绿大战合集",
+          "url": "https://www.bilibili.com/read/readlist/rl492489",
+          "text": "黄绿大战合集"
+        },
+        {
+          "id": 302,
+          "name": "Epic Rap Battles\n历史人物+虚构人物",
+          "url": "https://www.youtube.com/@ERB/videos",
+          "text": "Epic Rap Battles\n历史人物+虚构人物"
+        },
+        {
+          "id": 303,
+          "name": "Whitney Avalon 演员\nrap battle",
+          "url": "https://www.youtube.com/playlist?list=PL2RZlL_hemmlB-JKSx6m9J_FYaXxWb5qB",
+          "text": "Whitney Avalon 演员\nrap battle"
+        },
+        {
+          "id": 304,
+          "name": "Rudy Mancuso\n音乐人",
+          "url": "https://www.youtube.com/@RudyMancuso/videos",
+          "text": "Rudy Mancuso\n音乐人"
+        },
+        {
+          "id": 327,
+          "name": "黄龄",
+          "url": "https://space.bilibili.com/345630501/upload/video",
+          "text": "黄龄"
+        },
+        {
+          "id": 328,
+          "name": "Rozette 白女姐\n点评现场",
+          "url": "https://space.bilibili.com/7295246/upload/video",
+          "text": "Rozette 白女姐\n点评现场"
+        }
+      ],
+      "subcategories": [
+        {
+          "id": "音乐区-米米米",
+          "name": "米米米",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 235,
+              "name": "真栗",
+              "url": "https://www.youtube.com/@makuri0731/videos",
+              "text": "真栗"
+            },
+            {
+              "id": 237,
+              "name": "咻咻满\n黑长直 唱歌",
+              "url": "https://www.youtube.com/@xiuxiuman/videos",
+              "text": "咻咻满\n黑长直 唱歌"
+            },
+            {
+              "id": 342,
+              "name": "洪一诺nono\n初恋亡妻",
+              "url": "https://www.douyin.com/user/MS4wLjABAAAASU-2pnv2l3RWxHwXoVCj2HuzMGURlwWdILayPDGDJ7c",
+              "text": "洪一诺nono\n初恋亡妻"
+            }
+          ]
+        },
+        {
+          "id": "音乐区-鬼畜",
+          "name": "鬼畜",
+          "maxItems": 50,
+          "items": [
+            {
+              "id": 295,
+              "name": "洛温阿特金森",
+              "url": "https://space.bilibili.com/30222764/upload/video",
+              "text": "洛温阿特金森"
+            },
+            {
+              "id": 296,
+              "name": "倒悬的橘子",
+              "url": "https://space.bilibili.com/40966108/upload/video",
+              "text": "倒悬的橘子"
+            },
+            {
+              "id": 297,
+              "name": "ai 配音",
+              "url": "https://space.bilibili.com/107353/upload/video",
+              "text": "ai 配音"
+            },
+            {
+              "id": 298,
+              "name": "哦呼w\n用经典素材",
+              "url": "https://space.bilibili.com/59905809/upload/video",
+              "text": "哦呼w\n用经典素材"
+            },
+            {
+              "id": 300,
+              "name": "核动力路灯",
+              "url": "https://space.bilibili.com/5878572/upload/video",
+              "text": "核动力路灯"
+            },
+            {
+              "id": 301,
+              "name": "鬼畜合集\n每年更",
+              "url": "https://space.bilibili.com/860/favlist?fid=3494359360&ftype=create",
+              "text": "鬼畜合集\n每年更"
             }
           ]
         }
@@ -401,14 +3373,6 @@
       "name": "我的合集",
       "icon": "📚",
       "maxItems": 50,
-      "items": []
-    },
-    {
-      "id": "raw-films",
-      "name": "原片分类",
-      "icon": "🎬",
-      "maxItems": 0,
-      "isTextOnly": true,
       "items": []
     }
   ]
