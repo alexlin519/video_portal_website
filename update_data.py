@@ -281,6 +281,17 @@ def convert_csv_to_json(csv_file):
         
         result['categories'].append(cat_obj)
     
+    # Add raw-films category (special category with markdown content stored in localStorage)
+    # This category should always exist
+    result['categories'].append({
+        'id': 'raw-films',
+        'name': '原片分类',
+        'icon': '🎬',
+        'isTextOnly': True,
+        'maxItems': 50,
+        'items': []
+    })
+    
     # Add collection placeholder
     result['categories'].append({
         'id': 'collection',

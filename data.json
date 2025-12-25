@@ -3369,9 +3369,10 @@
       ]
     },
     {
-      "id": "collection",
-      "name": "我的合集",
-      "icon": "📚",
+      "id": "raw-films",
+      "name": "原片分类",
+      "icon": "🎬",
+      "isTextOnly": true,
       "maxItems": 50,
       "items": []
     }
