@@ -18,6 +18,140 @@ from pathlib import Path
 CSV_INPUT_FOLDER = 'csv_input'  # CSV 文件所在文件夹
 OUTPUT_FILE = 'data.json'  # 输出的 JSON 文件
 
+# Emoji mapping for categories, subcategories, and subclasses
+EMOJI_MAP = {
+    # Categories
+    '影视': '🎬',
+    '游戏实况': '🎮',
+    '游戏综合': '🎯',
+    '新游试玩': '🆕',
+    '有益': '📚',
+    '悠闲轻松': '😌',
+    'hehe': '😏',
+    'scp/怪谈': '👻',
+    '专注音乐/视频当背景版': '🎵',
+    '体育赛事': '⚽',
+    '信息源': '📰',
+    '漫画/小说': '📖',
+    '音乐区': '🎤',
+    
+    # Subcategories (classes)
+    '完整': '🎯',
+    '画质': '✨',
+    '杂': '🔀',
+    '格斗': '👊',
+    '第三人称射击': '🔫',
+    '完整合集': '📦',
+    '单独合集': '📦',
+    '恐怖猎奇': '😱',
+    '测评': '📊',
+    '电子榨菜': '🍜',
+    '抽象': '🎨',
+    '欢乐': '😄',
+    '微恐': '👻',
+    '推理': '🔍',
+    '文艺': '🎭',
+    '时政点评': '🗳️',
+    '访谈': '🎤',
+    '科普': '🔬',
+    '工科': '⚙️',
+    '理科': '🧮',
+    '文科': '📜',
+    '英语': '🇬🇧',
+    'AI': '🤖',
+    '摄影': '📷',
+    '厨艺': '👨‍🍳',
+    '国标': '💃',
+    '权术/勾心斗角': '🎭',
+    '社会学': '👥',
+    '心理学': '🧠',
+    '历史': '📜',
+    '哲学': '🤔',
+    '码农': '💻',
+    '学习观': '📖',
+    '数学': '🔢',
+    '机械': '🔧',
+    '教学': '👨‍🏫',
+    'mod': '🔧',
+    '整活': '🎪',
+    '僵毁': '🧟',
+    'MC': '⛏️',
+    '以撒': '💀',
+    '泰拉瑞亚': '🗺️',
+    '肉鸽': '🎲',
+    '电影': '🎞️',
+    '短视频': '📹',
+    '定格动画': '🎭',
+    '美漫': '🦸',
+    'san': '😵',
+    '自制': '🎨',
+    '战锤': '⚔️',
+    '解说': '🗣️',
+    '原片+解析': '🎬',
+    '原片': '🎬',
+    '长剧情游戏': '🎮',
+    '感人': '😢',
+    '动态': '📱',
+    '互动小说': '📱',
+    '美女': '💃',
+    '攻略': '🗺️',
+    '技巧': '💡',
+    '综艺': '📺',
+    '米米米': '🎵',
+    '鬼畜': '😈',
+    '足球': '⚽',
+    '射击': '🎯',
+    '挂机': '⏸️',
+    '渲染': '🎨',
+    '训练': '🏋️',
+    '评测': '📊',
+    '吃播': '🍽️',
+    '韩语': '🇰🇷',
+    '火影手游': '🥷',
+    '单口': '🎤',
+    
+    # Subclasses
+    'mk': '🥊',
+    '3a大作': '🎮',
+    '生存类': '🏕️',
+    '机器鸡': '🐔',
+    'mc': '⛏️',
+    '声控': '🎙️',
+    '教学': '👨‍🏫',
+    '课程': '📚',
+    '乐高大赛': '🧱',
+    '对战类': '⚔️',
+    '电子斗蛐蛐': '🦗',
+    '躲猫猫': '🙈',
+    '火影手游/究极风暴': '🥷',
+    '战锤 / 其他游戏动画': '⚔️',
+}
+
+def get_emoji_for_name(name, level='category'):
+    """Get emoji for a category, subcategory, or subclass name"""
+    if not name:
+        return None
+    
+    # Try exact match first
+    if name in EMOJI_MAP:
+        return EMOJI_MAP[name]
+    
+    # Try partial matches for subcategories/subclasses
+    if level in ['subcategory', 'subclass']:
+        for key, emoji in EMOJI_MAP.items():
+            if key in name or name in key:
+                return emoji
+    
+    # Default emojis based on level
+    if level == 'category':
+        return '📁'
+    elif level == 'subcategory':
+        return '📂'
+    elif level == 'subclass':
+        return '📄'
+    
+    return '📁'
+
 def parse_csv_with_multiline(csv_file):
     """Parse CSV file preserving multi-line text fields"""
     data = []
@@ -184,7 +318,7 @@ def convert_csv_to_json(csv_file):
             categories[category] = {
                 'id': cat_id,
                 'name': category,
-                'icon': '📁',
+                'icon': get_emoji_for_name(category, 'category'),
                 'maxItems': 50,
                 'items': [],
                 'subcategories': {}
@@ -209,6 +343,7 @@ def convert_csv_to_json(csv_file):
                 categories[category]['subcategories'][class_name] = {
                     'id': class_id,
                     'name': class_name,
+                    'icon': get_emoji_for_name(class_name, 'subcategory'),
                     'maxItems': 50,
                     'items': [],
                     'subclasses': {}
@@ -222,6 +357,7 @@ def convert_csv_to_json(csv_file):
                     categories[category]['subcategories'][class_name]['subclasses'][subclass] = {
                         'id': subclass_id,
                         'name': subclass,
+                        'icon': get_emoji_for_name(subclass, 'subclass'),
                         'maxItems': 50,
                         'items': []
                     }
@@ -254,11 +390,19 @@ def convert_csv_to_json(csv_file):
             # Convert subclasses dict to list
             subclasses = []
             for subclass_name, subclass_data in sorted(subcat_data['subclasses'].items()):
-                subclasses.append(subclass_data)
+                subclass_obj = {
+                    'id': subclass_data['id'],
+                    'name': subclass_data['name'],
+                    'icon': subclass_data.get('icon', get_emoji_for_name(subclass_data['name'], 'subclass')),
+                    'maxItems': subclass_data['maxItems'],
+                    'items': subclass_data['items']
+                }
+                subclasses.append(subclass_obj)
             
             subcat_obj = {
                 'id': subcat_data['id'],
                 'name': subcat_data['name'],
+                'icon': subcat_data.get('icon', get_emoji_for_name(subcat_data['name'], 'subcategory')),
                 'maxItems': subcat_data['maxItems'],
                 'items': subcat_data['items']
             }

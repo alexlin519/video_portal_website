@@ -522,6 +522,7 @@ async function renderSidebar() {
                                         ▶
                                     </span>
                                 ` : ''}
+                                ${subcategory.icon ? `<span class="subcategory-icon">${subcategory.icon}</span>` : ''}
                                 <span class="subcategory-name">${escapeHtml(subcategory.name)}</span>
                             </div>
                         </div>
@@ -534,6 +535,7 @@ async function renderSidebar() {
                                         <div class="subclass" data-subclass-id="${subclass.id}">
                                             <div class="subclass-header ${isSubclassActive ? 'active' : ''}" 
                                                  onclick="selectSubclass('${category.id}', '${subcategory.id}', '${subclass.id}')">
+                                                ${subclass.icon ? `<span class="subclass-icon">${subclass.icon}</span>` : ''}
                                                 <span class="subclass-name">${escapeHtml(subclass.name)}</span>
                                             </div>
                                         </div>
@@ -1403,11 +1405,11 @@ async function selectSubcategory(categoryId, subcategoryId) {
     items = [...pinned, ...limitedUnpinned];
 
     // Render items
-    renderContent(items, subcategory.name, category.icon);
+    renderContent(items, subcategory.name, subcategory.icon || category.icon);
 
     // Update UI
     renderSidebar();
-    updateContentHeader(subcategory.name, category.icon);
+    updateContentHeader(subcategory.name, subcategory.icon || category.icon);
     document.getElementById('refresh-btn').style.display = 'inline-block';
     document.getElementById('add-new-btn').style.display = 'inline-block';
     updateShowAllButton();
@@ -1539,11 +1541,11 @@ async function selectSubclass(categoryId, subcategoryId, subclassId) {
     items = [...pinned, ...limitedUnpinned];
 
     // Render items
-    renderContent(items, subclass.name, category.icon);
+    renderContent(items, subclass.name, subclass.icon || category.icon);
 
     // Update UI
     renderSidebar();
-    updateContentHeader(subclass.name, category.icon);
+    updateContentHeader(subclass.name, subclass.icon || category.icon);
     document.getElementById('refresh-btn').style.display = 'inline-block';
     const addNewBtn = document.getElementById('add-new-btn');
     if (addNewBtn) {

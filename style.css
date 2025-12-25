@@ -350,6 +350,14 @@ body {
     color: var(--accent-color);
 }
 
+.subcategory-icon {
+    font-size: 1rem;
+}
+
+.subcategory-icon {
+    font-size: 1rem;
+}
+
 .subcategory-name {
     font-size: 0.9rem;
     font-weight: 500;
@@ -418,7 +426,7 @@ body {
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 8px;
     color: var(--text-color);
 }
 
@@ -430,6 +438,11 @@ body {
     background-color: var(--selected-color);
     color: var(--accent-color);
     font-weight: 500;
+}
+
+.subclass-icon {
+    font-size: 0.95rem;
+    margin-right: 6px;
 }
 
 .subclass-name {
